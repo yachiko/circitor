@@ -1,0 +1,67 @@
+{
+  "version": "1.2.3+4f9a1c2",
+  "cursor": "k3x9q2ab-28",
+  "daemon": {
+    "tier": "active",
+    "last_poll_at": "2026-11-24T22:00:00Z",
+    "problem": null,
+    "message": null,
+    "until": null
+  },
+  "record": {
+    "pr": "octo/lib#5",
+    "url": "https://github.com/octo/lib/pull/5",
+    "title": "Speed up the parser",
+    "author": "cara",
+    "state": "open",
+    "draft": false,
+    "base": "main",
+    "head": "fast-parser",
+    "head_sha": "9f8e7d6c5b4a39281706f5e4d3c2b1a099887766",
+    "created_at": "2026-11-24T20:15:00Z",
+    "updated_at": "2026-11-24T21:50:00Z",
+    "merged_at": null,
+    "closed_at": null,
+    "mergeable": "yes",
+    "merge_state": "unstable",
+    "review": "review_required",
+    "checks": {
+      "state": "pending",
+      "settled": true,
+      "truncated": false,
+      "total": 2,
+      "completed": 0,
+      "failed": 0,
+      "failed_items": [],
+      "items": [
+        {
+          "kind": "run",
+          "id": 41020,
+          "name": "build",
+          "phase": "in_progress",
+          "result": null,
+          "url": "https://ci.example.test/octo/runs/41020"
+        },
+        {
+          "kind": "run",
+          "id": 41021,
+          "name": "test",
+          "phase": "queued",
+          "result": null,
+          "url": "https://ci.example.test/octo/runs/41021"
+        }
+      ]
+    },
+    "counts": {
+      "comments": 0,
+      "reviews": 0,
+      "review_threads": 0
+    },
+    "status": "checks_pending",
+    "source": "manual",
+    "rev": 26,
+    "fetched_at": "2026-11-24T21:59:58Z",
+    "stale": false,
+    "error": null
+  }
+}

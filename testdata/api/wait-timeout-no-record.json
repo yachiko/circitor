@@ -1,0 +1,18 @@
+{
+  "version": "1.2.3+4f9a1c2",
+  "cursor": "k3x9q2ab-28",
+  "daemon": {
+    "tier": "active",
+    "last_poll_at": "2026-11-24T22:00:00Z",
+    "problem": null,
+    "message": null,
+    "until": null
+  },
+  "outcome": "timeout",
+  "reason": null,
+  "record": null,
+  "events": [],
+  "records": [],
+  "more_events": false,
+  "reset": false
+}

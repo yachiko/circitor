@@ -1,0 +1,97 @@
+{
+  "version": "1.2.3+4f9a1c2",
+  "cursor": "k3x9q2ab-28",
+  "daemon": {
+    "tier": "active",
+    "last_poll_at": "2026-11-24T22:00:00Z",
+    "problem": null,
+    "message": null,
+    "until": null
+  },
+  "records": [
+    {
+      "pr": "octo/app#12",
+      "url": "https://github.com/octo/app/pull/12",
+      "title": "Add retry to the sync job",
+      "author": "ana",
+      "state": "open",
+      "draft": false,
+      "base": "main",
+      "head": "retry-sync",
+      "head_sha": "e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3",
+      "created_at": "2026-11-23T14:02:10Z",
+      "updated_at": "2026-11-24T21:55:03Z",
+      "merged_at": null,
+      "closed_at": null,
+      "mergeable": "yes",
+      "merge_state": "unstable",
+      "review": "none",
+      "checks": {
+        "state": "failing",
+        "settled": true,
+        "truncated": false,
+        "total": 3,
+        "completed": 3,
+        "failed": 1,
+        "failed_items": [
+          {
+            "name": "test",
+            "url": "https://ci.example.test/octo/runs/41002"
+          }
+        ]
+      },
+      "counts": {
+        "comments": 2,
+        "reviews": 1,
+        "review_threads": 0
+      },
+      "status": "checks_failing",
+      "source": "authored",
+      "rev": 27,
+      "fetched_at": "2026-11-24T21:59:58Z",
+      "stale": false,
+      "error": null
+    },
+    {
+      "pr": "octo/app#9",
+      "url": "https://github.com/octo/app/pull/9",
+      "title": "Tidy the config loader",
+      "author": "ben",
+      "state": "open",
+      "draft": false,
+      "base": "main",
+      "head": "tidy-config",
+      "head_sha": "1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d",
+      "created_at": "2026-11-22T08:30:00Z",
+      "updated_at": "2026-11-24T21:40:12Z",
+      "merged_at": null,
+      "closed_at": null,
+      "mergeable": "yes",
+      "merge_state": "clean",
+      "review": "approved",
+      "checks": {
+        "state": "passing",
+        "settled": true,
+        "truncated": false,
+        "total": 1,
+        "completed": 1,
+        "failed": 0,
+        "failed_items": []
+      },
+      "counts": {
+        "comments": 1,
+        "reviews": 1,
+        "review_threads": 0
+      },
+      "status": "ready",
+      "source": "authored",
+      "rev": 24,
+      "fetched_at": "2026-11-24T21:59:58Z",
+      "stale": false,
+      "error": null
+    }
+  ],
+  "untracked": [],
+  "pending": [],
+  "reset": false
+}

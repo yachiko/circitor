@@ -1,0 +1,99 @@
+{
+  "version": "1.2.3+4f9a1c2",
+  "cursor": "k3x9q2ab-28",
+  "daemon": {
+    "tier": "active",
+    "last_poll_at": "2026-11-24T22:00:00Z",
+    "problem": null,
+    "message": null,
+    "until": null
+  },
+  "registered": false,
+  "replaced": false,
+  "expires_at": null,
+  "outcome": "satisfied",
+  "reason": null,
+  "record": {
+    "pr": "octo/lib#8",
+    "url": "https://github.com/octo/lib/pull/8",
+    "title": "Fix the date rounding",
+    "author": "dan",
+    "state": "open",
+    "draft": false,
+    "base": "main",
+    "head": "fix-dates",
+    "head_sha": "3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f",
+    "created_at": "2026-11-24T18:00:00Z",
+    "updated_at": "2026-11-24T21:45:00Z",
+    "merged_at": null,
+    "closed_at": null,
+    "mergeable": "yes",
+    "merge_state": "unstable",
+    "review": "none",
+    "checks": {
+      "state": "failing",
+      "settled": true,
+      "truncated": false,
+      "total": 1,
+      "completed": 1,
+      "failed": 1,
+      "failed_items": [
+        {
+          "name": "build",
+          "url": "https://ci.example.test/octo/runs/41030"
+        }
+      ],
+      "items": [
+        {
+          "kind": "run",
+          "id": 41030,
+          "name": "build",
+          "phase": "completed",
+          "result": "failure",
+          "url": "https://ci.example.test/octo/runs/41030"
+        }
+      ]
+    },
+    "counts": {
+      "comments": 0,
+      "reviews": 0,
+      "review_threads": 0
+    },
+    "status": "checks_failing",
+    "source": "manual",
+    "rev": 25,
+    "fetched_at": "2026-11-24T21:59:58Z",
+    "stale": false,
+    "error": null
+  },
+  "events": [
+    {
+      "rev": 25,
+      "pr": "octo/lib#8",
+      "at": "2026-11-24T21:45:00Z",
+      "kinds": [
+        {
+          "kind": "status",
+          "from": "checks_pending",
+          "to": "checks_failing"
+        },
+        {
+          "kind": "checks",
+          "state": "failing",
+          "total": 1,
+          "completed": 1,
+          "failed": 1,
+          "failed_items": [
+            {
+              "name": "build",
+              "url": "https://ci.example.test/octo/runs/41030"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "records": [],
+  "more_events": false,
+  "reset": false
+}

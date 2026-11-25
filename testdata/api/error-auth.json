@@ -1,0 +1,8 @@
+{
+  "version": "1.2.3+4f9a1c2",
+  "error": {
+    "code": "auth",
+    "message": "There is no usable token. The token comes from gh: run gh auth login.",
+    "until": null
+  }
+}

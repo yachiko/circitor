@@ -1,0 +1,8 @@
+{
+  "version": "1.2.3+4f9a1c2",
+  "error": {
+    "code": "rate_limited",
+    "message": "GitHub's rate limit is used up. Circitor asks again at 2026-11-24T22:42:00Z.",
+    "until": "2026-11-24T22:42:00Z"
+  }
+}

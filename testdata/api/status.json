@@ -1,0 +1,42 @@
+{
+  "version": "1.2.3+4f9a1c2",
+  "cursor": "k3x9q2ab-28",
+  "daemon": {
+    "tier": "active",
+    "last_poll_at": "2026-11-24T22:00:00Z",
+    "problem": null,
+    "message": null,
+    "until": null
+  },
+  "mode": "spawned",
+  "started_at": "2026-11-24T18:00:00Z",
+  "last_poll": {
+    "at": "2026-11-24T22:00:00Z",
+    "outcome": "polled"
+  },
+  "cost_last_hour": 212,
+  "github": {
+    "remaining": 4310,
+    "reset_at": "2026-11-24T22:42:00Z",
+    "login": "octo-dev"
+  },
+  "tracked": {
+    "authored": 2,
+    "manual": 1,
+    "asked": 0
+  },
+  "waiters": 0,
+  "subscriptions": 0,
+  "owners": [
+    "octo"
+  ],
+  "token_source": "gh",
+  "gh_path": "/usr/bin/gh",
+  "paths": {
+    "config": "/home/dev/.config/circitor/config.toml",
+    "state": "/home/dev/.local/state/circitor/state.json",
+    "socket": "/home/dev/.local/state/circitor/circitor.sock",
+    "log": "/home/dev/.local/state/circitor/circitor.log"
+  },
+  "warnings": []
+}

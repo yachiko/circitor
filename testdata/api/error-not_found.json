@@ -1,0 +1,8 @@
+{
+  "version": "1.2.3+4f9a1c2",
+  "error": {
+    "code": "not_found",
+    "message": "GitHub has no pull request octo/app#99, or the token can't see it.",
+    "until": null
+  }
+}

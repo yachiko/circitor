@@ -1,0 +1,8 @@
+{
+  "version": "1.2.3+4f9a1c2",
+  "error": {
+    "code": "no_session",
+    "message": "The session socket can't be used: No such file or directory (os error 2).",
+    "until": null
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "version": "1.2.3+4f9a1c2",
+  "cursor": "k3x9q2ab-28",
+  "daemon": {
+    "tier": "idle",
+    "last_poll_at": "2026-11-24T22:00:00Z",
+    "problem": "github_unavailable",
+    "message": "GitHub can't be reached (RequestError). The token comes from gh. Circitor asks again at 2026-11-24T22:02:30Z.",
+    "until": "2026-11-24T22:02:30Z"
+  },
+  "mode": "spawned",
+  "started_at": "2026-11-24T18:00:00Z",
+  "last_poll": {
+    "at": "2026-11-24T22:00:00Z",
+    "outcome": "polled"
+  },
+  "cost_last_hour": 212,
+  "github": {
+    "remaining": 4310,
+    "reset_at": "2026-11-24T22:42:00Z",
+    "login": "octo-dev"
+  },
+  "tracked": {
+    "authored": 2,
+    "manual": 1,
+    "asked": 0
+  },
+  "waiters": 0,
+  "subscriptions": 0,
+  "owners": [
+    "octo"
+  ],
+  "token_source": "gh",
+  "gh_path": "/usr/bin/gh",
+  "paths": {
+    "config": "/home/dev/.config/circitor/config.toml",
+    "state": "/home/dev/.local/state/circitor/state.json",
+    "socket": "/home/dev/.local/state/circitor/circitor.sock",
+    "log": "/home/dev/.local/state/circitor/circitor.log"
+  },
+  "warnings": [
+    {
+      "code": "pr_failing",
+      "message": "Refreshing octo/lib#5 failed: type NOT_FOUND.",
+      "since": "2026-11-24T21:58:00Z"
+    },
+    {
+      "code": "quota_reserve",
+      "message": "GitHub reports 480 points left, under the reserve of 500.",
+      "since": "2026-11-24T21:59:00Z"
+    }
+  ]
+}
