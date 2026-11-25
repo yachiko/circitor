@@ -1,0 +1,2608 @@
+{
+ "generated": "2026-11-25",
+ "scope": null,
+ "tasks": [
+  {
+   "id": "T01",
+   "title": "Scaffold: the package, every dependency, the toolchain, make verify",
+   "kind": "infra",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "S",
+   "wave": 1,
+   "remaining": 23,
+   "depends_on": [],
+   "dependents": [
+    "T02",
+    "T03"
+   ],
+   "requirements": [
+    "OPS-11",
+    "TST-1",
+    "U12"
+   ],
+   "owns": [
+    "Cargo.toml",
+    "Cargo.lock",
+    "build.rs",
+    "rust-toolchain.toml",
+    "rustfmt.toml",
+    "Makefile",
+    ".gitignore",
+    "CLAUDE.md",
+    "src/lib.rs",
+    "src/main.rs",
+    "src/version.rs",
+    "tests/real/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T01-scaffold.md"
+  },
+  {
+   "id": "T02",
+   "title": "Contracts as code: the module tree, every seam's declarations, and the small shared types",
+   "kind": "infra",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "L",
+   "wave": 2,
+   "remaining": 22,
+   "depends_on": [
+    "T01"
+   ],
+   "dependents": [
+    "T04",
+    "T05",
+    "T06",
+    "T07",
+    "T08",
+    "T09",
+    "T10",
+    "T11",
+    "T14",
+    "T41",
+    "T43"
+   ],
+   "requirements": [
+    "API-19",
+    "CLI-13"
+   ],
+   "owns": [
+    "src/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T02-contracts.md"
+  },
+  {
+   "id": "T03",
+   "title": "CI: format, lints and every test on Linux and macOS, and the four release targets",
+   "kind": "infra",
+   "status": "todo",
+   "milestone": "M4",
+   "size": "S",
+   "wave": 2,
+   "remaining": 6,
+   "depends_on": [
+    "T01"
+   ],
+   "dependents": [
+    "T38"
+   ],
+   "requirements": [
+    "TST-14",
+    "OPS-13"
+   ],
+   "owns": [
+    ".github/workflows/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T03-ci.md"
+  },
+  {
+   "id": "T04",
+   "title": "Clock, test clock, work in flight, sleep detection, logger and warnings",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "M",
+   "wave": 3,
+   "remaining": 18,
+   "depends_on": [
+    "T02"
+   ],
+   "dependents": [
+    "T12",
+    "T13",
+    "T15",
+    "T16",
+    "T17",
+    "T18",
+    "T20"
+   ],
+   "requirements": [
+    "TST-4",
+    "TST-2",
+    "OPS-9",
+    "POL-26",
+    "POL-22"
+   ],
+   "owns": [
+    "src/clock/",
+    "src/log/",
+    "src/status/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T04-clock-log.md"
+  },
+  {
+   "id": "T05",
+   "title": "Model: checks summary, status, settling, kept mergeability, new items, and the merge that says what changed",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "L",
+   "wave": 3,
+   "remaining": 19,
+   "depends_on": [
+    "T02"
+   ],
+   "dependents": [
+    "T15"
+   ],
+   "requirements": [
+    "MOD-1",
+    "MOD-2",
+    "MOD-4",
+    "MOD-5",
+    "MOD-6",
+    "MOD-7",
+    "MOD-8",
+    "MOD-9",
+    "MOD-10",
+    "MOD-11",
+    "MOD-12",
+    "MOD-14",
+    "MOD-15",
+    "POL-12",
+    "STA-5",
+    "TST-15",
+    "U4",
+    "U5"
+   ],
+   "owns": [
+    "src/model/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T05-model.md"
+  },
+  {
+   "id": "T06",
+   "title": "Config file, environment and paths",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M2",
+   "size": "M",
+   "wave": 3,
+   "remaining": 15,
+   "depends_on": [
+    "T02"
+   ],
+   "dependents": [
+    "T24",
+    "T28"
+   ],
+   "requirements": [
+    "OPS-1",
+    "OPS-2",
+    "OPS-3",
+    "OPS-4:linux",
+    "OPS-4:macos",
+    "OPS-4:circitor-socket-overrides-the-path",
+    "OPS-4:a-path-over-103-bytes"
+   ],
+   "owns": [
+    "src/config/",
+    "testdata/config/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T06-config-paths.md"
+  },
+  {
+   "id": "T07",
+   "title": "GitHub client: queries, the HTTP request, decoding, error classes, synthetic fixtures",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "L",
+   "wave": 4,
+   "remaining": 13,
+   "depends_on": [
+    "T02",
+    "T41"
+   ],
+   "dependents": [
+    "T26",
+    "T28",
+    "T29",
+    "T37"
+   ],
+   "requirements": [
+    "POL-1",
+    "POL-6",
+    "POL-25",
+    "POL-24",
+    "MOD-3",
+    "MOD-2:a-value-github-sends-that",
+    "OPS-16",
+    "TST-12",
+    "TST-1"
+   ],
+   "owns": [
+    "src/github/client/",
+    "testdata/github/responses/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T07-github-client.md"
+  },
+  {
+   "id": "T08",
+   "title": "Poller limits: the quota count, the quota states and the backoff",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "M",
+   "wave": 3,
+   "remaining": 15,
+   "depends_on": [
+    "T02"
+   ],
+   "dependents": [
+    "T21"
+   ],
+   "requirements": [
+    "POL-17",
+    "POL-18",
+    "POL-23",
+    "POL-19",
+    "POL-25",
+    "POL-26"
+   ],
+   "owns": [
+    "src/poller/limits/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T08-poller-limits.md"
+  },
+  {
+   "id": "T09",
+   "title": "Poller cadence: tiers, periods, hot PRs, the forced-refresh windows and staleness",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "M",
+   "wave": 3,
+   "remaining": 15,
+   "depends_on": [
+    "T02"
+   ],
+   "dependents": [
+    "T21",
+    "T22",
+    "T23"
+   ],
+   "requirements": [
+    "POL-10",
+    "POL-13",
+    "POL-14",
+    "POL-15",
+    "POL-11",
+    "MOD-16"
+   ],
+   "owns": [
+    "src/poller/cadence/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T09-poller-cadence.md"
+  },
+  {
+   "id": "T10",
+   "title": "CLI text output: every line of list, show, changes, wait, status, refresh and stop, with golden files",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M3",
+   "size": "L",
+   "wave": 4,
+   "remaining": 13,
+   "depends_on": [
+    "T02",
+    "T41"
+   ],
+   "dependents": [
+    "T27"
+   ],
+   "requirements": [
+    "CLI-3",
+    "CLI-6:the-outcome-line-says-what-the-wait-found",
+    "CLI-6:with-sha",
+    "CLI-6:a-wait-answered-before-its",
+    "CLI-6:a-truncated-failing-adds",
+    "CLI-6:on-a-timeout-it-prints",
+    "CLI-6:a-wait-that-ends-without",
+    "CLI-9:a-bad-request-or-unknown-route-from",
+    "CLI-5",
+    "TST-7"
+   ],
+   "owns": [
+    "src/cli/render/",
+    "tests/golden/render/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T10-cli-render.md"
+  },
+  {
+   "id": "T11",
+   "title": "CLI arguments, naming a PR, and the guide for agents",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M3",
+   "size": "M",
+   "wave": 3,
+   "remaining": 12,
+   "depends_on": [
+    "T02"
+   ],
+   "dependents": [
+    "T19",
+    "T27"
+   ],
+   "requirements": [
+    "CLI-1",
+    "CLI-2",
+    "CLI-11",
+    "CLI-12",
+    "OPS-12",
+    "U8"
+   ],
+   "owns": [
+    "src/cli/args/",
+    "src/cli/naming/",
+    "src/cli/guide/",
+    "skills/",
+    "AGENTS.section.md"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T11-cli-args-naming-guide.md"
+  },
+  {
+   "id": "T12",
+   "title": "Token source: running gh auth token",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "M",
+   "wave": 4,
+   "remaining": 12,
+   "depends_on": [
+    "T04"
+   ],
+   "dependents": [
+    "T28"
+   ],
+   "requirements": [
+    "OPS-5:a-gh-path-with-a",
+    "OPS-5:a-read-has-three-outcomes",
+    "OPS-5:the-token-is-held-in-memory-only",
+    "U11",
+    "U13"
+   ],
+   "owns": [
+    "src/token/gh/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T12-token-source.md"
+  },
+  {
+   "id": "T13",
+   "title": "Poller auth: when the token is read, and the auth state",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "M",
+   "wave": 4,
+   "remaining": 15,
+   "depends_on": [
+    "T04",
+    "T43"
+   ],
+   "dependents": [
+    "T21"
+   ],
+   "requirements": [
+    "POL-3",
+    "POL-20",
+    "OPS-5:the-token-is-read-after",
+    "OPS-5:a-read-that-ends-without"
+   ],
+   "owns": [
+    "src/poller/auth/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T13-poller-auth.md"
+  },
+  {
+   "id": "T14",
+   "title": "Fake GitHub: the scripted world and the GraphQL engine that answers from it",
+   "kind": "test",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "L",
+   "wave": 4,
+   "remaining": 14,
+   "depends_on": [
+    "T02",
+    "T41"
+   ],
+   "dependents": [
+    "T20"
+   ],
+   "requirements": [
+    "TST-3:it-answers-the-queries-circitor-sends",
+    "TST-3:by-default-its-world-behaves",
+    "TST-3:it-parses-each-query-and"
+   ],
+   "owns": [
+    "src/testkit/github/",
+    "tests/cost/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T14-fake-github-engine.md"
+  },
+  {
+   "id": "T15",
+   "title": "State store: the tracked set, applying refreshes, revisions and events, retention, cursors",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "L",
+   "wave": 4,
+   "remaining": 16,
+   "depends_on": [
+    "T04",
+    "T05",
+    "T43"
+   ],
+   "dependents": [
+    "T21",
+    "T22",
+    "T23"
+   ],
+   "requirements": [
+    "STA-1",
+    "STA-2",
+    "STA-3",
+    "STA-4",
+    "STA-5",
+    "STA-9",
+    "STA-10",
+    "MOD-13",
+    "STA-8:a-loaded-pr-keeps-its",
+    "STA-8:entries-past-their-keep-done-are-dropped-on-load",
+    "U3",
+    "U7"
+   ],
+   "owns": [
+    "src/state/store/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T15-state-store.md"
+  },
+  {
+   "id": "T16",
+   "title": "State file: the format, atomic writes through a fakeable file system, loading, the saver",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M2",
+   "size": "M",
+   "wave": 4,
+   "remaining": 12,
+   "depends_on": [
+    "T04"
+   ],
+   "dependents": [
+    "T28"
+   ],
+   "requirements": [
+    "STA-6",
+    "STA-7",
+    "STA-8:a-binary-reads-every-earlier-version",
+    "STA-8:a-file-that-isn-t-json",
+    "STA-8:a-file-with-a-newer",
+    "STA-8:a-missing-file-is-normal",
+    "TST-10"
+   ],
+   "owns": [
+    "src/state/file/",
+    "testdata/state/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T16-state-file.md"
+  },
+  {
+   "id": "T17",
+   "title": "Transport: the HTTP client over the Unix socket, and the socket probe",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M2",
+   "size": "S",
+   "wave": 4,
+   "remaining": 14,
+   "depends_on": [
+    "T04",
+    "T43"
+   ],
+   "dependents": [
+    "T24",
+    "T28"
+   ],
+   "requirements": [
+    "OPS-4:a-socket-answers-when-get"
+   ],
+   "owns": [
+    "src/transport/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T17-transport.md"
+  },
+  {
+   "id": "T18",
+   "title": "Daemon instance: the lock, the lock file, the stale socket, binding",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M2",
+   "size": "M",
+   "wave": 4,
+   "remaining": 15,
+   "depends_on": [
+    "T04"
+   ],
+   "dependents": [
+    "T24",
+    "T28"
+   ],
+   "requirements": [
+    "STA-11",
+    "STA-12",
+    "OPS-4:the-socket-s-mode-is-0600"
+   ],
+   "owns": [
+    "src/daemon/instance/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T18-daemon-instance.md"
+  },
+  {
+   "id": "T19",
+   "title": "README, service files and sandbox settings",
+   "kind": "infra",
+   "status": "todo",
+   "milestone": "M4",
+   "size": "S",
+   "wave": 4,
+   "remaining": 5,
+   "depends_on": [
+    "T11"
+   ],
+   "dependents": [
+    "T39",
+    "T40"
+   ],
+   "requirements": [
+    "OPS-12",
+    "OPS-14",
+    "OPS-15",
+    "OPS-18",
+    "OPS-10"
+   ],
+   "owns": [
+    "README.md",
+    "packaging/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T19-readme-service-files.md"
+  },
+  {
+   "id": "T20",
+   "title": "Fake GitHub: the HTTP server, faults, rate-limit controls, the rules that fail a test",
+   "kind": "test",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "L",
+   "wave": 5,
+   "remaining": 11,
+   "depends_on": [
+    "T04",
+    "T14"
+   ],
+   "dependents": [
+    "T26",
+    "T29",
+    "T36"
+   ],
+   "requirements": [
+    "TST-3:it-can-be-told-to-misbehave",
+    "TST-3:the-test-sets-remaining-and",
+    "TST-3:it-fails-the-test-if",
+    "TST-3:it-records-every-request-with-its-time",
+    "TST-11"
+   ],
+   "owns": [
+    "src/testkit/server/",
+    "tests/fake_github.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T20-fake-github-server.md"
+  },
+  {
+   "id": "T21",
+   "title": "Poller engine: the loop, the gate, the poll, errors, the tick",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "L",
+   "wave": 5,
+   "remaining": 13,
+   "depends_on": [
+    "T08",
+    "T09",
+    "T13",
+    "T15"
+   ],
+   "dependents": [
+    "T25",
+    "T26",
+    "T28"
+   ],
+   "requirements": [
+    "POL-2",
+    "POL-4",
+    "POL-5",
+    "POL-7",
+    "POL-8",
+    "POL-10",
+    "POL-12",
+    "POL-13",
+    "POL-19",
+    "POL-20",
+    "POL-21",
+    "POL-22",
+    "POL-23",
+    "POL-24",
+    "POL-25",
+    "POL-26",
+    "STA-3",
+    "API-18",
+    "API-4",
+    "API-16",
+    "OPS-9:logged",
+    "OPS-9:circitor-log-debug-adds-one-line-per-request-to",
+    "U2"
+   ],
+   "owns": [
+    "src/poller/engine/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T21-engine-poll.md"
+  },
+  {
+   "id": "T22",
+   "title": "API routes: list, show, changes, track, untrack, refresh, status, shutdown, and starting up",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M2",
+   "size": "L",
+   "wave": 5,
+   "remaining": 13,
+   "depends_on": [
+    "T09",
+    "T15",
+    "T41"
+   ],
+   "dependents": [
+    "T28"
+   ],
+   "requirements": [
+    "API-1",
+    "API-2",
+    "API-3",
+    "API-4",
+    "API-5",
+    "API-6",
+    "API-7",
+    "API-8",
+    "API-15",
+    "API-16",
+    "API-17",
+    "API-18"
+   ],
+   "owns": [
+    "src/api/server/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T22-api-routes.md"
+  },
+  {
+   "id": "T23",
+   "title": "Waiters: the wait route, its conditions, outcomes, deadline and clean end",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M2",
+   "size": "L",
+   "wave": 5,
+   "remaining": 13,
+   "depends_on": [
+    "T09",
+    "T15",
+    "T41"
+   ],
+   "dependents": [
+    "T28"
+   ],
+   "requirements": [
+    "API-9",
+    "API-10",
+    "API-11",
+    "API-12",
+    "API-13",
+    "API-14",
+    "U6"
+   ],
+   "owns": [
+    "src/api/wait/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T23-api-wait.md"
+  },
+  {
+   "id": "T24",
+   "title": "CLI and the daemon: connecting, starting, replacing, stopping, request limits",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M3",
+   "size": "L",
+   "wave": 5,
+   "remaining": 13,
+   "depends_on": [
+    "T06",
+    "T17",
+    "T18",
+    "T41"
+   ],
+   "dependents": [
+    "T27"
+   ],
+   "requirements": [
+    "CLI-7",
+    "CLI-9",
+    "CLI-8",
+    "CLI-10",
+    "OPS-4:the-cli-also-tries-the",
+    "OPS-5:a-spawned-daemon-uses-gh-s-login",
+    "OPS-9:the-log-file-is-rotated",
+    "U9"
+   ],
+   "owns": [
+    "src/cli/conn/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T24-cli-conn.md"
+  },
+  {
+   "id": "T25",
+   "title": "Poller engine: hot PRs, forced refreshes, reading through, track, the mergeable follow-up",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M2",
+   "size": "L",
+   "wave": 6,
+   "remaining": 9,
+   "depends_on": [
+    "T21"
+   ],
+   "dependents": [
+    "T29",
+    "T42"
+   ],
+   "requirements": [
+    "POL-11",
+    "POL-14",
+    "POL-15",
+    "POL-16",
+    "API-13"
+   ],
+   "owns": [
+    "src/poller/engine/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T25-engine-demand.md"
+  },
+  {
+   "id": "T26",
+   "title": "M1: the real client against the fake GitHub, polling end to end",
+   "kind": "integration",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "M",
+   "wave": 6,
+   "remaining": 8,
+   "depends_on": [
+    "T07",
+    "T20",
+    "T21"
+   ],
+   "dependents": [
+    "T29"
+   ],
+   "requirements": [
+    "POL-4",
+    "POL-6",
+    "POL-13",
+    "TST-12"
+   ],
+   "owns": [
+    "tests/m1_poll.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T26-m1-poll.md"
+  },
+  {
+   "id": "T27",
+   "title": "CLI commands: run, each command, the wait's deadline and reconnect, exit codes",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M3",
+   "size": "L",
+   "wave": 6,
+   "remaining": 10,
+   "depends_on": [
+    "T10",
+    "T11",
+    "T24"
+   ],
+   "dependents": [
+    "T29",
+    "T36"
+   ],
+   "requirements": [
+    "CLI-4",
+    "CLI-5",
+    "CLI-6:without-timeout",
+    "CLI-6:one-deadline-for-the-whole-command",
+    "CLI-6:sigint-and-sigterm-end-it-at-once",
+    "CLI-7:every-request-has-a-limit",
+    "CLI-8",
+    "CLI-9:a-bad-request-or-unknown-route-from",
+    "CLI-10",
+    "CLI-2",
+    "U10"
+   ],
+   "owns": [
+    "src/cli/commands/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T27-cli-commands.md"
+  },
+  {
+   "id": "T28",
+   "title": "M2: the daemon runs: start order, serving the socket, modes, signals, stop, idle exit",
+   "kind": "integration",
+   "status": "todo",
+   "milestone": "M2",
+   "size": "L",
+   "wave": 6,
+   "remaining": 10,
+   "depends_on": [
+    "T06",
+    "T07",
+    "T12",
+    "T16",
+    "T17",
+    "T18",
+    "T21",
+    "T22",
+    "T23"
+   ],
+   "dependents": [
+    "T29",
+    "T36"
+   ],
+   "requirements": [
+    "OPS-6",
+    "OPS-7",
+    "OPS-8",
+    "STA-11",
+    "API-17",
+    "API-14",
+    "TST-1",
+    "OPS-9:logged",
+    "OPS-5:the-token-is-read-after"
+   ],
+   "owns": [
+    "src/daemon/run/",
+    "tests/m2_serve.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T28-daemon-run.md"
+  },
+  {
+   "id": "T29",
+   "title": "M3: the harness, and the CLI against a running daemon",
+   "kind": "integration",
+   "status": "todo",
+   "milestone": "M3",
+   "size": "L",
+   "wave": 7,
+   "remaining": 6,
+   "depends_on": [
+    "T07",
+    "T20",
+    "T25",
+    "T26",
+    "T27",
+    "T28"
+   ],
+   "dependents": [
+    "T30",
+    "T31",
+    "T32",
+    "T33",
+    "T34",
+    "T35"
+   ],
+   "requirements": [
+    "TST-5",
+    "TST-11"
+   ],
+   "owns": [
+    "src/testkit/harness/",
+    "tests/m3_cli.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T29-harness.md"
+  },
+  {
+   "id": "T30",
+   "title": "Scenarios: checks and settling",
+   "kind": "test",
+   "status": "todo",
+   "milestone": "M5",
+   "size": "L",
+   "wave": 8,
+   "remaining": 3,
+   "depends_on": [
+    "T29"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-8"
+   ],
+   "owns": [
+    "tests/scn_checks.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T30-scenarios-checks.md"
+  },
+  {
+   "id": "T31",
+   "title": "Scenarios: a PR's life and waits",
+   "kind": "test",
+   "status": "todo",
+   "milestone": "M5",
+   "size": "L",
+   "wave": 8,
+   "remaining": 3,
+   "depends_on": [
+    "T29",
+    "T42"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-8"
+   ],
+   "owns": [
+    "tests/scn_waits.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T31-scenarios-waits.md"
+  },
+  {
+   "id": "T32",
+   "title": "Scenarios: tracking and polling",
+   "kind": "test",
+   "status": "todo",
+   "milestone": "M5",
+   "size": "L",
+   "wave": 8,
+   "remaining": 3,
+   "depends_on": [
+    "T29",
+    "T42"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-8"
+   ],
+   "owns": [
+    "tests/scn_tracking.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T32-scenarios-tracking.md"
+  },
+  {
+   "id": "T33",
+   "title": "Scenarios: the daemon's life and failures",
+   "kind": "test",
+   "status": "todo",
+   "milestone": "M5",
+   "size": "L",
+   "wave": 8,
+   "remaining": 3,
+   "depends_on": [
+    "T29"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-8"
+   ],
+   "owns": [
+    "tests/scn_daemon.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T33-scenarios-daemon.md"
+  },
+  {
+   "id": "T34",
+   "title": "Quota tests: what an hour costs in each tier and state",
+   "kind": "test",
+   "status": "todo",
+   "milestone": "M5",
+   "size": "M",
+   "wave": 8,
+   "remaining": 2,
+   "depends_on": [
+    "T29"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-6",
+    "U1"
+   ],
+   "owns": [
+    "tests/quota.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T34-quota-tests.md"
+  },
+  {
+   "id": "T35",
+   "title": "Golden output end to end: every command's text and JSON, every exit code",
+   "kind": "test",
+   "status": "todo",
+   "milestone": "M5",
+   "size": "M",
+   "wave": 8,
+   "remaining": 2,
+   "depends_on": [
+    "T29",
+    "T42"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-7"
+   ],
+   "owns": [
+    "tests/golden_cli.rs",
+    "tests/golden/cli/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T35-golden-cli.md"
+  },
+  {
+   "id": "T36",
+   "title": "M4: real processes: spawning, two CLIs, upgrades, signals, files and permissions",
+   "kind": "integration",
+   "status": "todo",
+   "milestone": "M4",
+   "size": "L",
+   "wave": 7,
+   "remaining": 7,
+   "depends_on": [
+    "T20",
+    "T27",
+    "T28"
+   ],
+   "dependents": [
+    "T39",
+    "T40"
+   ],
+   "requirements": [
+    "TST-9",
+    "OPS-17"
+   ],
+   "owns": [
+    "tests/real/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T36-real-processes.md"
+  },
+  {
+   "id": "T37",
+   "title": "Owner: record real responses from yachiko/experiment",
+   "kind": "manual",
+   "status": "todo",
+   "milestone": "M5",
+   "size": "S",
+   "wave": 5,
+   "remaining": 1,
+   "depends_on": [
+    "T07"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-12"
+   ],
+   "owns": [
+    "testdata/github/recorded/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T37-record-fixtures.md"
+  },
+  {
+   "id": "T38",
+   "title": "Owner: the first CI run, on Linux and macOS",
+   "kind": "manual",
+   "status": "todo",
+   "milestone": "M4",
+   "size": "S",
+   "wave": 3,
+   "remaining": 5,
+   "depends_on": [
+    "T03"
+   ],
+   "dependents": [
+    "T39"
+   ],
+   "requirements": [
+    "TST-14"
+   ],
+   "owns": [],
+   "shares": [],
+   "file": "plan/tasks/T38-first-ci-run.md"
+  },
+  {
+   "id": "T39",
+   "title": "Owner: decide D5, set up the release tool, publish to the tap",
+   "kind": "manual",
+   "status": "todo",
+   "milestone": "M5",
+   "size": "M",
+   "wave": 8,
+   "remaining": 4,
+   "depends_on": [
+    "T19",
+    "T36",
+    "T38"
+   ],
+   "dependents": [
+    "T40"
+   ],
+   "requirements": [
+    "OPS-10",
+    "U12"
+   ],
+   "owns": [],
+   "shares": [],
+   "file": "plan/tasks/T39-release.md"
+  },
+  {
+   "id": "T40",
+   "title": "Owner: the acceptance checks on a Mac and on Linux",
+   "kind": "manual",
+   "status": "todo",
+   "milestone": "M5",
+   "size": "M",
+   "wave": 9,
+   "remaining": 2,
+   "depends_on": [
+    "T19",
+    "T36",
+    "T39"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-13"
+   ],
+   "owns": [],
+   "shares": [],
+   "file": "plan/tasks/T40-acceptance.md"
+  },
+  {
+   "id": "T41",
+   "title": "Golden files: the API's and the model's JSON, and GitHub's public schema",
+   "kind": "infra",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "M",
+   "wave": 3,
+   "remaining": 16,
+   "depends_on": [
+    "T02"
+   ],
+   "dependents": [
+    "T07",
+    "T10",
+    "T14",
+    "T22",
+    "T23",
+    "T24"
+   ],
+   "requirements": [
+    "API-19"
+   ],
+   "owns": [
+    "testdata/api/",
+    "testdata/model/",
+    "testdata/github/schema.graphql",
+    "tests/golden_types.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T41-golden-files.md"
+  },
+  {
+   "id": "T42",
+   "title": "Poller engine: a PR's errors: gone, pr_failing, and its one log line",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M2",
+   "size": "M",
+   "wave": 7,
+   "remaining": 5,
+   "depends_on": [
+    "T25"
+   ],
+   "dependents": [
+    "T31",
+    "T32",
+    "T35"
+   ],
+   "requirements": [
+    "POL-21",
+    "POL-24",
+    "MOD-11"
+   ],
+   "owns": [
+    "src/poller/engine/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T42-engine-pr-errors.md"
+  },
+  {
+   "id": "T43",
+   "title": "The API's shared parts and the simple fakes",
+   "kind": "infra",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "M",
+   "wave": 3,
+   "remaining": 18,
+   "depends_on": [
+    "T02"
+   ],
+   "dependents": [
+    "T13",
+    "T15",
+    "T17"
+   ],
+   "requirements": [
+    "API-1",
+    "CLI-13"
+   ],
+   "owns": [
+    "src/api/request.rs",
+    "src/api/params.rs",
+    "src/api/respond.rs",
+    "src/api/router.rs",
+    "src/github/fake.rs",
+    "src/token/fake.rs",
+    "src/poller/fake.rs",
+    "src/cli/fake.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T43-api-shared-fakes.md"
+  }
+ ],
+ "dropped_tasks": [],
+ "waves": [
+  [
+   "T01"
+  ],
+  [
+   "T02",
+   "T03"
+  ],
+  [
+   "T04",
+   "T05",
+   "T06",
+   "T08",
+   "T09",
+   "T11",
+   "T38",
+   "T41",
+   "T43"
+  ],
+  [
+   "T07",
+   "T10",
+   "T12",
+   "T13",
+   "T14",
+   "T15",
+   "T16",
+   "T17",
+   "T18",
+   "T19"
+  ],
+  [
+   "T20",
+   "T21",
+   "T22",
+   "T23",
+   "T24",
+   "T37"
+  ],
+  [
+   "T25",
+   "T26",
+   "T27",
+   "T28"
+  ],
+  [
+   "T29",
+   "T36",
+   "T42"
+  ],
+  [
+   "T30",
+   "T31",
+   "T32",
+   "T33",
+   "T34",
+   "T35",
+   "T39"
+  ],
+  [
+   "T40"
+  ]
+ ],
+ "critical_path": [
+  "T01",
+  "T02",
+  "T05",
+  "T15",
+  "T21",
+  "T28",
+  "T36",
+  "T39",
+  "T40"
+ ],
+ "coverage": {
+  "in_scope": 131,
+  "uncovered": [],
+  "partial": []
+ },
+ "snapshot": {
+  "date": "2026-11-25",
+  "requirements": {
+   "U1": {
+    "hash": "d8170c7990626767",
+    "dropped": false
+   },
+   "U2": {
+    "hash": "a459430826e32d63",
+    "dropped": false
+   },
+   "U3": {
+    "hash": "c05808406fb27f7a",
+    "dropped": false
+   },
+   "U4": {
+    "hash": "5f54518b00fceec0",
+    "dropped": false
+   },
+   "U5": {
+    "hash": "6f01987846c88858",
+    "dropped": false
+   },
+   "U6": {
+    "hash": "40b00947c2a73199",
+    "dropped": false
+   },
+   "U7": {
+    "hash": "9e393d174db307ef",
+    "dropped": false
+   },
+   "U8": {
+    "hash": "9bd3d5571d3e72ed",
+    "dropped": false
+   },
+   "U9": {
+    "hash": "5bbef8fb96777b70",
+    "dropped": false
+   },
+   "U10": {
+    "hash": "293ff53f415bb5f7",
+    "dropped": false
+   },
+   "U11": {
+    "hash": "aaa7c4c6e70d95ac",
+    "dropped": false
+   },
+   "U12": {
+    "hash": "dabadd6da0dfea61",
+    "dropped": false
+   },
+   "U13": {
+    "hash": "6994d0a7bb98f052",
+    "dropped": false
+   },
+   "MOD-1": {
+    "hash": "82514cb227a4c8f1",
+    "dropped": false
+   },
+   "MOD-2": {
+    "hash": "50f0a65f93bb682e",
+    "dropped": false
+   },
+   "MOD-3": {
+    "hash": "3beebb05623912c9",
+    "dropped": false
+   },
+   "MOD-4": {
+    "hash": "8b8d97943419b8e0",
+    "dropped": false
+   },
+   "MOD-5": {
+    "hash": "578d91538d529787",
+    "dropped": false
+   },
+   "MOD-6": {
+    "hash": "ca9766f0c7dabb27",
+    "dropped": false
+   },
+   "MOD-7": {
+    "hash": "70c8fe03993a10c9",
+    "dropped": false
+   },
+   "MOD-8": {
+    "hash": "377837be8f559281",
+    "dropped": false
+   },
+   "MOD-9": {
+    "hash": "6851824c7cbb4d1b",
+    "dropped": false
+   },
+   "MOD-10": {
+    "hash": "5ba06eb381940663",
+    "dropped": false
+   },
+   "MOD-11": {
+    "hash": "804afd06fc273b19",
+    "dropped": false
+   },
+   "MOD-12": {
+    "hash": "1ca15df0bdad20c1",
+    "dropped": false
+   },
+   "MOD-13": {
+    "hash": "2b1c886a11cdc9c5",
+    "dropped": false
+   },
+   "MOD-14": {
+    "hash": "bcf3882efe4ce989",
+    "dropped": false
+   },
+   "MOD-15": {
+    "hash": "f19109eb5ed85fd3",
+    "dropped": false
+   },
+   "MOD-16": {
+    "hash": "8c345249d85fc005",
+    "dropped": false
+   },
+   "POL-1": {
+    "hash": "56a3912b03f6136e",
+    "dropped": false
+   },
+   "POL-2": {
+    "hash": "92b0283429cc6642",
+    "dropped": false
+   },
+   "POL-3": {
+    "hash": "b6c25a30c8e3007e",
+    "dropped": false
+   },
+   "POL-4": {
+    "hash": "657051530b75a89f",
+    "dropped": false
+   },
+   "POL-5": {
+    "hash": "330a83c137daccb2",
+    "dropped": false
+   },
+   "POL-6": {
+    "hash": "6142093d4e14958e",
+    "dropped": false
+   },
+   "POL-7": {
+    "hash": "a2d15683e91c08b1",
+    "dropped": false
+   },
+   "POL-8": {
+    "hash": "66601c116e80fc3c",
+    "dropped": false
+   },
+   "POL-9": {
+    "hash": "1c5a90ce51a6f421",
+    "dropped": true
+   },
+   "POL-10": {
+    "hash": "c12690e34955e39f",
+    "dropped": false
+   },
+   "POL-11": {
+    "hash": "5c49602862a61654",
+    "dropped": false
+   },
+   "POL-12": {
+    "hash": "b95c6531dd145036",
+    "dropped": false
+   },
+   "POL-13": {
+    "hash": "606a0665ec8767bc",
+    "dropped": false
+   },
+   "POL-14": {
+    "hash": "1616f69e18898930",
+    "dropped": false
+   },
+   "POL-15": {
+    "hash": "c28465871a87a7af",
+    "dropped": false
+   },
+   "POL-16": {
+    "hash": "4a2473b8aa068790",
+    "dropped": false
+   },
+   "POL-17": {
+    "hash": "30aa083c828c8849",
+    "dropped": false
+   },
+   "POL-18": {
+    "hash": "fd6d22534e38fa2b",
+    "dropped": false
+   },
+   "POL-23": {
+    "hash": "a89af1271b85be43",
+    "dropped": false
+   },
+   "POL-19": {
+    "hash": "2731ca2c98028746",
+    "dropped": false
+   },
+   "POL-20": {
+    "hash": "08fcd12e33b710a1",
+    "dropped": false
+   },
+   "POL-21": {
+    "hash": "99557f294cd20cc8",
+    "dropped": false
+   },
+   "POL-22": {
+    "hash": "c8e95e409c0fd33e",
+    "dropped": false
+   },
+   "POL-24": {
+    "hash": "d6bd914afa9f4753",
+    "dropped": false
+   },
+   "POL-25": {
+    "hash": "b5c0fec021894914",
+    "dropped": false
+   },
+   "POL-26": {
+    "hash": "27f8c65aabd8dcc9",
+    "dropped": false
+   },
+   "STA-1": {
+    "hash": "37bf8e8989fa1b4c",
+    "dropped": false
+   },
+   "STA-2": {
+    "hash": "bbd70314fb847eae",
+    "dropped": false
+   },
+   "STA-3": {
+    "hash": "c9007908a8fa7a22",
+    "dropped": false
+   },
+   "STA-4": {
+    "hash": "db4e777c8cd99095",
+    "dropped": false
+   },
+   "STA-5": {
+    "hash": "5088e421cd213837",
+    "dropped": false
+   },
+   "STA-6": {
+    "hash": "34c065d3b457a62e",
+    "dropped": false
+   },
+   "STA-7": {
+    "hash": "35a747b8388e15f3",
+    "dropped": false
+   },
+   "STA-8": {
+    "hash": "7702f135dda3a905",
+    "dropped": false
+   },
+   "STA-9": {
+    "hash": "cc7580868ac57e6c",
+    "dropped": false
+   },
+   "STA-10": {
+    "hash": "b07d45e774901aba",
+    "dropped": false
+   },
+   "STA-11": {
+    "hash": "e40932f8511a07a9",
+    "dropped": false
+   },
+   "STA-12": {
+    "hash": "5c38cf913582d7ec",
+    "dropped": false
+   },
+   "API-1": {
+    "hash": "c90bbb44f6152a35",
+    "dropped": false
+   },
+   "API-2": {
+    "hash": "8f4898252b7b9620",
+    "dropped": false
+   },
+   "API-3": {
+    "hash": "489697a055962b57",
+    "dropped": false
+   },
+   "API-4": {
+    "hash": "f63b313421d675db",
+    "dropped": false
+   },
+   "API-5": {
+    "hash": "f99ab5fcc4a9e3c7",
+    "dropped": false
+   },
+   "API-19": {
+    "hash": "a46aa7d3e90b9b42",
+    "dropped": false
+   },
+   "API-6": {
+    "hash": "dd44c476c17d4207",
+    "dropped": false
+   },
+   "API-7": {
+    "hash": "34b9efd454856ff6",
+    "dropped": false
+   },
+   "API-8": {
+    "hash": "99ec47c489fb3e04",
+    "dropped": false
+   },
+   "API-9": {
+    "hash": "1184f6e7e3918836",
+    "dropped": false
+   },
+   "API-10": {
+    "hash": "64902ff57cfe9b04",
+    "dropped": false
+   },
+   "API-11": {
+    "hash": "948902e91f81d792",
+    "dropped": false
+   },
+   "API-12": {
+    "hash": "ac0f765e38ff510c",
+    "dropped": false
+   },
+   "API-13": {
+    "hash": "9a36d5f14f0690c6",
+    "dropped": false
+   },
+   "API-14": {
+    "hash": "b394810ac4bd4ee6",
+    "dropped": false
+   },
+   "API-15": {
+    "hash": "be662127786ea5ad",
+    "dropped": false
+   },
+   "API-16": {
+    "hash": "830c3451b0beef39",
+    "dropped": false
+   },
+   "API-17": {
+    "hash": "cb99bf0446f25021",
+    "dropped": false
+   },
+   "API-18": {
+    "hash": "05e4bd2d5cea92d9",
+    "dropped": false
+   },
+   "CLI-1": {
+    "hash": "98a52833a49ca01c",
+    "dropped": false
+   },
+   "CLI-2": {
+    "hash": "ac3816a2c9c2ac50",
+    "dropped": false
+   },
+   "CLI-3": {
+    "hash": "c69bb9446b8563f1",
+    "dropped": false
+   },
+   "CLI-4": {
+    "hash": "bd2fe85f9120a752",
+    "dropped": false
+   },
+   "CLI-5": {
+    "hash": "4b35abdd183ca6ff",
+    "dropped": false
+   },
+   "CLI-6": {
+    "hash": "6cc31581be7beb63",
+    "dropped": false
+   },
+   "CLI-7": {
+    "hash": "3c70aeb0149cff5b",
+    "dropped": false
+   },
+   "CLI-8": {
+    "hash": "7a75f0200b463926",
+    "dropped": false
+   },
+   "CLI-9": {
+    "hash": "2aebeb37b0fe1f51",
+    "dropped": false
+   },
+   "CLI-10": {
+    "hash": "a152c62ee47bd2d1",
+    "dropped": false
+   },
+   "CLI-11": {
+    "hash": "277be91b14c2cbc5",
+    "dropped": false
+   },
+   "CLI-12": {
+    "hash": "cdf5e733f5f87775",
+    "dropped": false
+   },
+   "CLI-13": {
+    "hash": "550aab21b2837c19",
+    "dropped": false
+   },
+   "OPS-1": {
+    "hash": "ffe1e0b531b9558d",
+    "dropped": false
+   },
+   "OPS-2": {
+    "hash": "4ed4e95352e1b29f",
+    "dropped": false
+   },
+   "OPS-3": {
+    "hash": "fee24e79b034aab8",
+    "dropped": false
+   },
+   "OPS-4": {
+    "hash": "de8b3e5a23ab61fa",
+    "dropped": false
+   },
+   "OPS-5": {
+    "hash": "ef32d587988046d1",
+    "dropped": false
+   },
+   "OPS-6": {
+    "hash": "7883f571708a10b0",
+    "dropped": false
+   },
+   "OPS-7": {
+    "hash": "ec24d849fde42c3c",
+    "dropped": false
+   },
+   "OPS-8": {
+    "hash": "ab554b00e34afe7d",
+    "dropped": false
+   },
+   "OPS-9": {
+    "hash": "ed80a8f5ef9c37ac",
+    "dropped": false
+   },
+   "OPS-10": {
+    "hash": "6b80a0049a9c83b7",
+    "dropped": false
+   },
+   "OPS-11": {
+    "hash": "43abb74c8fcf79cd",
+    "dropped": false
+   },
+   "OPS-12": {
+    "hash": "187df660ff84a8dc",
+    "dropped": false
+   },
+   "OPS-13": {
+    "hash": "dbdf1f509da9734d",
+    "dropped": false
+   },
+   "OPS-14": {
+    "hash": "733a6f594aa60265",
+    "dropped": false
+   },
+   "OPS-15": {
+    "hash": "d4399d38ca226839",
+    "dropped": false
+   },
+   "OPS-18": {
+    "hash": "6ac99cdbd358bba2",
+    "dropped": false
+   },
+   "OPS-16": {
+    "hash": "34b3559d1b407d3b",
+    "dropped": false
+   },
+   "OPS-17": {
+    "hash": "a6dae42f12b9d415",
+    "dropped": false
+   },
+   "TST-1": {
+    "hash": "c0cb31800f3df2cc",
+    "dropped": false
+   },
+   "TST-2": {
+    "hash": "a5007586f7387094",
+    "dropped": false
+   },
+   "TST-3": {
+    "hash": "bc2b981a7aa72235",
+    "dropped": false
+   },
+   "TST-4": {
+    "hash": "8ad382cab3e2157b",
+    "dropped": false
+   },
+   "TST-5": {
+    "hash": "a60fcc5fe1e83c49",
+    "dropped": false
+   },
+   "TST-6": {
+    "hash": "9d4fc591e90b94e6",
+    "dropped": false
+   },
+   "TST-7": {
+    "hash": "31d299003b33fa7f",
+    "dropped": false
+   },
+   "TST-8": {
+    "hash": "af4af7bf332ccb41",
+    "dropped": false
+   },
+   "TST-9": {
+    "hash": "db6fb2ec5c99e670",
+    "dropped": false
+   },
+   "TST-10": {
+    "hash": "83da345d035a2ac1",
+    "dropped": false
+   },
+   "TST-11": {
+    "hash": "e8f27b15df07ef00",
+    "dropped": false
+   },
+   "TST-12": {
+    "hash": "10b6092e42056221",
+    "dropped": false
+   },
+   "TST-15": {
+    "hash": "b3bd76d941b06579",
+    "dropped": false
+   },
+   "TST-13": {
+    "hash": "0416c3ee776b1756",
+    "dropped": false
+   },
+   "TST-14": {
+    "hash": "166526e8453b66f8",
+    "dropped": false
+   }
+  },
+  "parts": {
+   "MOD-2:a-newer-read-wins": "d48918e665f03489",
+   "MOD-2:a-value-github-sends-that": "a3e8d86c682b37f0",
+   "MOD-3:whether-a-check-is-required": "c000223e632d3189",
+   "MOD-5:checks-also-carries-the-counts-total": "b5c3a654af1c06a6",
+   "MOD-5:failing-is-reported-only-once": "46a887fd9f7c1180",
+   "MOD-6:it-changes-only-when-a-refresh-is-applied": "d73f159aec362c43",
+   "MOD-6:a-reopening-starts-it-at-false-too": "196ef8b01241f303",
+   "MOD-6:a-record-first-seen": "ca7fd6677e787148",
+   "MOD-6:a-check-that-first-reports": "1b8539932d292d1b",
+   "MOD-8:for-one-head-sha-and-base": "70f591dc6ec9c2a9",
+   "MOD-8:after-a-push-the-record": "5f1adecd08892099",
+   "MOD-8:on-a-merged-pr-mergeable": "f4d872ae87c14d7a",
+   "MOD-9:seen": "411410e39d5bf710",
+   "MOD-9:never-seen": "dab9c91e5eb60298",
+   "MOD-11:a-draft-with-failing-checks-reads-checks-failing": "0305d18a0afd0c8b",
+   "MOD-11:gone-is-circitor-s-own-state": "f1180c20a334a693",
+   "MOD-11:gone-needs-the-same-login": "bfb52f54a15f6a19",
+   "MOD-11:a-gone-pr-that-github": "8a4d1a7c1f92ce4b",
+   "MOD-12:a-reply-in-a-review": "c5ae8285271d586d",
+   "MOD-12:items-are-reported-once": "1010839c823c3eff",
+   "MOD-12:only-new-items-are-reported": "cb5d16cdb10f178a",
+   "MOD-12:items-by-the-pr-s-own": "fa6fd185c4696f76",
+   "MOD-13:a-revision-is-taken": "3acc9d9100edf272",
+   "MOD-14:not-a-change": "887fb221c26b5611",
+   "MOD-14:not-a-change-either": "b4d15e4a8042aeb9",
+   "MOD-15:every-visible-change-of-mod-14": "bce8f1ac1400d09f",
+   "MOD-15:one-applied-refresh": "dacc98c62608912b",
+   "MOD-15:a-pr-s-first-appearance-makes-a-tracked-event": "29d9a6d01ab99b89",
+   "MOD-16:fetched-at-is-older-than-twice-the-pr-s-period": "0f2444c2ecafdbba",
+   "MOD-16:the-last-attempt-to-refresh-it-failed": "c213d83483efa0e7",
+   "POL-5:the-filter-holds-for-tracked-prs-too": "3cf70ab2c2ac47fa",
+   "POL-10:a-pr-s-period": "c3de465f315faf76",
+   "POL-10:the-ended-rate-still-shows-a-late-comment": "8dbcb10f54fe2e19",
+   "POL-12:they-re-batched": "91f72f617962ba17",
+   "POL-12:a-count-change-and-its": "2e987e6be93f1d83",
+   "POL-12:counts-are-the-trigger-because": "3d0dc737a755054f",
+   "POL-12:more-than-20-new-items": "2f081b7e2341699b",
+   "POL-12:a-count-that-goes-down-makes-no-items": "53940646d012ddc7",
+   "POL-12:an-older-item-that-slides": "2b2e648fc611e0ae",
+   "POL-13:a-request-arriving-in-the": "c6ed6437f1e0e3be",
+   "POL-13:with-no-waiter-and-no-client-for-exit-after": "e711ea35f26b39e0",
+   "POL-13:hot-isn-t-a-tier": "38b9cd664fd47d78",
+   "POL-13:every-cadence-runs-from-send-times": "1b1a64db217b36a7",
+   "POL-13:values-are": "435c24d00533a106",
+   "POL-17:its-budget-is-quota-max-per-hour": "052c0dc8c85aa901",
+   "POL-23:pol-12-s-request-is-sent-whenever-its-refresh-wa": "863ba47d0579db74",
+   "POL-23:each-warning-follows-its-own-condition": "04a707d3e4adf0d2",
+   "POL-19:the-backoff-holds-every-request": "42586ea4d2ea6ec3",
+   "POL-19:any-request-that-succeeds-ends-it": "8de54897d6130868",
+   "POL-19:a-first-poll-that-fails": "0467bbb3d73f88e9",
+   "POL-20:tracked-prs-are-still-answered-from-memory": "9d555ac218b83655",
+   "POL-20:a-request-that-can-t-be-answered-without-github": "1032458d9d4d1f6d",
+   "POL-20:waiters-stay-registered": "68e55296106259cd",
+   "POL-20:the-token-is-read-again-every-60-s": "91987a094ccdc5fa",
+   "POL-20:a-read-that-gives-another": "ac4dfdca4b352bdc",
+   "POL-22:every-record-is-stale-until-its-next-refresh": "7e5df94c77caa99d",
+   "POL-22:pol-19-s-backoff-starts-again-at-5-s": "9b4af2426cf6d0ed",
+   "POL-22:a-poll-starts-at-once": "0cd03c0a09211a70",
+   "POL-22:every-waiter-s-deadline-is-checked": "f00f464d61386f6b",
+   "POL-25:exhausted": "3425110a2aa59d11",
+   "POL-25:a-secondary-limit": "b5057fae587d3f04",
+   "POL-26:github-s-own-windows": "cf6299b02166e222",
+   "POL-26:every-other-duration-goes-by-the-monotonic-clock": "0137867ab5b2b7cb",
+   "POL-26:the-tick-is-a-timer": "93be2c0185c4c202",
+   "STA-1:a-pr-tracked-for-two": "93adc83b63ebb713",
+   "STA-1:untrack-changes-only-a-manual-pr": "1b1ad1a15decbb33",
+   "STA-1:a-request-names-a-pr": "5351c2c644ce3e11",
+   "STA-1:no-pr-is-dropped-while": "9e8ea066711c8330",
+   "STA-2:the-clock-is-cleared-when-state-becomes-open": "84d940cd9f387311",
+   "STA-2:the-refresh-that-ends-a": "16affabac9da2d2d",
+   "STA-2:keep-done-and-sta-1-s-60-minutes": "ebc4c5a98a066e66",
+   "STA-2:dropping-a-pr-makes-an-untracked-event": "f5cfc859988f772f",
+   "STA-5:the-daemon-remembers": "c7ccd59934ab3fae",
+   "STA-5:a-pr-loaded-from-the": "bd1fa5d1c588d407",
+   "STA-6:every-tracked-pr-but-the-asked-ones": "df68725432c3a87f",
+   "STA-6:for-a-merged": "e4423cb83a71a245",
+   "STA-6:per-pr-and-kind": "b325a7b5e0c1509e",
+   "STA-6:per-pr": "6bdd5c73e5825f0c",
+   "STA-6:a-version-number": "b44ae259c397360b",
+   "STA-8:a-loaded-pr-keeps-its": "9ecf3dde58e00d44",
+   "STA-8:a-binary-reads-every-earlier-version": "24852ab00583417a",
+   "STA-8:a-file-that-isn-t-json": "8aff54561f066e7c",
+   "STA-8:a-file-with-a-newer": "16f30660edd9e0e2",
+   "STA-8:a-missing-file-is-normal": "33aebc74df4b9197",
+   "STA-8:entries-past-their-keep-done-are-dropped-on-load": "f3f26f113fea26bc",
+   "STA-9:clients-treat-a-cursor-as-opaque": "9e757b74f1b1ac31",
+   "STA-9:a-cursor-is-too-old": "ababfa50a98b0488",
+   "STA-11:the-order-at-start": "9a5d1d32e8f6ac4a",
+   "STA-11:the-daemon-checks-every-minute": "617b0a0b430e38c1",
+   "API-2:get-v1-status-s-version-and-mode": "0b418e65de0a8167",
+   "API-3:a-pr-with-a-record": "11e3924c78d4ad2a",
+   "API-4:problem-is-null-or-the-first-that-holds": "e66bc1d619f96b36",
+   "API-4:until-is-when-circitor-will-next-ask-github": "4018bbf605122437",
+   "API-4:message-says-what-the-problem": "ed7ae975ea89b83c",
+   "API-4:last-poll-at-is-the-last-poll-applied": "259b957eb25ad467",
+   "API-5:warnings": "52b0685887711346",
+   "API-6:state-open": "25b4bfbe8ab31002",
+   "API-6:since-cursor-returns-only-records-whose": "3d282689424bcf01",
+   "API-6:each-record-is-as-mod-2": "7f68d407dc695b99",
+   "API-7:a-pr-with-no-record-is-read-through": "7afcf9bf2e92d6a4",
+   "API-7:fresh-1-forces-a-refresh-first": "5df34e1cdb632a44",
+   "API-8:without-since-it-returns-no-events": "646d4500f46edff5",
+   "API-8:limit-n": "18a950e48e0804c8",
+   "API-8:a-cursor-that-s-too-old": "234965e775cc2a03",
+   "API-8:a-cursor-from-an-answer-for-one-pr": "8cda083794c10de8",
+   "API-9:the-condition-is-first-evaluated": "02e3c07a25124f02",
+   "API-9:a-wait-s-arrival": "ef6e2efb5fd2e792",
+   "API-9:a-pr-with-no-record": "6e65f363b101737f",
+   "API-9:the-arrival-cursor-is-sent-at-once": "8bf9c7ae2901a5f5",
+   "API-9:once-the-waiter-is-registered": "ad8c81e04ac0d9dd",
+   "API-9:a-pr-with-a-waiter-stays-tracked": "930f1cb17bf5e7d6",
+   "API-10:since-is-taken-by-every-condition": "e329f6b2a6d53286",
+   "API-10:sha-is-how-an-agent": "bd6f33bb773efea8",
+   "API-10:while-sha-is-given-and-head-sha-doesn-t-match": "c79c4d2f2ec80cc3",
+   "API-10:rerun-since-is-how-an-agent": "bb5b53fe465f46df",
+   "API-10:a-truncated-failing-may-be-early": "0c5da2198e62b3ad",
+   "API-11:the-condition-is-checked-before-the-ends": "ba0ccf48459caf92",
+   "API-11:closed-and-gone-end-merged-and-checks-done": "d778f02262c976c5",
+   "API-11:head-moved": "efb5add28d03de42",
+   "API-11:for-checks-done": "a4c765ce0496f0c7",
+   "API-15:untrack-never-reads-through": "e344e6d0a30eddbd",
+   "CLI-1:json": "edddf530925358ad",
+   "CLI-1:changes-without-pr-covers-every-tracked-pr": "4f15530a93ab901e",
+   "CLI-2:owner-repo-12": "0b834d9871977efb",
+   "CLI-2:12": "15d41c80de5213c7",
+   "CLI-2:nothing": "2eb07a652c6f2aa2",
+   "CLI-3:show-adds-one-line-per": "447ab2b20ac2a87e",
+   "CLI-3:changes-and-the-end-of": "f3e1543d564eea49",
+   "CLI-3:durations-are-the-largest-unit-and-the-next": "c3b952907d133de5",
+   "CLI-3:a-title-is-in-double-quotes": "b3c203f73a069de0",
+   "CLI-3:after-the-events": "b377dea7607cb32d",
+   "CLI-3:refresh-prints-refresh": "b0768e7dc4f42580",
+   "CLI-3:a-new-comment-or-review": "7690b4c053f19f9e",
+   "CLI-3:more": "93f98c119224568c",
+   "CLI-3:changes-and-wait-print-at-most-50-events": "0905469e62781e2c",
+   "CLI-3:a-reset-is-never-silent": "e09e819487807c2d",
+   "CLI-3:a-stale-record-is-marked": "3098c60c700be450",
+   "CLI-3:a-daemon-problem-is-never-silent": "e3e7fc6a1a906309",
+   "CLI-3:list-since-adds-a-line": "e923fbfb7227d5f4",
+   "CLI-3:list-and-changes-add-a": "fa0b4f35e8dca920",
+   "CLI-3:the-last-line-of-list": "b2a1226477ee49c5",
+   "CLI-3:list-without-since-prints-at-most-50-prs": "d0197b553f7eeac8",
+   "CLI-3:the-exact-text-is-fixed-by-golden-files": "a684fde6027a9ea0",
+   "CLI-5:each-api-error": "838f030a7772ec3f",
+   "CLI-5:code-8-exists-so-circitor": "a375750cdea883c9",
+   "CLI-5:on-code-9": "03c513bf17f8243f",
+   "CLI-5:errors-go-to-stderr-as-one-line": "259661c05f811c5f",
+   "CLI-6:the-outcome-line-says-what-the-wait-found": "cd1ac87df9d9a846",
+   "CLI-6:with-sha": "ff1f300875f8a4ec",
+   "CLI-6:a-wait-answered-before-its": "722dc94a3b996726",
+   "CLI-6:a-truncated-failing-adds": "95c2cc32f80dc7e1",
+   "CLI-6:on-a-timeout-it-prints": "200155fc63dd8455",
+   "CLI-6:a-wait-that-ends-without": "ce3f687694e6ed06",
+   "CLI-6:without-timeout": "3c8e1d58e1dd5743",
+   "CLI-6:one-deadline-for-the-whole-command": "74580be885e69294",
+   "CLI-6:sigint-and-sigterm-end-it-at-once": "2447de7552c19692",
+   "CLI-7:connecting-tries-the-cli-s-socket-path": "ac3dc36c8ae24f58",
+   "CLI-7:only-a-missing-socket-file": "bc31292460f9ddf1",
+   "CLI-7:before-starting-it": "ac437ed6fe1dd0e7",
+   "CLI-7:the-cli-watches-the-process-it-started": "a116bc98998f30b2",
+   "CLI-7:every-request-has-a-limit": "f4381d285c79e7ca",
+   "CLI-7:no-spawn": "e0b28e816312f943",
+   "CLI-8:stop-returns-once-the-daemon-has-exited": "c3d8a2f9476faf22",
+   "CLI-8:stop-ends-a-daemon-that-doesn-t-answer": "e1f3db1a05447d4a",
+   "CLI-9:versions-are-compared-as-semantic-versions": "f357b3af0e614125",
+   "CLI-9:checking-first-means-no-answer-is-thrown-away": "4233b6929c9ef047",
+   "CLI-9:a-newer-daemon": "2c32a35dcae7c52e",
+   "CLI-9:before-replacing": "a96dee60401c6418",
+   "CLI-9:at-most-one-replacement-per-command": "f57c5cc5ca08a2b8",
+   "CLI-9:a-bad-request-or-unknown-route-from": "1bc550d41716d19a",
+   "CLI-10:any-other-command-whose-connection": "ae6eac37e41ce870",
+   "OPS-1:only-a-missing-file-means-the-defaults": "b267e202b5da7642",
+   "OPS-1:a-bad-config-never-costs": "0c97a6dcb0664be8",
+   "OPS-2:keep-done-stops-at-7-days": "53b21372726e3fbe",
+   "OPS-3:linux": "e6ddeb958b49eea6",
+   "OPS-3:macos": "91a79914b6acd9f2",
+   "OPS-4:linux": "2fdd394293626b06",
+   "OPS-4:macos": "2dfab29b8eec893d",
+   "OPS-4:circitor-socket-overrides-the-path": "0911773d90089f52",
+   "OPS-4:a-socket-answers-when-get": "a56655dd7df3b712",
+   "OPS-4:the-socket-s-mode-is-0600": "1f8a96862129d57e",
+   "OPS-4:a-path-over-103-bytes": "5d4f5d485895408f",
+   "OPS-4:the-cli-also-tries-the": "5379e738624a87df",
+   "OPS-5:the-token-is-held-in-memory-only": "4a4d2349a89c8397",
+   "OPS-5:a-spawned-daemon-uses-gh-s-login": "acbbd1150fd6e0f0",
+   "OPS-5:the-token-is-read-after": "068322c7584cf75d",
+   "OPS-5:a-read-that-ends-without": "28e12b9044aa56b5",
+   "OPS-5:a-gh-path-with-a": "04ee0a6a1cab7eec",
+   "OPS-5:a-read-has-three-outcomes": "7a475de8cceae345",
+   "OPS-6:circitor-daemon": "6a677cb43f734a76",
+   "OPS-6:circitor-daemon-spawned": "7ceaa81b74580937",
+   "OPS-6:a-foreground-daemon-takes-over": "c69c6ee3f5cd8ced",
+   "OPS-7:the-stop-has-a-5-s-deadline": "845d562b45145afb",
+   "OPS-7:a-second-sigterm-or-sigint": "e7d0068ff943b686",
+   "OPS-7:every-stop-exits-0": "2b3900c115c1d4c6",
+   "OPS-9:the-log-file-is-rotated": "c1b56fd1518ece88",
+   "OPS-9:logging-never-stops-the-daemon": "9aeffb339a79e4f8",
+   "OPS-9:logged": "f4a48126893d5cc1",
+   "OPS-9:never-logged": "00545f1c537f9c9e",
+   "OPS-9:circitor-log-debug-adds-one-line-per-request-to": "33e8be8dcb34daa4",
+   "OPS-18:runs-homebrew-s-bin-circitor": "fb2b91f78d284c87",
+   "OPS-18:restarts-it-on-failure-only": "ae04e30d52965587",
+   "OPS-18:keeps-its-stderr": "9d3880ea8daa4517",
+   "OPS-18:says-that-a-daemon-circitor": "9dc5012d25417399",
+   "OPS-17:a-cli-call-answered-from": "9dee184f01d18ff6",
+   "OPS-17:from-a-cold-start-to": "253cee7fd5946691",
+   "OPS-17:the-daemon-uses-under-30": "91d0c57c56a34868",
+   "TST-3:it-answers-the-queries-circitor-sends": "9be536c33cfd1340",
+   "TST-3:by-default-its-world-behaves": "9dc62ac93ffe2ba8",
+   "TST-3:it-can-be-told-to-misbehave": "e10d5d3d4349dd16",
+   "TST-3:it-parses-each-query-and": "bb4578c3239f6cfe",
+   "TST-3:the-test-sets-remaining-and": "af12c55ce63fcd19",
+   "TST-3:it-fails-the-test-if": "0f8e4f1928aae182",
+   "TST-3:it-records-every-request-with-its-time": "9a5b7e7e59d265d9",
+   "TST-5:unless-a-test-says-otherwise": "98c6c78a64d38128",
+   "TST-5:each-command-takes-its-inputs": "5967dff84b430768",
+   "TST-5:the-harness-can-make-a": "8de173ad2db67973",
+   "TST-6:an-hour-in-the-active": "0a325baccbdc2a64",
+   "TST-6:one-hot-pr-adds-at": "c10b343a2935a6a5",
+   "TST-6:one-waited-on-pr-is-refreshed": "25bed0b8fd30027a",
+   "TST-6:above-80-of-quota-max-per-hour": "94227ac0e9553fd2",
+   "TST-6:with-200-tracked-prs": "0ff3faffd559973c",
+   "TST-6:each-state-s-daemon-problem": "98e156cb86c3fe9c",
+   "TST-6:with-remaining-under-the-reserve": "274fe2c300d7c2bc",
+   "TST-6:exhausted": "4ad666e8efc786d2",
+   "TST-9:every-real-process-test-runs-a-test-build": "f2bacf99e607d2bb"
+  },
+  "sections": {
+   "specs/00-overview.md#overview": "936946abe349e5dd",
+   "specs/00-overview.md#summary": "7e039bd9d27ecefb",
+   "specs/00-overview.md#user-requirements": "8087e45d85866590",
+   "specs/00-overview.md#non-goals-v1": "4d28ecc0f914b61b",
+   "specs/00-overview.md#components": "a4dfd94254ba0e20",
+   "specs/00-overview.md#technology": "c9017d3d663f19ac",
+   "specs/00-overview.md#repo-layout-proposal": "a1a1f7b6852ecf55",
+   "specs/00-overview.md#glossary": "f0d15fcbd3c1c63e",
+   "specs/01-model.md#the-pr-record": "01b57ca138b65600",
+   "specs/01-model.md#identity-and-fields": "dd8b2e20f5f3ec1a",
+   "specs/01-model.md#checks": "a3257e5c6ecde3a4",
+   "specs/01-model.md#mergeability-and-review": "e415a14d1f25e93f",
+   "specs/01-model.md#status": "501ecc22d53c2b55",
+   "specs/01-model.md#whats-new": "9630bf57eb1df998",
+   "specs/01-model.md#revisions-and-events": "10caa0e1b0d7e665",
+   "specs/02-polling.md#polling-github": "e9237502ec4fec93",
+   "specs/02-polling.md#requests": "36d021a23773d2de",
+   "specs/02-polling.md#the-poll": "cea20f167f1c7ea6",
+   "specs/02-polling.md#cadence": "9af47cd6e48144db",
+   "specs/02-polling.md#quota": "0f59e5d0698e1758",
+   "specs/02-polling.md#errors": "db720bee4e301b75",
+   "specs/03-state.md#state": "203ad7985e1ef39f",
+   "specs/03-state.md#the-tracked-set": "e170a7536eccab14",
+   "specs/03-state.md#the-state-file": "cafc78f17906b175",
+   "specs/03-state.md#cursors": "1e2041ca966af402",
+   "specs/03-state.md#one-daemon": "048cd65ee87a85d1",
+   "specs/04-api.md#api": "46407448e3b7cb08",
+   "specs/04-api.md#basics": "2d6b3e90aa606b70",
+   "specs/04-api.md#reading": "500c6d8211fedbed",
+   "specs/04-api.md#waiting": "0293d38b243db27c",
+   "specs/04-api.md#changing-the-set": "a81c6f84f4791f0e",
+   "specs/04-api.md#starting-up": "3704b845d2b40605",
+   "specs/05-cli.md#cli": "f9b4bb885659f3f8",
+   "specs/05-cli.md#commands": "0e7a820b64beb91b",
+   "specs/05-cli.md#output": "7e29b4bf3eaca065",
+   "specs/05-cli.md#waiting": "6c3e7fefa2bd89cc",
+   "specs/05-cli.md#the-daemon": "6cb503119463cf2d",
+   "specs/05-cli.md#for-agents": "92a668ed8fe5c056",
+   "specs/05-cli.md#for-tests": "a25e2197e75ccba0",
+   "specs/06-operations.md#operations": "2279bf570e5f62c5",
+   "specs/06-operations.md#configuration": "cb9ff6e70d0b25e7",
+   "specs/06-operations.md#files": "dddadf91b097b662",
+   "specs/06-operations.md#the-token": "91219a60a4648432",
+   "specs/06-operations.md#the-daemons-life": "1b3a5149a65cec5e",
+   "specs/06-operations.md#shipping": "4ee7b99946b2d5db",
+   "specs/06-operations.md#targets-for-behaviour": "6cd95aa651938c04",
+   "specs/07-testing.md#testing": "e80436fb1232f354",
+   "specs/07-testing.md#rules": "d248758f13307f7d",
+   "specs/07-testing.md#test-doubles": "513dce5ae122f528",
+   "specs/07-testing.md#what-is-tested": "f0c09b9cf16e09f3",
+   "specs/07-testing.md#by-hand": "d4928840f0a8d2fb",
+   "specs/README.md#software-spec": "70618382cfa733c4",
+   "specs/README.md#files": "30e9094eab6fcb60",
+   "specs/README.md#conventions": "17ab9b4a619b8368",
+   "specs/decisions.md#decisions": "fcb336c1b93cb916",
+   "specs/decisions.md#carried-from-the-log": "ef82d94bb38e406e",
+   "specs/decisions.md#resolved": "9cbfc26ca923f9b6",
+   "specs/decisions.md#open": "c25e80fe72931908",
+   "specs/decisions.md#notes-on-resolved-decisions": "e35c508bf023eb56",
+   "docs/02-github-api.md#github-api-facts": "2bcde6696d013865",
+   "docs/02-github-api.md#1-access": "3ae82b86f26f5595",
+   "docs/02-github-api.md#2-rate-limits": "1a4e075bf139165f",
+   "docs/02-github-api.md#measured-cost": "e05dcba3513ba77a",
+   "docs/02-github-api.md#3-finding-the-users-prs": "d29af259c1c9239a",
+   "docs/02-github-api.md#4-the-pr-record": "631f2deffa40e7fe",
+   "docs/02-github-api.md#mergeability": "288d7e4820e8c9ee",
+   "docs/02-github-api.md#checks": "99b0f8e34a81c993",
+   "docs/02-github-api.md#what-moves-updatedat": "4e3e0eb876a39fb1",
+   "docs/02-github-api.md#comments-and-reviews": "05e4ddeffd96cbfb",
+   "docs/02-github-api.md#other-fields": "bd0a66f0be1ba42d",
+   "docs/02-github-api.md#5-errors": "5d6aa12e9a76eb4b",
+   "docs/02-github-api.md#6-open-items": "657be1f169c8ace9",
+   "docs/03-clients.md#client-facts": "8948f72c3b070951",
+   "docs/03-clients.md#1-summary": "bb3ed5bc423a9cc7",
+   "docs/03-clients.md#2-claude-code": "dfd156d8bc5043a9",
+   "docs/03-clients.md#3-opencode": "5922878053a98fc7",
+   "docs/03-clients.md#4-pi": "62e881a1c4cab5eb",
+   "docs/03-clients.md#5-what-this-means-for-circitor": "51ae27b5a7edd132",
+   "docs/03-clients.md#6-open-items": "7536ed0de68cf2c3",
+   "docs/04-platform.md#platform-facts": "d37a455df608b73e",
+   "docs/04-platform.md#1-machines": "7f8cd139400f407d",
+   "docs/04-platform.md#2-homebrew": "b62c0130dd45896f",
+   "docs/04-platform.md#3-release-tooling": "af1415dbea516732",
+   "docs/04-platform.md#4-sockets-and-directories": "6e062aa15978a1fc",
+   "docs/04-platform.md#5-rust-libraries": "911f9edd87c5728e",
+   "docs/04-platform.md#6-the-menu-bar": "560e3d3d09eb63a1",
+   "docs/04-platform.md#7-the-gh-cli": "7816b50d3030d592",
+   "docs/04-platform.md#8-open-items": "2ac151cf27f7b905"
+  },
+  "decisions": {
+   "D1": "resolved",
+   "D2": "resolved",
+   "D3": "resolved",
+   "D4": "resolved",
+   "D5": "open",
+   "D6": "open"
+  },
+  "findings": {
+   "01-model:H1-1": "applied: `checks.settled` goes by time, whatever the list holds; MOD-11's `checks_pending` row covers `passing` and not settled, and `ready` needs settled checks; TST-8 gained `first-check-early`",
+   "01-model:H1-2": "applied: `settled` turns true only when a refresh is applied at least `checks.settle_s` after the head was first seen; `checks.settled` by itself is listed as not a change in MOD-14; TST-8 `no-ci` reworded",
+   "01-model:H1-3": "applied: `passing` needs every result to be `success`, `skipped` or `neutral`, anything else fails; a new bullet under MOD-2's table says unlisted values pass through lowered and never fail decoding (proposal)",
+   "01-model:H1-4": "applied: the shortcut is `checks.settle_s` plus 40 s, 60 s by default",
+   "01-model:H1-5": "applied: a step back is ignored for 30 s, then believed as a re-run; check runs match by `id`, commit statuses by `name` and always take the newest read; marked (proposal); TST-8 `commit-status` and `check-out-of-order` extended. A re-run with `databaseId` recorded isn't measured yet.",
+   "01-model:H1-6": "applied: the kept value is for one head and base while the PR is open, and lapses when a refresh 60 s after the first `UNKNOWN` still reads `UNKNOWN`; on a merged PR both fields are `unknown`, with no `mergeable` kind; MOD-9 follows. What a push to the base does isn't measured.",
+   "01-model:H1-7": "applied: the test gave way. MOD-8 says a push shows `unknown` and both steps are visible changes; the scenario tests silence on an unchanged head, the 60 s lapse, and the two changes after a push",
+   "01-model:H1-8": "applied: only a rise in `counts.comments` or `counts.reviews` is a change; first appearance and dropping take a revision; new kind `edited` for `title` and `base`; `activity` carries the new `counts`, the items (which may be none) and `more`; every visible change has a kind; a count's rise and its items are one event. The `more: true` wording was already in the row on disk and was kept.",
+   "01-model:H1-9": "applied: `gone` is a value of `state`, circitor's own; only an open PR becomes gone; a gone record keeps its other fields; one that GitHub returns again is open again (STA-2); POL-21 gained \"if it was open\"",
+   "01-model:H1-10": "applied: MOD-9 lists `merge_state` values by how well they're known, with `draft` added as never seen; (proposal, D6) on the `blocked` row and on `required`; (proposal) on the `EXPECTED` mapping; `draft` note labelled observed; MOD-10 reworded to what docs/02 says; the bots sentence no longer claims `author` tells them apart; D6's text corrected",
+   "01-model:H1-11": "applied with change: as proposed (age against the configured interval of the PR's tier, `NOT_FOUND` a failed attempt until `gone`, a gone record never stale), plus `idle_interval` for a merged or closed PR, to match POL-10 as it now reads",
+   "01-model:H1-12": "applied: MOD-7 states the order of its clauses, says `completed` and `failed` count read items only, and that a truncated `failing` can be early; MOD-5 names the exception",
+   "01-model:H1-13": "parked",
+   "01-model:H1-14": "applied in pass 2: MOD-6 keeps a head whose previous head had checks unsettled while it has none, until three times `checks.settle_s` (60 s by default); TST-8 gained `late-ci`",
+   "01-model:H1-15": "parked. Whether they can differ in one response isn't measured; asking the commit's `oid` and comparing would guard it.",
+   "01-model:H1-16": "parked. Needs a measurement; `dismissed` is in the spec's list and not in docs/02.",
+   "01-model:H1-17": "parked (implementability: pass 3)",
+   "01-model:H1-18": "parked",
+   "01-model:H2-1": "applied: `gone` counts only under the same login, and not when every tracked PR in a response answered `NOT_FOUND`; a returning gone PR takes GitHub's state with that state's kind; POL-4 asks `viewer { login }`; POL-21 cites MOD-11's conditions; STA-2 restarts or clears the clock to match; STA-6 saves the login",
+   "01-model:H2-2": "applied: kept for at most 60 s after the last read that gave it, on the wall clock; TST-8 follows",
+   "01-model:H2-3": "applied: settling counts from when the head last changed to this SHA; any change of head, also back, resets `settled` and the checks list",
+   "01-model:H2-4": "applied: a comment's `createdAt`, a review's `submittedAt`; POL-12 and STA-5 compare `at`. That a pending review's `createdAt` is its start isn't measured.",
+   "01-model:H2-5": "applied: a revision and its record and event are stored in one step; every answer reads one view, and its cursor is the highest revision in it",
+   "01-model:H2-6": "applied: the age is measured against the response's `Date` header, `checks.settle_s` plus 5 s (25 s by default); no header, no shortcut; (proposal: the header isn't recorded in docs/02)",
+   "01-model:H2-7": "applied: a reopening starts `settled` at false (proposal); TST-8 `reopened` reads `checks_pending` until settled. That Actions re-runs on `reopened` is from GitHub's docs, not in docs/references.md.",
+   "01-model:H2-8": "applied: `truncated` is true whenever fewer items were read than GitHub's count. The failed-page half was already covered by POL-8's new text.",
+   "01-model:H2-9": "applied: `fetched_at` is when the request was sent; a refresh sent before the one last applied isn't applied; STA-4 lists MOD-2 among its exceptions",
+   "01-model:H2-10": "applied: keyed by node ID; `pr` read from `repository.nameWithOwner` and `number` at every refresh; a found or read-through PR whose node ID is tracked is that record; (proposal: the node ID across a rename isn't measured). `pr` in MOD-14 and `edited` was added by the other session at the same time.",
+   "01-model:H2-11": "applied: a loaded PR's `tracked` event also carries `merged` or `closed` if it was saved open and has ended, and `activity` for what STA-5 makes new",
+   "01-model:H2-12": "parked. One idea: records and events change only by adding within `/v1/`; a CLI ignores unknown fields and treats an unknown `checks.state` as not done.",
+   "01-model:H2-13": "parked. One idea: `pending` also when the rollup says `PENDING` or `EXPECTED`; the rollup can only hold the state back. Whether an expected check appears as an item needs D6's public repository.",
+   "01-model:H2-14": "parked. POL-24 now keeps a PR's error with that PR; a node that fails decoding (an unexpected `null`, a renamed field) isn't said to be handled the same way.",
+   "01-model:H2-15": "parked. Slowed polling refreshes exactly at the stale threshold; POL-10's strict \"older than `idle_interval`\" makes an ended PR's period 600 s in the idle tier. One idea: a 10 s margin, or \"stale while slowed\" on purpose. The ended-PR half is closed in 02-polling pass 3 (H3-5: \"at least\", from send times); the slowed half stays parked.",
+   "01-model:H2-16": "parked. Deletions are a non-goal and unmeasured (docs/02 §6 item 4).",
+   "01-model:H3-1": "applied: MOD-6 defines the **settle start** (the send time of the refresh that first read the record, also a loaded one, first showed this head, or first showed the PR open again); `settled` needs an applied refresh sent the settle time after it; the start's own refresh leaves it false but for the shortcut; the shortcut covers loaded and read-through records; TST-3's `Date` is from the test clock and can be left out; TST-8 gained `settled-at-once`",
+   "01-model:H3-2": "applied: only a poll's `NOT_FOUND` counts, under the login its finding gave; the every-PR guard needs two or more PRs in the poll; a hot or forced refresh's `NOT_FOUND` neither counts nor breaks the run. With one tracked PR, lost access now makes it gone after 5 minutes (H2-1's guard given up for that case, on the owner's OK). `repo-gone` gained the lone PR.",
+   "01-model:H3-3": "applied: a checks change is `checks.state`, `total`, `completed`, `failed`, `truncated`, `failed_items` or which items are in the list; a move between `queued` and `in_progress` isn't a change; the `checks` kind is present whenever one of these changed. Also covers a truncated list whose rollup moves with no item changing.",
+   "01-model:H3-4": "applied: the window is struck and each read believed; a step back from `completed` reads `pending`. Narrows H1-5's fix. STA-4 no longer lists MOD-4; the scenario now proves no event and `pending`.",
+   "01-model:H3-5": "applied: the settle time is 20 s for a list with checks and 60 s for an empty one, the shortcut that list's time plus 5 s; the previous-head bullet is gone. Replaces H1-14's mechanism. A repository with no CI reads `checks_pending` for about 60 s after a push.",
+   "01-model:H3-6": "applied: refreshes are ordered by a number given at sending, never by `fetched_at`",
+   "01-model:H3-7": "applied: `required` isn't read in v1 (a note under MOD-3's table); POL-9 struck; POL-4 refreshes by `nodes(ids:)` with one shared fragment, the measured form; the \"aliased form isn't measured\" clauses are gone from POL-7 and POL-21; D6 and TST-3 follow",
+   "01-model:H3-8": "applied: rows `renamed` (MOD-1), `unlisted-values` (MOD-2, MOD-5), `head-back` (MOD-6), `base-changed` (MOD-8), `gone-returns` (MOD-11, STA-2)",
+   "01-model:H3-9": "applied: one applied refresh makes at most one event per PR (a count's rise with its items, and a PR's check pages, are one refresh); PRs in one response take revisions in the order of `pr`",
+   "01-model:H3-10": "applied: `type` as GitHub writes it (an exception to the lowering, matching CLI-3's `error FORBIDDEN`); `since` is the first of the current run of this PR's errors; whole-request failures and a failed check page leave it; a gone record keeps it",
+   "01-model:H3-11": "applied: MOD-2's pass-through excludes `phase`",
+   "01-model:H3-12": "applied: `url`, `author`, `head`, `created_at`, `merged_at`, `closed_at` and `source` alone aren't a change; `track` on a tracked PR takes no revision",
+   "01-model:H3-13": "parked. One idea: an empty view's cursor is `<epoch>-0`, and the first change takes 1.",
+   "01-model:H3-14": "parked. One idea: de-duplicate by `id` (a status by `name`), the later page winning; GitHub's count is the largest `totalCount` read.",
+   "01-model:H3-15": "parked. The MOD-16 half of this finding was settled by the other session (MOD-16 now cites POL-10's period).",
+   "01-model:H3-16": "parked. It counts resolved threads too, so an agent may misread it as open ones.",
+   "01-model:H3-17": "parked. A test (`held-refresh`) needs the rule first.",
+   "02-polling:H1-1": "applied: POL-9 says a refusal empties the check, the refresh isn't applied, and the PR is read again without the field; POL-21 applies a node only if no error's path points inside it; TST-3 gains \"an error inside a PR's node\"",
+   "02-polling:H1-2": "applied: POL-12 makes the count change and its items one change, and keeps the old counts when the ID request fails; MOD-15's `activity` row carries `more`",
+   "02-polling:H1-3": "applied: POL-15 rewritten (`fresh` and a wait's arrival refresh one PR, `refresh` runs a whole poll at most once in 10 s, 30 s windows when capped or in reserve); API-16 says what it answers inside the window",
+   "02-polling:H1-4": "applied: POL-14 lets a poll count as the hot refresh (one hot PR adds 240 an hour, 360 with the active tier) and batches hot PRs by 40; TST-6's 370 is now 250",
+   "02-polling:H1-5": "applied: POL-10 refreshes a `merged`, `closed` or `gone` PR every `idle_interval` only; POL-4 points to it; POL-13 says when a poll costs more than 1 point",
+   "02-polling:H1-6": "applied with change: the table of states went in as a new requirement, POL-23, so it has an ID; POL-13 says hot isn't a tier; POL-15's 30 s windows cite POL-23",
+   "02-polling:H1-7": "applied: POL-20 answers tracked PRs from memory with `problem: auth`, gives the error only to requests that need GitHub, keeps waiters, and covers a missing token; TST-8 `token-rotated` and OPS-5 follow",
+   "02-polling:H1-8": "applied: POL-16 maps each failure to `not_found`, `github_unavailable`, `auth` or `rate_limited`, and tries a read-through once during the backoff (proposal)",
+   "02-polling:H1-9": "applied: POL-4's first refresh also fetches the last 20 IDs (2 points for 40 PRs); POL-12 counts an unseen ID as new only if it isn't older than the newest item seen of its kind; STA-5 cites POL-4",
+   "02-polling:H1-10": "applied: open PRs only, one shared follow-up that never causes another, also after a PR's first refresh since the start; the 3–4 s is labelled as measured on new, small PRs",
+   "02-polling:H1-11": "applied: POL-4 names the aliased `node(id:)` form; POL-7 and POL-21 say the aliased form's cost and error path aren't measured",
+   "02-polling:H1-12": "applied: POL-19 to POL-21 carry their labels, and POL-24 is the catch-all (anything else is handled as POL-19; only `NOT_FOUND` counts towards `gone`)",
+   "02-polling:H1-13": "applied in pass 2, as part of H2-12 (the way back is POL-10, STA-2 and H2-2)",
+   "02-polling:H1-14": "parked",
+   "02-polling:H1-15": "parked",
+   "02-polling:H1-16": "parked",
+   "02-polling:H1-17": "parked",
+   "02-polling:H1-18": "parked",
+   "02-polling:H2-1": "applied: POL-24 sends only whole-response failures to POL-19; a `null` node with another error is handled as POL-21, and the rest of the response is applied",
+   "02-polling:H2-2": "applied: a PR the open list shows is refreshed in that poll as an open one; TST-8 `reopened` says \"at the next poll\"",
+   "02-polling:H2-3": "applied: a PR's check pages are one read; a failed page leaves the record as it was, `stale`",
+   "02-polling:H2-4": "applied: a failed or unsent first poll has finished (POL-19); API-18 answers the problem's error until a poll is applied; a found PR is tracked only once its first refresh is applied (POL-4)",
+   "02-polling:H2-5": "applied: new POL-25 recognises an exhausted limit (`x-ratelimit-remaining: 0`, reset from `x-ratelimit-reset`) and a secondary limit (`Retry-After`, else 60 s doubling); POL-23 gains a `secondary` row; TST-3 gains the misbehaviour",
+   "02-polling:H2-6": "applied: the backoff holds every request but one read-through per step; any success ends it and starts a poll; a wake restarts it at 5 s; answered requests of a split poll are applied",
+   "02-polling:H2-7": "applied: a failed periodic read keeps the token in hand; no token only at start leads to `auth`; in `auth` a request needing GitHub reads the token first, at most once in 5 s",
+   "02-polling:H2-8": "applied: an `asked` PR that isn't hot is refreshed at the ended rate; MOD-16's stale interval follows",
+   "02-polling:H2-9": "applied: new POL-26 (wall clock for GitHub's windows, monotonic for the rest); POL-22 rewritten (wall vs monotonic gap over 30 s, checked on every tick and request); API-12's deadline counts the time asleep; MOD-16 cites a noticed sleep",
+   "02-polling:H2-10": "applied: an `authored` PR the filter no longer admits, on loading or missing from a complete finding while open, becomes `asked`",
+   "02-polling:H2-11": "applied: matched by node ID; POL-6 reads the owner and name; a new name is an `edited` change on `pr` (MOD-14, MOD-15)",
+   "02-polling:H2-12": "applied: `gone` needs `NOT_FOUND` on every refresh for 5 minutes, at least three; a PR failing with any error for 5 minutes raises a warning naming the PR, the error's `type` and the token source. Closes H1-13.",
+   "02-polling:H2-13": "parked",
+   "02-polling:H2-14": "parked",
+   "02-polling:H2-15": "parked",
+   "02-polling:H2-16": "parked",
+   "02-polling:H2-17": "parked",
+   "02-polling:H2-18": "parked",
+   "02-polling:H2-19": "parked",
+   "02-polling:H3-1": "applied: every first refresh (found, read through, loaded) asks POL-12's fields, times included; STA-5 says so",
+   "02-polling:H3-2": "applied: POL-23's rows put `capped` below `reserve`, so the stricter wins; POL-17 and POL-18 keep their triggers and point to POL-23; each warning follows its own condition (POL-23, API-5's clear column); TST-6's reserve line cites POL-23",
+   "02-polling:H3-3": "applied: only a 401 on the repeat enters `auth`; a read giving another token allows one try at once, the same token one try every 10 minutes; a success ends `auth`",
+   "02-polling:H3-4": "applied: POL-26 defines a 10 s monotonic tick that checks the clocks and sends nothing; POL-22 and OPS-17 cite it",
+   "02-polling:H3-5": "applied: every cadence runs from send times on the monotonic clock, due at \"at least\" its period; a hot PR is due `hot_interval` after its last refresh of any kind, so its refreshes fall between polls",
+   "02-polling:H3-6": "applied: MOD-8's 60 s is in the wall-clock list; the monotonic list is examples",
+   "02-polling:H3-7": "applied: batched as POL-7, up to 40 PRs, each PR's part applied or failed on its own (proposal; 1 point by the formula, not measured)",
+   "02-polling:H3-8": "applied: only an answer without `data` is the exhausted answer; one with data is applied, and the daemon is `exhausted` after it",
+   "02-polling:H3-9": "applied: POL-10 has one table, a PR's period (hot, then ended or `asked`, then the tier's); MOD-16 cites it. Closes 04-api H2-15.",
+   "02-polling:H3-10": "parked",
+   "02-polling:H3-11": "parked",
+   "02-polling:H3-12": "parked",
+   "02-polling:H3-13": "parked",
+   "02-polling:H3-14": "parked",
+   "02-polling:H3-15": "parked",
+   "02-polling:H3-16": "parked",
+   "02-polling:H3-17": "parked",
+   "03-state:H1-1": "applied: STA-6 saves every tracked PR but the `asked` ones, with `source`; STA-8 says one that ended meanwhile is seen ending at the first poll; OPS-8 now says a restart loses the event history, the epoch and the `asked` PRs",
+   "03-state:H1-2": "applied: STA-6 saves per PR the time of the newest comment and review seen; STA-5 makes IDs newer than those `activity` on loading (POL-12's rule); POL-4 and MOD-15 follow; API-8 gives a cursor from another epoch every event of the current one while the history holds them all",
+   "03-state:H1-3": "applied: STA-9 compares revisions only within one epoch, and every route taking a cursor (API-6, API-8, API-9) resets on a too-old one; a too-old `since` makes `changed` hold at once; API-9's answer carries `reset: true` and API-8's events",
+   "03-state:H1-4": "applied: a refresh is merged into the stored record under those rules; `source`, the seen IDs and both clocks carry over",
+   "03-state:H1-5": "applied: `gone` PRs aren't written; until its first refresh a loaded PR is left out of `list` and read through by single-PR routes, keeping its saved `source`",
+   "03-state:H1-6": "applied: STA-11 retries the lock for up to 6 s before deciding; CLI-9 waits up to 5 s for the old socket to stop answering before starting its own",
+   "03-state:H1-7": "applied: 200 of every source and state; at the limit `track` is refused, a read-through isn't tracked and finding stops; nothing is pushed out; the cost near the limit (5 to 6 points a poll, `slowed` or `capped`) is stated; POL-7 finds up to STA-3's limit instead of 300",
+   "03-state:H1-8": "applied: API-15 checks `owners` and changes nothing on an `authored` or `asked` PR; STA-1 says `untrack` changes only a `manual` PR",
+   "03-state:H1-9": "applied: the 60 minutes run from when the last request ended, and never while the PR has a waiter",
+   "03-state:H1-10": "applied: STA-12 lists the temporary file, the set-aside file and the old log, and the `CIRCITOR_SOCKET` exception; the lock file holds the holder's socket path, which STA-11 checks",
+   "03-state:H1-11": "applied: STA-2's bullet is (proposal; reopening isn't measured). docs/02 §6 could list it as an open item; left to the owner.",
+   "03-state:H1-12": "applied: the epoch is 8 random lower-case letters and digits; a failed write is retried at the next change or 60 s later",
+   "03-state:H2-1": "applied: STA-6 saves every tracked PR but `asked` ones, and `gone` with `merged` and `closed` inside `keep_done`; a loaded gone PR stays gone until GitHub returns it",
+   "03-state:H2-2": "applied: STA-8 keeps the saved entry until the first refresh, writes carry it unchanged, `keep_done` runs from the saved time, and `NOT_FOUND`s count as for the saved state and login",
+   "03-state:H2-3": "applied: API-9 sends the arrival cursor in a `Circitor-Cursor` header when the waiter is registered; CLI-10 reconnects with it as `since`; API-10 takes the arrival revision after the read-through and the forced refresh; STA-9 says a wait without `since` is covered. Closes pass 1's note on H1-3.",
+   "03-state:H2-4": "applied: a binary reads every earlier `version` and ignores unknown keys; a newer file is left alone and not written, with a warning; one `.bad` file is kept; `version` rises only for a change an older binary would misread",
+   "03-state:H2-5": "applied: STA-6 saves per kind the newest time and the IDs at that time; an item is new if later, or the same time with an unsaved ID; `more: true` with all 20 new; POL-4's loaded PR asks POL-12's fields",
+   "03-state:H2-6": "applied: no drop while a waiter is held; the ending refresh is applied and its waiters evaluated before any drop",
+   "03-state:H2-7": "applied: both go by the wall clock, a time ahead of now counts as now; a PR made `asked` by POL-5 starts its hour then; POL-26's wall-clock list names them",
+   "03-state:H2-8": "applied: the login is saved per PR",
+   "03-state:H2-9": "applied: a `track` of a tracked PR is never refused; a `wait` on an untracked PR at the limit answers `limit` at once",
+   "03-state:H2-10": "applied: the daemon checks every minute that its socket and lock file are its own (device and inode) and stops if not; at exit it removes the socket only if it's still its own (OPS-7 follows)",
+   "03-state:H2-11": "applied: the lock file is opened without truncating; the socket path, the stale socket and `state.json` come only once the lock is held",
+   "03-state:H2-12": "applied: a `wait` naming a loaded PR is held as a waiter until its first refresh; other requests read through as before",
+   "03-state:H2-13": "applied (2026-11-25, parked walk-through): too old is judged when the answer is built (STA-9); API-9's answer follows",
+   "03-state:H2-14": "applied (2026-11-25, parked walk-through): STA-4 applies a refresh only to a PR that holds a place (STA-3) when it answers; one dropped meanwhile is discarded, with no event",
+   "03-state:H2-15": "applied (2026-11-25, parked walk-through): the first revision is 1, `<epoch>-0` before any; too old is another epoch, a `rev` above the counter, or an event after it no longer held; a malformed cursor is `bad_request`",
+   "03-state:H2-16": "applied (2026-11-25, parked walk-through): a failed write raises `state_file_unwritable` (API-5), cleared by one that succeeds, and OPS-9 logs it failing and working again; a lock file that can't be opened or created stops the daemon at once, naming the path and the error",
+   "03-state:H2-17": "applied (2026-11-25, parked walk-through): a `track` or `untrack` that changes the file is written before it's answered; a failed write still answers",
+   "03-state:H2-18": "rejected: handled since pass 2 by CLI-7, which tries the lock file's socket after its own, with a warning naming both, and waits for it after a spawned daemon exits 0",
+   "03-state:H3-1": "applied: a change within 5 s of the last write is written 5 s after it; TST-10 tests it",
+   "03-state:H3-2": "applied: STA-11's exit rule is for a spawned daemon; a foreground one follows OPS-6 and never exits 0 for want of the lock",
+   "03-state:H3-3": "applied: `flock` with `LOCK_EX`, tested with `LOCK_NB`; the socket path is the rest of the line, spaces included; the minute check compares `stat` with `fstat`",
+   "03-state:H3-4": "applied: STA-6 gives version 1's layout; only a file that isn't JSON or has no integer `version` is set aside; an entry that doesn't decode is skipped and logged; TST-10 keeps one fixture per released version",
+   "03-state:H3-5": "applied: one rule in STA-5, the newest `at` and the IDs at it per kind, `null` with none seen (then every item is new); the loaded rule and POL-12 point to it; the 200 are gone",
+   "03-state:H3-6": "applied: a place is taken when a PR is found, loaded or read through, and given back if its first refresh fails; a found PR is sent for its first refresh only while a place is free; a left-out PR isn't `pending`; `pr_limit` clears when a poll leaves nothing out; finding stops paging once full",
+   "03-state:H3-7": "applied: at the limit any request that would read through an untracked PR answers `limit` and sends nothing",
+   "03-state:H3-8": "applied: the clock counts from the send time of the refresh that first showed the PR ended; a loaded PR's first refresh is the same by a poll or a read-through and keeps a confirmed ended state's saved time; a drop on loading makes no event",
+   "03-state:H3-9": "applied: the column names POL-5's and API-15's demotions; one STA-1 bullet says no PR is dropped while it has a waiter",
+   "03-state:H3-10": "applied: `state.json.tmp`, the directory synced after the rename; `state.json.bad`, the time in the warning and the log",
+   "03-state:H3-11": "applied: one rule (cleared on `open`, started again on a change to another ended state); the wall-clock rule cites POL-26",
+   "03-state:H3-12": "applied: PRs dropped at one tick take revisions in the order of `pr`",
+   "03-state:H3-13": "applied (2026-11-25, parked walk-through): STA-1 defines a request naming a PR (in its path or body, API-7 to API-9, API-15; ended when answered or its connection closes); POL-14 cites it",
+   "04-api:H1-1": "applied: API-18 defines the first poll as finished once its finding and the first refresh of every found or loaded PR have been applied or have failed; an unanswered request gives the problem's error",
+   "04-api:H1-2": "applied: `since` returns changed records whatever their `state`, and names PRs dropped after the cursor in `untracked`; CLI-3 prints a line `untracked <pr>` for each",
+   "04-api:H1-3": "applied: a PR with a waiter stays tracked (API-9); `untrack` makes it `asked` (API-15); `keep_done` never drops it while it has a waiter (STA-2); at STA-3's limit a `wait` on an untracked PR gets `limit`",
+   "04-api:H1-4": "applied: `closed` and `gone` end `merged` and `checks-done`; a merge, a close or `gone` satisfies `changed`",
+   "04-api:H1-5": "applied: `head_moved` needs a refresh sent at least 60 s after the wait began, never the clock alone; API-13 gives the latency in each quota state and says `daemon.problem` tells why a wait can only time out",
+   "04-api:H1-6": "applied with change: API-12's deadline runs from the request's arrival, with the read-through and the arrival refresh counted. The CLI half (one deadline from the CLI's start, the time left on reconnect) was written by another session during this pass, so CLI-6 and CLI-10 weren't edited here.",
+   "04-api:H1-7": "applied with change: API-9's first evaluation comes after the read-through or the arrival refresh, and `timeout=0` waits for it. `changed`'s revision at arrival is taken after that refresh, as another session wrote in API-10 during this pass, not before it as first proposed (the owner chose to keep it).",
+   "04-api:H1-8": "applied: API-3 says \"a PR with a record\" is answered from memory and `github_unavailable` is for a PR with no record; API-7 and API-9 read through \"a PR with no record\"",
+   "04-api:H1-9": "applied: `auth` names the token source and its fix (POL-20); `rate_limited` covers a secondary limit and is a (proposal) on an assumed response; `not_found` labels the hidden-repository case assumed; API-5 shows the token source",
+   "04-api:H1-10": "applied: errors carry `version`; new code `unknown_route` (404), which CLI-5's code 1 already expects; `wait` answers 200 once the waiter is registered, and as API-3 when refused before that",
+   "04-api:H1-11": "applied: `outcome` is `polled`, `shared` or the problem that stopped it; `refresh` never waits out a backoff or a reset, and the CLI exits as for the API-3 error of the same name",
+   "04-api:H1-12": "dropped in verification: CLI-5 gained codes 9 and 10 and \"each API error has one code\" from another session during this pass",
+   "04-api:H1-13": "applied: API-10 says a truncated `failing` may be early and still holds `checks-done`, with `checks.truncated` kept; CLI-6's outcome line flags it. The reviewers' fix (wait for the rollup) doesn't work: the rollup reads `FAILURE` while checks still run (docs/02 §4, verified). A real fix needs a measurement, e.g. of per-state check counts.",
+   "04-api:H1-14": "parked. Read literally, \"its owner is in `owners`\" is false for every owner when `owners` is empty, so the PR is dropped, found again and re-baselined, losing what arrived in between. Fix: \"passes POL-5's owner filter\".",
+   "04-api:H1-15": "parked. Sorting by `rev` would put the last visible change first, checks included.",
+   "04-api:H2-1": "applied: an arrival refresh that isn't sent (POL-15's window, POL-19's backoff, `auth`, or POL-23 sending none) counts as failed at once; nothing waits past the deadline, which evaluates the record in memory; API-13 answers at once when memory holds the condition or an end",
+   "04-api:H2-2": "applied: `checks-done` takes `since`, and with it needs a `checks` event after `since`; a too-old `since` drops that part (proposal; a re-run isn't measured). CLI-11's guide gives the rule.",
+   "04-api:H2-3": "applied: a loaded PR's wait is held with no read-through and no arrival refresh; answered before its first refresh it has `record: null`; API-3's note says \"except by `wait`\"; CLI-6 prints `<pr> no record yet`",
+   "04-api:H2-4": "applied: the condition is checked before the ends; `merged` ends `checks-done` only while its checks aren't done",
+   "04-api:H2-5": "applied: API-4 gains `until` and an order (`auth`, `rate_limited`, `github_unavailable`, `quota_low`); `last_poll_at` is the last poll applied",
+   "04-api:H2-6": "applied: once the first poll has finished, `list` and `changes` answer with the records there are and name the rest in `pending`; only a first poll none of whose requests was answered gives the error. CLI-3 prints `pending <pr>`.",
+   "04-api:H2-7": "applied: it's `github_unavailable`, the message naming the error's `type` and the token source, never GitHub's text",
+   "04-api:H2-8": "applied: unknown parameters, keys and values are `bad_request`, never ignored; CLI-9 reads `bad_request` or `unknown_route` from an older daemon it doesn't replace as \"restart it\", exit 1",
+   "04-api:H2-9": "applied: POL-15 sends a forced refresh, a read-through and a `track` next, between a poll's requests; API-13 says so",
+   "04-api:H2-10": "applied: the record carries `error: {type, since}`, not a visible change; CLI-3's stale mark names the type",
+   "04-api:H2-11": "applied: `untrack` never reads through and answers `record: null`; `track` of a PR with a record doesn't call GitHub, and of a loaded one sets the saved `source`",
+   "04-api:H2-12": "applied: only PRs dropped after the cursor and not tracked now",
+   "04-api:H2-13": "parked. A `track` or `refresh` in progress when the daemon stops (a replacement, an idle exit) loses its connection, and the CLI can't tell whether it took effect. Fix: answer from memory or with a new `stopping` (503) code, and the CLI repeats once; every route is idempotent.",
+   "04-api:H2-14": "parked. A wait on an untracked PR with a cursor from `list` reads it through, which takes a revision with a lone `tracked` event, so the wait is satisfied at once though nothing changed on GitHub. Fix: a `tracked` event with no other kind doesn't hold `changed`.",
+   "04-api:H2-15": "parked. POL-10 refreshes an ended PR only every `idle_interval` \"whatever the tier\", which contradicts API-13's \"a waiter makes its PR hot\". Fix: POL-10 adds \"unless it's hot\". Closed in 02-polling pass 3 (H3-9): POL-10's period table puts hot first.",
+   "04-api:H2-16": "parked. POL-26's list of monotonic durations doesn't name them, and the 5 s age is read from `fetched_at`, a wall time; after the clock is set back, no arrival refresh happens. Fix: both on the monotonic clock, from the refresh's send.",
+   "04-api:H2-17": "parked. Nothing says a waiter is bound to the node ID, and the `again:` line repeats the old name. Fix: waiters are bound to the node ID; `again:` names the answer's `pr`.",
+   "04-api:H2-18": "parked. Fix: a `config_changed` warning, checked with STA-11's minute check.",
+   "04-api:H2-19": "parked, for the security lens. Fix: check each connection's peer user ID (`SO_PEERCRED`, `getpeereid`), or refuse a `CIRCITOR_SOCKET` in a directory others can write to.",
+   "04-api:H3-1": "applied: the re-run rule moves to a new `rerun_since` (`--rerun-since`); `since` only sets where the answer's events start, for every condition; `sha` and `rerun_since` are `checks-done`'s only, `bad_request` with another condition; `again:` repeats `--rerun-since` as given; CLI-11's guide names it",
+   "04-api:H3-2": "applied: `0` waits for its first evaluation, the one wait that can outlast its deadline (H1-7's meaning kept); a deadline that passes during a read-through answers 200 `timeout` with `record: null`, and the read-through goes on; `daemon.problem` says why only when a problem holds; the CLI sends no request with under 1 s left, unless the user gave `--timeout 0`",
+   "04-api:H3-3": "applied: new API-19 table of each route's keys (lists never left out, flags `false`); API-5 names its keys; API-3's error gains `until`; API-4's parentheses are explanations, not values (proposal: the names). The event's own shape stays with 01-model H1-17.",
+   "04-api:H3-4": "applied: a table of six codes, each with what raises and what clears it (proposal: the codes)",
+   "04-api:H3-5": "applied: done once every request of the poll (POL-7, POL-8, POL-12) and the new PRs' first refreshes have answered or failed; `polled` needs every request answered, otherwise the problem; the points count every request sent",
+   "04-api:H3-6": "applied: the one-PR form is `GET /v1/prs/{owner}/{repo}/{number}/changes`; routes with a PR in their path don't wait and read a PR with no record through, but `wait` and `untrack`. Also settles pass 1's out-of-scope note on API-18's wording.",
+   "04-api:H3-7": "applied: API-9 lists the arrival in order (parameters, limits, read-through, registration and headers, arrival refresh, first evaluation); `Circitor-Cursor` is the cursor at registration; without `since` the events are those after it. `changed`'s base stays after the refresh (H1-7).",
+   "04-api:H3-8": "applied: a one-PR answer's cursor covers that PR only, and a wait's events are its PR's; the guide says so",
+   "04-api:H3-9": "applied: flags take `1` or `0`; `limit` is 1 to 500; `sha` is 7 to 40 hex characters, compared without case; a value out of range is `bad_request`, never clamped",
+   "04-api:H3-10": "applied: one rule in POL-15, a forced refresh of one PR only when its last refresh of any kind was sent more than 5 s ago, on the monotonic clock (30 s capped or in reserve); API-13 cites it. Settles the 5 s half of parked H2-16; a `show --fresh` loop now costs at most 720 points an hour.",
+   "04-api:H3-11": "applied: ties broken by `pr`; `untracked` and `pending` sorted by `pr`",
+   "04-api:H3-12": "applied: at any time after the first poll, including a PR found by a later poll",
+   "04-api:H3-13": "parked. Overlaps parked H1-14. Simpler: `untrack` makes a `manual` PR `asked`, and the next poll's finding makes the user's own one `authored` again (POL-5); one branch, no owner check in the API. Lost: an untracked PR that isn't the user's own stays as `asked` for up to 60 minutes.",
+   "04-api:H3-14": "parked. Fix: `head_moved` only when the head matched once and then changed; a SHA that never matches ends as `timeout`, whose line names both heads. Settles parked H2-16's 60 s half and 05-cli H2-13.",
+   "04-api:H3-15": "parked; a product choice. Removing it drops the `untracked` filtering, a reset path and CLI-3's exception to the 50-line cap; `changes --since` and `show` give the same.",
+   "04-api:H3-16": "parked. CLI-3 reads only `problem`, `message` and `until`; `status` carries the tier and the last poll itself. Fix: `daemon` is `{problem, message, until}`.",
+   "05-cli:H1-1": "applied: CLI-3 prints a reset line and one `list` line per record before the events",
+   "05-cli:H1-2": "applied: an open match first; with none, a poll (API-16) and a second look; then the most recent merged or closed match, said so; two matches of one kind are exit 2; a fork clone needs the full form (forks not measured)",
+   "05-cli:H1-3": "applied with change: CLI-6 holds one deadline for the whole command, and each request passes the time left; CLI-10 reconnects with the time left and ends as a timeout with none. The lost change is covered by the other session's `Circitor-Cursor` (API-9), so the proposed \"read the cursor first\" bullet was dropped.",
+   "05-cli:H1-4": "applied: only an older daemon is replaced; a `wait` checks `GET /v1/status` first; a newer or `foreground` daemon is used with a warning; one replacement per command; CLI-8's commands never replace. API-5 gains `mode`; API-2 freezes `status`'s `version` and `mode` and `shutdown`.",
+   "05-cli:H1-5": "applied: code 9 for `starting`, `github_unavailable`, `rate_limited`; code 10 for `limit`; 130 and 143 for signals; each API error has one code; an unknown route is 1; code 5 marks its assumed fact (docs/02 §5); code 9 says `gh` doesn't help",
+   "05-cli:H1-6": "applied: a `problem:` line before the cursor, naming the problem and what to do; exit codes unchanged",
+   "05-cli:H1-7": "applied: the example carries `--since` and ends with `cursor:`; the line repeats only the parameters given",
+   "05-cli:H1-8": "applied: one line per event kind and per item; `review none -> changes_requested` vs `new review …`; `fetch_inline` printed when `inline` is above 0; a line for `more: true`",
+   "05-cli:H1-9": "applied: the bare form is for `show` and `wait`; `changes` without `PR` covers every tracked PR",
+   "05-cli:H1-10": "applied: the cap applies only without `--since`",
+   "05-cli:H1-11": "applied: only a missing socket file or a refused connection spawns; any other error is exit 6 naming `sandbox.network.allowUnixSockets` (proposal; the errors aren't measured)",
+   "05-cli:H1-12": "applied: the CLI waits up to 8 s, within the command's one deadline",
+   "05-cli:H1-13": "parked. One idea: stdin and stdout to `/dev/null`, stderr to the log until the daemon opens its own log and takes stderr over; or rotate by copy-and-truncate.",
+   "05-cli:H1-14": "parked. Fits the targeted \"agent UX and output size\" lens.",
+   "05-cli:H1-15": "parked. Related to specs/reviews/01-model.md H2-12.",
+   "05-cli:H2-1": "applied: CLI-6 lists every outcome line with the head it's about, `no checks reported` included; with `--sha` and another head, the timeout line names both heads",
+   "05-cli:H2-2": "applied: a reconnecting wait never starts a daemon; it waits up to 8 s for one, else exit 6 `daemon stopped` with `again:`. OPS-7 changed to match.",
+   "05-cli:H2-3": "applied: any command with `--since` checks the version first, as a `wait` does",
+   "05-cli:H2-4": "applied: the poll's answer doesn't end the search; an ended match (`merged`, `closed`, `gone`) by latest `closed_at`; two open matches are exit 2; exit 2 means GitHub was read; a problem exits with its own code; API-16's \"done\" includes the first refresh of new PRs",
+   "05-cli:H2-5": "applied: CLI-7 gives every request a CLI-side limit (wait: deadline + 10 s; refresh, track, show --fresh: 60 s; the rest: 20 s; proposal)",
+   "05-cli:H2-6": "applied: CLI-6 defines the line; `again:` and `cursor:` use the `--since` given, or the first `Circitor-Cursor`, never a later one",
+   "05-cli:H2-7": "applied: the CLI creates the state directory and opens the log, watches the child's exit, and runs `--check-config` before replacing",
+   "05-cli:H2-8": "applied with change: merged onto the other session's `until`; API-4 adds `message`, and `github_unavailable` and `rate_limited` errors carry `until`; CLI-3 prints the code and the message with a relative time; code 9 says when to try again, or in a minute",
+   "05-cli:H2-9": "applied: API-8 and API-9 take `limit` and answer `more_events: true` (named apart from MOD-15's `more`); the CLI prints at most 50 events and a `more events:` line (proposal: 50)",
+   "05-cli:H2-10": "applied: `show` adds a `wait --until changed` hint on `unknown`; the guide says never to loop `show --fresh`",
+   "05-cli:H2-11": "applied: any other command, and a wait dropped before its `Circitor-Cursor`, is tried once more as a new command",
+   "05-cli:H2-12": "applied: the path's length is checked first; only a denied permission names the sandbox; `status` and `stop` read connect errors as CLI-7 does",
+   "05-cli:H2-13": "parked. `head_moved`'s 60 s run per wait, so repeated 30 s waits with a wrong SHA never end it. H2-1's timeout line now names both heads. One idea: count the 60 s from the first waiter on that PR with that `sha`.",
+   "05-cli:H2-14": "parked. The other session's API-3 now maps non-`NOT_FOUND` errors to `github_unavailable`, so exit 9 tells the agent to retry something that won't change. The responses aren't measured (docs/02 §6).",
+   "05-cli:H2-15": "parked. `origin` keeps the old name; the bare form never matches and forces a poll each call. GraphQL's handling of a renamed repository isn't measured.",
+   "05-cli:H2-16": "parked. One idea: `checks 300 of 400 read, 0 failed among them (truncated)`, and `show` adds the PR's checks page.",
+   "05-cli:H2-17": "parked. One idea: on failure stdout is empty and the line goes to stderr.",
+   "05-cli:H2-18": "parked. A set-aside or newer `state.json` empties the manual set unnoticed. One idea: a `warnings: 2, see circitor status` line.",
+   "05-cli:H2-19": "parked",
+   "05-cli:H2-20": "parked. The output of `track` and `untrack` isn't specified at all.",
+   "05-cli:H2-21": "parked",
+   "05-cli:H3-1": "applied with change: the other session's split, named `rerun_since` / `--rerun-since` rather than the proposed `after`; `since` is only where events start",
+   "05-cli:H3-2": "applied: `#12` dropped; CLI-2 says why",
+   "05-cli:H3-3": "applied: CLI-10 runs `again:` (no spawn once `Circitor-Cursor` arrived), so a replaced wait of any condition gets `reset: true`; CLI-6 lists three endings with codes 3, 6, 6; `again:` names the PR in full",
+   "05-cli:H3-4": "applied: 100 s default in CLI-6; rounded down; `--timeout 0` limit 60 s (the under-1-s rule was the other session's)",
+   "05-cli:H3-5": "applied: every command reads `GET /v1/status` first, no \"repeats the request\"; OPS-11 gives `MAJOR.MINOR.PATCH+<commit>`; build metadata ignored; an unparseable version is never replaced. Closes 06-operations H1-18.",
+   "05-cli:H3-6": "applied: both wait up to 8 s for the lock to be released; `stop` then falls through to the `SIGTERM` rule, a replacement keeps the old daemon with a warning",
+   "05-cli:H3-7": "applied: a `wait`, its deadline + 10 s (`--timeout 0`, 60 s); any other request 90 s",
+   "05-cli:H3-8": "applied: one Connecting rule in CLI-7 (own path, then the lock file's, warning); CLI-8, CLI-10 and OPS-4 cite it",
+   "05-cli:H3-9": "applied: CLI-13 makes the inputs injectable and names the clock for each duration; TST-5 gains the CLI's inputs, a git repository and another daemon version; TST-8 `bare-pr`; three TST-9 checks; CLI-7's log lines bounded to 20 the new daemon wrote",
+   "05-cli:H3-10": "applied: upstream branch name; detached HEAD exit 2; only PRs whose `author` is the login in use; exit 2 scoped to after the poll. Closes the CLI half of 01-model H1-18.",
+   "05-cli:H3-11": "applied: one line per event kind (the `review` line now prints only the new value, as MOD-15 carries); durations; title quoting; the order after the events; `refresh`, `stop` and `status` lines; the `--json` command list. The layout stays (proposal).",
+   "05-cli:H3-12": "applied: folded into one place each; OPS-7 cites CLI-10 without the value",
+   "05-cli:H3-13": "parked. `list --since` and a reset already print up to 200 lines; PRs past 50 have no text-mode command. One idea: drop the cap, or cut titles instead.",
+   "05-cli:H3-14": "parked. One idea: a TST that `circitor guide` equals both copies (the skill after its front matter), is under 60 lines, names every CLI-5 code; CLI-12 checked with stdin closed and stdout a pipe.",
+   "06-operations:H1-1": "applied: the range is 15–300 s, with a note under the table saying why",
+   "06-operations:H1-2": "applied: OPS-7 stops accepting and removes the socket first, so a reconnecting waiter starts a new daemon; it writes the state file unless STA-8 left it alone; OPS-8's idle exit stops as OPS-7 does",
+   "06-operations:H1-3": "applied: a CLI that can't connect tries the socket path in `circitor.lock` before spawning, with a warning naming both paths; CLI-7 follows. Covers the CLI half of 03-state H2-18.",
+   "06-operations:H1-4": "applied: `gh` is also looked for next to circitor's own binary; a `gh` that can't be run is reported as such, naming `gh_path`, in `status` and in API-3's `auth` message",
+   "06-operations:H1-5": "applied: free text from a response is never logged; names, numbers, states, costs and error `type`s may be. The Logged list adds API-5's warnings, STA-7's failed write, POL-3's failed token read and POL-24's per-PR error.",
+   "06-operations:H1-6": "applied: a spawned daemon uses gh's login only, since CLI-7 starts it without `GH_TOKEN` and `GITHUB_TOKEN`; a foreground daemon still reads them; API-3's `auth` fix says so",
+   "06-operations:H1-7": "applied: the token is read after the socket is bound; until the first read ends, the first poll and read-throughs wait for it, and `status` answers at once; STA-11's start order follows",
+   "06-operations:H1-8": "applied: OPS-1 requires `hot_interval` ≤ `interval` ≤ `idle_interval`, checked like a range",
+   "06-operations:H1-9": "applied: the README gives `sandbox.excludedCommands` (CLI and daemon outside the sandbox) or `allowUnixSockets` (Linux rule assumed); CLI-7's exit-6 message names both",
+   "06-operations:H1-10": "applied: the range stops at 7 days, with a note under the table",
+   "06-operations:H1-11": "applied: a foreground daemon runs the old version until it's restarted, and the CLI warns until then",
+   "06-operations:H1-12": "applied: a cask needs a notarised binary, a formula doesn't; the README installs with the full name, which trusts the tap item",
+   "06-operations:H1-13": "parked",
+   "06-operations:H1-14": "parked",
+   "06-operations:H1-15": "parked",
+   "06-operations:H1-16": "parked",
+   "06-operations:H1-17": "parked",
+   "06-operations:H1-18": "parked",
+   "06-operations:H2-1": "applied: OPS-7 and API-14 close every open connection without an answer, waiters' and others' alike; the other session's CLI-10 repeats them. Covers 04-api H2-13.",
+   "06-operations:H2-2": "applied: the stop has a 5 s deadline; the final write skips STA-7's spacing, `gh` is killed; past it, exit 1; a second signal does the same at once; `SIGHUP` stops it as `SIGTERM`; a failed final write exits 1",
+   "06-operations:H2-3": "applied with change: only a missing file means the defaults; unreadable, invalid TOML or a wrong type stops the daemon; the config is read first, its error on stderr. The CLI half was already done by the other session (CLI-7 watches the child, CLI-9 checks before replacing), so OPS-1 points to it instead of a separate pre-check.",
+   "06-operations:H2-4": "applied: a foreground daemon asks a spawned holder to shut down and takes the lock; a second foreground daemon exits with an error naming the holder's socket; STA-11 follows. Covers 04-api's out-of-scope note on STA-11.",
+   "06-operations:H2-5": "applied: three outcomes (a token; no login, which drops the token; a failure, which keeps it and never says log in); one read at a time; `gh`'s output never logged; the login logged and in `status`. Rests on docs/04 §8 item 4 (Keychain), so (proposal).",
+   "06-operations:H2-6": "applied: Homebrew's `bin` by its fixed paths, never where the binary resolves to; `gh` looked up again at each read (proposal; Homebrew's layout isn't in docs/04)",
+   "06-operations:H2-7": "applied: once locked, the file is truncated and holds one line, the process ID and the socket path; a reader takes only a complete line; `stop` with no answer sends `SIGTERM`, then `SIGKILL` 5 s later, while that lock is held",
+   "06-operations:H2-8": "applied: an existing directory of the user's is set to 0700, anyone else's stops the daemon (also the socket's directory); the socket is bound under umask 077; at start only a socket that refuses connections is removed. 04-api H2-19 (peer user ID) stays parked for the security lens.",
+   "06-operations:H2-9": "applied: new OPS-18 (proposal): the README's plist and unit run Homebrew's `bin/circitor`, restart on failure only, keep stderr, and name the restart command; OPS-15 cites it",
+   "06-operations:H2-10": "applied: the range is 15–30 s, the note says three times it stays within API-12's 100 s",
+   "06-operations:H2-11": "applied: the stop's cause and a noticed sleep are logged; times are RFC 3339, UTC",
+   "06-operations:H2-12": "applied: logging never stops the daemon; a failed line is dropped, a failed rotation retried at the next 5 MB; either raises a warning",
+   "06-operations:H2-13": "parked",
+   "06-operations:H2-14": "parked",
+   "06-operations:H3-1": "applied: the foreground daemon repeats the takeover until it holds the lock or 15 s pass, then exits 1, never 0; STA-11 retries every 100 ms",
+   "06-operations:H3-2": "applied: a token is stdout's one line, stderr ignored; no login is a non-zero exit with `no oauth token found` on stderr, read for that only; anything else is a failure. The local measurement went to docs/05 and docs/02 §1.",
+   "06-operations:H3-3": "applied: the directory rule covers circitor's own directories; a `CIRCITOR_SOCKET` directory is used as it is; the override must be absolute; an empty one, or an empty or relative XDG variable, counts as unset. A socket in a shared directory leans on the peer check parked as 04-api H2-19.",
+   "06-operations:H3-4": "applied: every stop exits 0, problems logged, status 1 is for a crash; OPS-18's README says a daemon `stop` had to kill is restarted, and how to stop a service",
+   "06-operations:H3-5": "applied: OPS-4 defines it (a complete `GET /v1/status` response within 2 s); STA-11 cites it",
+   "06-operations:H3-6": "applied: until the first read ends the daemon isn't in `auth`, and every request that needs GitHub waits for it; POL-20's `auth` begins when the first read ends without a token",
+   "06-operations:H3-7": "applied: a `gh_path` with `/` is absolute and the only one tried; a name is looked up in `PATH`, then Homebrew's `bin`; `status` shows the path run. The simplifier's alternative (drop the fixed Homebrew paths, set `PATH` in OPS-18's files) wasn't taken.",
+   "06-operations:H3-8": "applied: the token source is `gh auth token` alone; the source in use is the variable set or gh's login; OPS-5 says `GH_CONFIG_DIR` and `XDG_CONFIG_HOME` still come from the spawning shell",
+   "06-operations:H3-9": "applied: exit 0 when missing or valid, else exit 1 with the one-line message on stderr; CLI-9 checks in its own process",
+   "06-operations:H3-10": "applied: `<time> <level> <message>`, four levels, `info` default; both modes log to stderr; the CLI, not the daemon, rotates a log over 5 000 000 bytes to `circitor.log.1` before starting a daemon (the daemon rotating at its start would break CLI-7's reading of the log's last lines); the retry and its warning are gone. Settles 05-cli H1-13.",
+   "06-operations:H3-11": "applied: the key and its note are gone; MOD-6 states a fixed 20 s with the reasoning, as (proposal); TST-8's `no-ci` follows",
+   "06-operations:H3-12": "applied: pointers to CLI-7 and CLI-9 in their place (the other session had already done OPS-4 and OPS-7)",
+   "06-operations:H3-13": "parked",
+   "06-operations:H3-14": "parked",
+   "07-testing:H1-1": "applied: TST-1 defines a test build as the `test-endpoint` feature (address from `CIRCITOR_TEST_GITHUB`, loopback only, `exit_after` down to 1 s; the release build has neither); TST-9 runs every real-process test on a test build with temporary XDG directories and `GH_CONFIG_DIR`, a fake `gh` through `gh_path`, and stops every daemon it started",
+   "07-testing:H1-2": "applied: a corrupt file is set aside with `state_file_set_aside`; a newer one is left unchanged and never written, with `state_file_newer`",
+   "07-testing:H1-3": "applied: `merged` and unfinished `checks-done` waits end with `closed`, exit 4; `changed` is satisfied, exit 0",
+   "07-testing:H1-4": "applied: 5 minutes and at least three refreshes; three in under 5 minutes stay `stale`; a changed login or every PR `NOT_FOUND` never makes it gone",
+   "07-testing:H1-5": "applied: only an older daemon is replaced, a newer, foreground or unparsable one is kept, and after a `stop` a waiting CLI starts none; TST-9 adds the stop's deadline, the foreground takeover, `stop` on a hung daemon, an unwritable log, and codes 130 and 143; TST-7 adds `refresh`, `stop`, CLI-6's outcome lines and `more events:`; TST-5's fake token source gives a token, no login or a failure",
+   "07-testing:H1-6": "applied: the test world is stated (nothing changes, `mergeable` known); a hot PR adds at most 250 in the active tier and 350 in the idle; capped sends forced refreshes, reading through, `track` and their POL-12 requests in 30 s windows; `slowed`, `exhausted` and `secondary` are tested",
+   "07-testing:H1-7": "applied: new rows `restart`, `starting`, `head-moved`, `rerun`, `waiter-limit`",
+   "07-testing:H1-8": "applied: the workflow PR in `yachiko/experiment` is closed unmerged (`wait --until merged` exits 4 with `ended: closed`); a second PR without a workflow is merged",
+   "07-testing:H1-9": "applied: items 1, 2, 4 and 6 (a `wait` across a lid close, on macOS and Linux); the sandbox check on macOS and Linux with each setting; results go into docs/05 on the owner's say",
+   "07-testing:H1-10": "applied: every timeout circitor sets (POL-2, OPS-5, CLI-7) runs on the clock trait; only TST-9 waits on the wall clock",
+   "07-testing:H1-11": "applied: cost by GitHub's formula, checked against every row of the measured table; `Date` and `x-ratelimit-*` headers; a changeable `viewer.login`; a default world as docs/02 §4 records; a 200 without `data`; the rate-limit answers labelled assumed",
+   "07-testing:H1-12": "applied: step 1 uses `--limit 200`, a minute after the last change, with `owners` empty and nothing tracked by hand; step 4 compares `remaining`'s fall in one reset window with the debug log's costs",
+   "07-testing:H1-13": "parked. No log has an early commit status (c1.log's was posted at +40 s) or a head without checks for 40 s. Idea: \"Timings marked (measured) come from the logs; the others are chosen to test a rule.\"",
+   "07-testing:H1-14": "parked. `blocked`, required checks and over 100 checks can't be recorded in `yachiko/experiment` (no branch protection); recording is a live measurement needing the owner's OK. Idea: one JSON response per file beside its query; read-only recordings from public repositories, or hand-written ones marked so.",
+   "07-testing:H1-15": "parked. CLI-3 prints local times (`until 14:05 local`), so the time zone is an input; CLI-13 should name it.",
+   "07-testing:H2-1": "applied: `HOME`, every XDG directory and `GH_CONFIG_DIR` in one temporary directory under `/tmp` (socket path under 103 bytes); `exit_after` a few seconds; a 30 s limit; daemons found through `circitor.lock` are stopped; OPS-4's long path and non-socket file are tested",
+   "07-testing:H2-2": "applied: the harness can crash the daemon; rows `restart-offline`, `crash`, `files-removed`; TST-9 adds `SIGKILL` with a waiting CLI",
+   "07-testing:H2-3": "applied: each timer fires at its own due time, in order, settling after each; a sleep moves the wall time alone or both clocks; the wall time can be set back; TST-6 has lower bounds (110 and 11 polls); `sleep` runs both ways; new row `clock-back`",
+   "07-testing:H2-4": "applied: new row `retention`",
+   "07-testing:H2-5": "applied: new row `first-run`; the fake token source can be slow; TST-9's fake `gh` gives every outcome, and the reader tells them apart and kills a hung `gh`",
+   "07-testing:H2-6": "applied: writes go through a fakeable file-system interface; a power cut, a full disk, a denied write and a leftover temporary file are tested",
+   "07-testing:H2-7": "applied: a request ends when answered or its connection closes; a hung answer watches its connection; the 1 s gap is checked",
+   "07-testing:H2-8": "applied: the test sets `remaining` and the reset time and can make them lag; no `x-ratelimit-reset`, 403 and 200 secondary forms, a jump past the reset; at most one follow-up per refresh, shared at start, none when capped or in reserve",
+   "07-testing:H2-9": "applied: the fake has its own clock with a settable skew, and `Date` comes from it; `settled-at-once` with the local clock 5 minutes behind; `sleep` with a PR merged meanwhile",
+   "07-testing:H2-10": "applied: non-JSON and cut bodies, a redirect (not followed) and a refused connection; a hang abandoned at 20 s; one read-through per backoff step; new row `pr-error`",
+   "07-testing:H2-11": "applied: the fake pages over the live world; new row `many-prs`; check-page edges and a failed second page; 200 PRs cost at most 600 points an hour",
+   "07-testing:H2-12": "applied: new row `track-untrack`; `renamed` adds a held wait, a read-through under the new name, and a transfer out of `owners`",
+   "07-testing:H2-13": "parked. Idea: a `config-restart` row (narrowed `owners` demotes loaded `authored` PRs to `asked`, a shorter `keep_done` drops entries on loading); TST-9: an older daemon kept when the CLI rejects the config, `--check-config`'s exit status, log rotation at 5 MB.",
+   "07-testing:H2-14": "parked. Idea: `tests/compat/<version>/` holds each release's `status` response, `shutdown` exchange and `state.json`, never rewritten by TST-7's update flag; the current CLI and daemon must read each.",
+   "07-testing:H2-15": "parked (with H1-14). Idea: each fixture stores its query; a changed production query fails until re-recorded; the fake's answer to a fixture's query has the same keys and types; fixtures are re-recorded before each release under docs/05's rules.",
+   "07-testing:H2-16": "parked. Idea: the fake scripts a re-run as a new `databaseId` and as the same one returning to `queued`; run both, including one that finishes between two reads. The spec side is out of scope (below).",
+   "07-testing:H2-17": "parked. Idea: an answer delay in the fake; each threshold read 1 s before, at and after; `late-ci` with none for 70 s.",
+   "07-testing:H2-18": "parked. Idea: a review moves `updatedAt` up to 13 s after its count; a `no-change` row: only `updatedAt`, a falling count, `review_threads` or a check's `url` takes no revision.",
+   "07-testing:H2-19": "parked. Idea: a step 7 with a real `brew upgrade` while a `wait` is held, a check that the tap's binary ignores `CIRCITOR_TEST_GITHUB`, and what `brew uninstall` leaves; TST-9 checks only STA-12's files are written.",
+   "07-testing:H3-1": "applied: `CIRCITOR_TEST_VERSION`, `CIRCITOR_TEST_CLI_LIMIT`, `CIRCITOR_TEST_STOP_DELAY`; `CIRCITOR_TEST_GITHUB` is a full loopback URL, and a test build without it stops; `required-features` and `cargo test --features test-endpoint`; a hung daemon is one sent `SIGSTOP`, with the CLI's limit at 2 s; the kept-daemon cases (newer, foreground, unparsable) move in-process to TST-5",
+   "07-testing:H3-2": "applied: settled is a count of work in flight that a test build keeps, with scripted hangs and held waiters aside, and every accepted connection answered, closed or held; timers due at one instant fire in the order set",
+   "07-testing:H3-3": "applied: the fake `gh` prints `GH_TOKEN`, else `GITHUB_TOKEN`, else the marker, as gh does; `GH_TOKEN` is set to a second marker the fake GitHub must never receive; every test uses a marker token and searches for it at its end; the fake `gh` prints it on stderr and before failing; titles, error messages and the 401 body carry markers that never reach the log or the state file",
+   "07-testing:H3-4": "applied: GitHub's clock only moves forward, with advances and sleeps; setting the local wall time back leaves it; the 1 s gap is measured on the test clock's monotonic time",
+   "07-testing:H3-5": "applied: the checks are per daemon, starting afresh at each start, and per process in TST-9",
+   "07-testing:H3-6": "applied: by default the daemon is `spawned` with OPS-2's defaults but `exit_after` 0, logs to a buffer the test reads, and is given its state directory and socket path under `/tmp` directly",
+   "07-testing:H3-7": "applied: a fixed seed; the test clock starts at 2026-11-24T22:00:00Z; `<tmp>` and `<os error>` replace paths and OS error text; the update flag is `CIRCITOR_UPDATE_GOLDEN=1`",
+   "07-testing:H3-8": "applied: the fake records the node IDs each request asked for; TST-6 gives a hot PR a lower bound (230 refreshes in the active hour), checks what makes a PR hot, and the ended and `asked` rate; new row `forced`",
+   "07-testing:H3-9": "applied: TST-15 tests the derivations as tables over single records, with one case per row and per adjacent pair of `status` rows; `many-checks` adds the truncated states by rollup",
+   "07-testing:H3-10": "applied (the light fix): where a row and its requirement differ, the requirement wins, and a row's values are today's defaults; TST-6's figures scale with the config; `track-untrack` now follows API-15; `push-no-checks-yet` folded into `late-ci`. Not done: rewriting every row to state only its world.",
+   "07-testing:H3-11": "applied: file modes and OPS-17's memory and latency in TST-9; each state's `daemon.problem` and the quota warnings in TST-6; `--json` keys and `bad_request` in TST-7",
+   "07-testing:H3-12": "applied: the fake checks each query against GitHub's public schema in `testdata/github/schema.graphql`, answers only the fields asked, and costs from the connections; the cost test's queries are in `tests/cost/`",
+   "07-testing:H3-13": "parked. Idea: a `wait-deadline` row: a hung read-through answers `timeout` with `record: null` at the deadline; a spawn that took 7 s of 30 sends `timeout=23`; under 1 s left sends nothing and exits 3; an arrival inside POL-15's window or the backoff is evaluated at once.",
+   "07-testing:H3-14": "parked. Idea: the harness's repository can have an upstream of another name, a detached HEAD, or an `origin` not on github.com; `bare-pr` adds another author's PR on the same branch (never matches), the upstream's name matching, and a `rate_limited` poll with no match exiting 9.",
+   "07-testing:H3-15": "parked. Idea: `checks-done` doesn't hold before a refresh sent 20 s after the head was first read, then only once the workflow's checks finish; step 4 agrees within 10 points.",
+   "07-testing:H3-16": "parked. Idea: the fake file system records calls; a test checks write, sync, rename in that order, and that stopping after any step leaves the old or the new file."
+  }
+ }
+}

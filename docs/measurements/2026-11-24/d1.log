@@ -1,0 +1,3 @@
+    0.0s 22:28:07 {"state":"OPEN","draft":false,"upd":"2026-11-24T22:28:05Z","head":"b53ffa6","mergeable":"UNKNOWN","mss":"UNKNOWN","comments":0,"rollup":null,"checks":[],"inViewerOpen":true,"inSearchOpen":false,"searchHead":null,"cost":1}
+    2.8s 22:28:10 {"state":"OPEN","draft":false,"upd":"2026-11-24T22:28:05Z","head":"b53ffa6","mergeable":"CONFLICTING","mss":"DIRTY","comments":0,"rollup":null,"checks":[],"inViewerOpen":true,"inSearchOpen":true,"searchHead":"b53ffa6","cost":1}
+end 22:28:32
