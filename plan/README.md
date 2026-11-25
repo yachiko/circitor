@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **49 tasks:** 47 todo, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **49 tasks:** 46 todo, 1 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -70,7 +70,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 <!-- plan:waves -->
 | Wave | Task | Title | Kind | Size | Status | Depends on |
 |---|---|---|---|---|---|---|
-| 1 | [T01](tasks/T01-scaffold.md) | Scaffold: the package, every dependency, the toolchain, make verify | infra | S | todo | – |
+| 1 | [T01](tasks/T01-scaffold.md) | Scaffold: the package, every dependency, the toolchain, make verify | infra | S | done | – |
 | 2 | [T02](tasks/T02-contracts.md) | Contracts as code: the module tree, every seam's declarations, and the small shared types | infra | L | todo | T01 |
 | 2 | [T03](tasks/T03-ci.md) | CI: format, lints and every test on Linux and macOS, and the four release targets | infra | S | blocked | T01 |
 | 3 | [T04](tasks/T04-clock-log.md) | Clock, test clock, work in flight, sleep detection, logger and warnings | code | M | todo | T02 |
@@ -136,7 +136,7 @@ The path runs through the model, the store and the engine's poll, each an L task
 <!-- plan:graph -->
 ```mermaid
 flowchart LR
-  T01["T01 Scaffold: the package, every depe…"]
+  T01["T01 Scaffold: the package, every depe…"]:::done
   T02["T02 Contracts as code: the module tre…"]
   T03["T03 CI: format, lints and every test…"]:::blocked
   T04["T04 Clock, test clock, work in flight…"]

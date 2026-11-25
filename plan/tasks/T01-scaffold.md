@@ -4,7 +4,7 @@ title: "Scaffold: the package, every dependency, the toolchain, make verify"
 kind: infra
 milestone: M1
 size: S
-status: todo
+status: done
 depends_on: []
 requirements: [OPS-11, TST-1, U12]
 owns: [Cargo.toml, Cargo.lock, build.rs, rust-toolchain.toml, rustfmt.toml, Makefile, .gitignore, CLAUDE.md, src/lib.rs, src/main.rs, src/version.rs, tests/real/]
@@ -89,3 +89,12 @@ The first task: the repository holds only `specs/`, `docs/`, `plan/` and a root 
 - **The library list is a (proposal)** in 00-overview; this task's list is the plan's confirmation of it. If a crate can't be resolved or a named use needs a feature that doesn't exist, report it; don't substitute another crate.
 - **D5** (formula or cask, the release tool) doesn't touch this task: no release configuration goes into `Cargo.toml` here.
 - **Whether anything macOS-only compiles from Linux** is decided by your `check-macos` attempt. If it's left out, the first macOS compile is CI's (T03, T38).
+
+## Evidence
+- **2026-11-26**, branch `t01-scaffold` (commit 53eb611), executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- In the worktree and again on main: `make verify` passes (fmt, both clippy runs, 2 unit tests: `ops11_version_is_semver_with_commit`, `tst1_test_version_replaces_it`).
+- `cargo build --release && ./target/release/circitor` prints `0.1.0+977b852`.
+- `cargo tree -e normal | grep -c apollo-compiler` is `0`; with `--features test-endpoint` it's `1`. `strings target/release/circitor | grep -c CIRCITOR_TEST_VERSION` is `0`.
+- `cargo test --features test-endpoint --test real`: passes, 0 tests.
+- **rustls provider: `aws-lc-rs` 1.19.0** (`aws-lc-sys` 0.47.0); it builds on Linux without cmake or nasm. Resolved: reqwest 0.13.5 (features `rustls`, `json`), apollo-compiler 1.33.1.
+- **`check-macos` is not in `verify`:** `aws-lc-sys` stops with `cc: error: unrecognized command-line option '-mmacosx-version-min=11.0'`. The make target stays for running by hand; the darwin target isn't in `rust-toolchain.toml`. Per P9, macOS is first compiled on the owner's Mac or in CI.

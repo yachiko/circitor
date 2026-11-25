@@ -6,11 +6,11 @@
    "id": "T01",
    "title": "Scaffold: the package, every dependency, the toolchain, make verify",
    "kind": "infra",
-   "status": "todo",
+   "status": "done",
    "milestone": "M1",
    "size": "S",
    "wave": 1,
-   "remaining": 23,
+   "remaining": 22,
    "depends_on": [],
    "dependents": [
     "T02",
