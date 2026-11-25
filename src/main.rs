@@ -1,3 +1,3 @@
 fn main() {
-    println!("{}", circitor::version::version());
+    std::process::exit(circitor::cli::main())
 }
