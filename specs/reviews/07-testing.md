@@ -5,6 +5,7 @@
 | 1 | 2026-11-25 | consistency | 2/9/4 | 12 | 0 | 0 | 0 | 3 |
 | 2 | 2026-11-25 | failure modes | 2/14/3 | 12 | 0 | 0 | 0 | 7 |
 | 3 | 2026-11-25 | implementability | 3/11/2 | 12 | 0 | 0 | 0 | 4 |
+| 4 | 2026-11-25 | planning findings | 0/4/8 | 12 | 0 | 0 | 0 | 0 |
 
 ## Pass 1: consistency (2026-11-25)
 
@@ -62,7 +63,7 @@ Reviewers: 3 (facts, contracts, coherence), with 34 raw findings; 15 after mergi
 - Location: specs/07-testing.md TST-8 lead; `first-check-early` (+3 s, +8 s), `late-ci` (40 s)
 - Status: parked. No log has an early commit status (c1.log's was posted at +40 s) or a head without checks for 40 s. Idea: "Timings marked (measured) come from the logs; the others are chosen to test a rule."
 
-### H1-14 · low · TST-12 doesn't fix the fixtures' format or where untestable cases come from
+### H1-14 · low · TST-12 doesn't fix the fixtures' format or where untestable cases come from (format applied in pass 4: H4-7)
 - Location: specs/07-testing.md TST-12; docs/05-measurements.md:9 ("the testing spec decides their format"); docs/02 §4
 - Status: parked. `blocked`, required checks and over 100 checks can't be recorded in `yachiko/experiment` (no branch protection); recording is a live measurement needing the owner's OK. Idea: one JSON response per file beside its query; read-only recordings from public repositories, or hand-written ones marked so.
 
@@ -227,3 +228,56 @@ Reviewers: 3 (implementer, tester, simplifier), with 26 raw findings; 16 after m
 ### H3-16 · low · TST-10's power-cut model costs more than a check of the write order
 - Location: specs/07-testing.md TST-10; STA-7, STA-8
 - Status: parked. Idea: the fake file system records calls; a test checks write, sync, rename in that order, and that stopping after any step leaves the old or the new file.
+
+## Pass 4: planning findings (2026-11-25)
+
+No reviewers: the findings came from building the implementation plan (`plan/README.md`, "Spec issues found while planning") and from its brief writers, and were verified against the spec text. H4-4 follows the owner's choice of no CI for now (plan decision P9).
+
+### H4-1 · medium · The `many-prs` row contradicts STA-3
+- Location: specs/07-testing.md TST-8 `many-prs`; specs/03-state.md STA-3
+- Status: applied: a `show` of an untracked PR at 200 gets `limit`, and nothing is sent
+
+### H4-2 · medium · `restart-offline` asks for `pending`, which API-18 makes unreadable
+- Location: specs/07-testing.md TST-8 `restart-offline`; specs/04-api.md API-18
+- Status: applied: `list` exits 9 with `github_unavailable`, and `status` counts the loaded PRs
+
+### H4-3 · medium · TST-6's idle hot PR can't be staged for an hour
+- Location: specs/07-testing.md TST-6
+- Status: applied: the idle figure is a rate over the idle part of one 3 600 s wait
+
+### H4-4 · medium · TST-9 and TST-14 assume CI, which the owner has deferred
+- Location: specs/07-testing.md TST-9, TST-14
+- Status: applied: TST-14 is not set up for now; TST-9 runs on Linux locally and on the owner's Mac until there's CI
+
+### H4-5 · low · `sleep`'s "run both ways" assumes a sleep is always noticed
+- Location: specs/07-testing.md TST-8 `sleep`; specs/02-polling.md POL-22
+- Status: applied: where the monotonic clock counts the suspend, no sleep is noticed and the outcomes follow from the clocks alone
+
+### H4-6 · low · `mergeable-unknown`'s "after a sleep" holds only past 60 s
+- Location: specs/07-testing.md TST-8 `mergeable-unknown`; specs/01-model.md MOD-8
+- Status: applied: "a sleep longer than 60 s"
+
+### H4-7 · low · TST-12 doesn't give the fixtures' format
+- Location: specs/07-testing.md TST-12; docs/05-measurements.md
+- Status: applied: one JSON object per response (`request`, `status`, `headers`, `body`); synthetic ones beside them until real ones exist. Closes H1-14's format part and part of H2-15.
+
+### H4-8 · low · TST-13 runs "before a release" but installs from the tap
+- Location: specs/07-testing.md TST-13
+- Status: applied: on a release published to the tap, before it's announced
+
+### H4-9 · low · TST-3's per-process rules can't tell processes apart
+- Location: specs/07-testing.md TST-1, TST-3
+- Status: applied: a test build sends `x-circitor-test-pid`; the fake keeps its rules per value
+
+### H4-10 · low · `first-run`'s 5 s has no requirement behind it
+- Location: specs/07-testing.md TST-8 `first-run`; specs/02-polling.md POL-20
+- Status: applied: cites POL-20; the `list` causes the token read
+
+### H4-11 · low · Two rows cite the wrong requirements or none
+- Location: specs/07-testing.md TST-8 `track-untrack`, `conflict`
+- Status: applied: `track-untrack` cites API-9, not CLI-10; `conflict` cites MOD-11 and docs/02 §4
+
+### H4-12 · low · TST-3 doesn't say where the schema comes from
+- Location: specs/07-testing.md TST-3
+- Status: applied: names `https://docs.github.com/public/fpt/schema.docs.graphql`, fetched without a token
+

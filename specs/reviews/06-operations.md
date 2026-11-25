@@ -5,6 +5,7 @@
 | 1 | 2026-11-25 | consistency | 1/9/8 | 12 | 0 | 0 | 0 | 6 |
 | 2 | 2026-11-25 | failure modes | 0/9/5 | 12 | 0 | 0 | 0 | 2 |
 | 3 | 2026-11-25 | implementability | 0/6/8 | 12 | 0 | 0 | 0 | 2 |
+| 4 | 2026-11-25 | planning findings | 0/3/4 (+1 decision record) | 8 | 0 | 0 | 0 | 0 |
 
 ## Pass 1: consistency (2026-11-25)
 
@@ -68,7 +69,7 @@ Reviewers: 3, with 36 raw findings; 18 after merging duplicates (the shutdown or
 - Status: parked
 - Note: API-5 says `status` counts no activity for POL-13, but OPS-8 says "no client request"; `stop` and refused requests are unclear; POL-26 doesn't name `exit_after`'s clock.
 
-### H1-15 · low · OPS-12 says the skill doesn't reach pi
+### H1-15 · low · OPS-12 says the skill doesn't reach pi (applied in pass 4: H4-6)
 - Location: specs/06-operations.md OPS-12; docs/03 §1, §4
 - Status: parked
 - Note: pi and OpenCode v2 read `.agents/skills`; only OpenCode v1 needs the `AGENTS.md` section. pi puts only `name` and `description` in the prompt.
@@ -228,3 +229,40 @@ Another session hardening 05-cli edited 06-operations during this pass: OPS-4's 
 ### Out of scope, pass 3
 - specs/reviews/05-cli.md H1-13 (parked there) is settled by H3-10; that log isn't updated here.
 - specs/07-testing.md: no test yet for the foreground takeover's retry and exit 1, `gh auth token`'s outcomes with a fake `gh` through `gh_path`, `--check-config`'s exit status, or the CLI's log rotation.
+
+## Pass 4: planning findings (2026-11-25)
+
+No reviewers: the findings came from building the implementation plan (`plan/README.md`, "Spec issues found while planning") and were verified against the spec text and the facts docs. Out of scope: what API-5's `paths.state` names (04-api).
+
+### H4-1 · medium · OPS-4's umask gives the wrong mode
+- Location: specs/06-operations.md OPS-4; specs/07-testing.md TST-9
+- Status: applied: OPS-4 binds under a umask of 0177, and says a umask of 077 gives 0700 on Linux (a local bind, 2026-11-25; macOS not checked)
+
+### H4-2 · medium · OPS-9 raises a warning that has no code
+- Location: specs/06-operations.md OPS-9; specs/04-api.md API-5
+- Status: applied: API-5 gains `log_unwritable`; OPS-9 names it
+
+### H4-3 · low · `status` shows `gh`'s path, but API-5 has no key for it
+- Location: specs/06-operations.md OPS-5; specs/04-api.md API-5
+- Status: applied: API-5 gains `gh_path`
+
+### H4-4 · medium · Whether `status` keeps a spawned daemon alive
+- Location: specs/06-operations.md OPS-8; specs/04-api.md API-5
+- Status: applied: OPS-8 runs on the monotonic clock and doesn't count `status`. Also settles part of H1-14.
+
+### H4-5 · low · OPS-9 logs a stop cause the daemon can't see
+- Location: specs/06-operations.md OPS-9; specs/04-api.md API-1, API-2, API-17; specs/05-cli.md CLI-9
+- Status: applied: "replaced" and `stop` both log as a shutdown request
+
+### H4-6 · low · OPS-12 says the skill doesn't reach pi
+- Location: specs/06-operations.md OPS-12; docs/03-clients.md §1
+- Status: applied: pi is named; also closes H1-15
+
+### H4-7 · low · OPS-18's plist has no label and no stderr path
+- Location: specs/06-operations.md OPS-18
+- Status: applied: label `dev.circitor.daemon`, stderr at `~/Library/Logs/circitor.log` (proposal)
+
+### H4-8 · decision · D5 and D6 decided by the owner
+- Location: specs/decisions.md; specs/06-operations.md OPS-10
+- Status: applied: both resolved on 2026-11-25; OPS-10 names a formula written by `dist`
+

@@ -5,6 +5,7 @@
 | 1 | 2026-11-25 | consistency | 2/10/6 | 12 | 0 | 0 | 0 | 6 |
 | 2 | 2026-11-25 | failure modes | 2/11/3 | 11 (+ H1-14) | 0 | 0 | 0 | 5 |
 | 3 | 2026-11-25 | implementability | 1/7/9 | 12 | 0 | 0 | 0 | 5 |
+| 4 | 2026-11-25 | planning findings | 0/4/5 | 9 | 0 | 0 | 0 | 0 |
 
 ## Pass 1: consistency (2026-11-25)
 
@@ -72,11 +73,11 @@ Three findings rest partly on GitHub's schema from memory, not on docs/02: `stal
 - Location: specs/01-model.md MOD-2, MOD-3
 - Status: parked. Whether they can differ in one response isn't measured; asking the commit's `oid` and comparing would guard it.
 
-### H1-16 · low · A review in state `PENDING` (the viewer's own, not yet submitted) may count in `reviews.totalCount`, with no `submittedAt`
+### H1-16 · low · A review in state `PENDING` (the viewer's own, not yet submitted) may count in `reviews.totalCount`, with no `submittedAt` (applied in pass 4: H4-5)
 - Location: specs/01-model.md MOD-12
 - Status: parked. Needs a measurement; `dismissed` is in the spec's list and not in docs/02.
 
-### H1-17 · low · The event's JSON shape is undefined (`kinds` as names or as objects), "short SHA" has no length, the `checks` object has no table, and `counts`, `item`, `status` and `review` each name two things
+### H1-17 · low · The event's JSON shape is undefined (`kinds` as names or as objects), "short SHA" has no length, the `checks` object has no table, and `counts`, `item`, `status` and `review` each name two things (applied in pass 4: H4-2)
 - Location: specs/01-model.md MOD-5 to MOD-7, MOD-15
 - Status: parked (implementability: pass 3)
 
@@ -146,7 +147,7 @@ Another session hardened 02-polling and 03-state during this pass and edited thi
 - Location: specs/01-model.md MOD-5, MOD-3; decisions D6
 - Status: parked. One idea: `pending` also when the rollup says `PENDING` or `EXPECTED`; the rollup can only hold the state back. Whether an expected check appears as an item needs D6's public repository.
 
-### H2-14 · low · One node that doesn't decode can sink a whole response
+### H2-14 · low · One node that doesn't decode can sink a whole response (applied in pass 4: H4-3)
 - Location: specs/01-model.md MOD-2; specs/02-polling.md POL-21, POL-24
 - Status: parked. POL-24 now keeps a PR's error with that PR; a node that fails decoding (an unexpected `null`, a renamed field) isn't said to be handled the same way.
 
@@ -252,3 +253,44 @@ Another session edited 02-polling, 03-state, 05-cli, 06-operations, 07-testing a
 ### Out of scope
 
 - specs/02-polling.md POL-26: "a wall time ahead of now counts as now" may keep MOD-8's kept `yes` for as long as the clock is set back, depending on whether the stored time or the age is clamped.
+
+## Pass 4: planning findings (2026-11-25)
+
+No reviewers: the findings came from building the implementation plan (`plan/README.md`, "Spec issues found while planning") and from its brief writers, and were verified against the spec text.
+
+### H4-1 · medium · "The order of `pr`" isn't defined
+- Location: specs/01-model.md MOD-1, MOD-15; specs/03-state.md STA-2; specs/04-api.md API-6
+- Status: applied: owner, then repository, without case, then the number as a number
+
+### H4-2 · medium · An event's JSON shape is half-defined
+- Location: specs/01-model.md MOD-15; specs/04-api.md API-19
+- Status: applied: `kinds` is a list of objects tagged by `kind`, in the table's order; `draft` carries `draft`; a short SHA is 7 characters. Closes H1-17.
+
+### H4-3 · medium · An unlisted PR `state` or an undecodable node has no outcome
+- Location: specs/01-model.md MOD-2; specs/02-polling.md POL-21
+- Status: applied: that PR's error, with `UNLISTED_STATE`, `UNDECODABLE` or `UNTYPED`; the rest of the response is applied. Closes H2-14.
+
+### H4-4 · medium · An unlisted `mergeable` or `review` can read `ready`
+- Location: specs/01-model.md MOD-11
+- Status: applied: for `status` only, they count as `unknown` and `review_required`
+
+### H4-5 · low · A review without `submittedAt`
+- Location: specs/01-model.md MOD-12; specs/03-state.md STA-5
+- Status: applied: not an item until submitted. Closes H1-16.
+
+### H4-6 · low · The order of items inside an `activity`
+- Location: specs/01-model.md MOD-15
+- Status: applied: oldest `at` first, comments before reviews, then `id`
+
+### H4-7 · low · A rename that changes only the case
+- Location: specs/01-model.md MOD-1, MOD-14
+- Status: applied: the new spelling, without a revision
+
+### H4-8 · low · Whether `checks.settled` stays true
+- Location: specs/01-model.md MOD-6
+- Status: applied: until the next settle start
+
+### H4-9 · low · A check run with no `databaseId`
+- Location: specs/01-model.md MOD-4
+- Status: applied: matched by `name`
+

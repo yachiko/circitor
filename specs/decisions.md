@@ -16,15 +16,21 @@ Decided before the spec and binding on it: one local poller (log D1), polling wi
 | D2 | What is tracked | **The user's own open PRs, filtered to configured owners, plus PRs added by hand** (POL-4, POL-5, STA-1). No free-form searches. The owner has no organisation, so `owners` is empty by default. Decided 2026-11-24 (log D15). |
 | D3 | Comments and reviews | **What's new, with IDs and the path to fetch each, never the text** (MOD-12, POL-12). Decided 2026-11-24 (log D16). See below. |
 | D4 | Hosts and accounts | **github.com and gh's active account** in v1 (OPS-5). Decided 2026-11-24 (log D17). |
+| D5 | Formula or cask, and the release tool | **A formula written by `dist`** (OPS-10). Decided 2026-11-25. |
+| D6 | Measuring required checks and reviews before v1 | **Not before v1:** `blocked` and `behind` are built as (proposal) (MOD-9, MOD-11); measured later on a small public repository, if the owner creates one. Decided 2026-11-25. |
 
 ## Open
 
-| # | Decision | Recommendation |
-|---|---|---|
-| D5 | **Formula or cask, and the release tool** (OPS-10). The tap's other tools are casks written by GoReleaser. `dist` builds Rust releases and writes a formula, not a cask (docs/04 §3). | A formula written by `dist`: it's the maintained path for Rust, and a formula isn't quarantined (docs/04 §2). Check first whether GoReleaser builds Rust, which would keep one tool across the tap (docs/04 §8). |
-| D6 | **Whether to measure required checks and reviews before v1.** They can't be set up on a private repository without a paid plan, so `blocked` rests on observation of other people's repositories, and `behind` on GitHub's documentation alone (docs/02 §4, §6). A check's `required` isn't read in v1 (MOD-3). | Build them as (proposal) for v1. Measure later on a small public repository, if the owner agrees to create one. |
+None.
 
 ## Notes on resolved decisions
+
+**D5: the release tool** (resolved 2026-11-25)
+- The tap's other tools are casks written by GoReleaser. `dist` builds Rust releases and writes a formula, not a cask (docs/04 §3).
+- A formula isn't quarantined, so the binary needn't be notarised (docs/04 §2). Whether GoReleaser builds Rust wasn't checked (docs/04 §8).
+
+**D6: required checks and reviews** (resolved 2026-11-25)
+- They can't be set up on a private repository without a paid plan, so `blocked` rests on observation of other people's repositories, and `behind` on GitHub's documentation alone (docs/02 §4, §6). A check's `required` isn't read in v1 (MOD-3).
 
 **D3: comments and reviews** (resolved 2026-11-24)
 - The owner's idea: report changes only, and give the ID of each new comment so an agent fetches that one item instead of the whole PR.

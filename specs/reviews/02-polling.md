@@ -5,6 +5,7 @@
 | 1 | 2026-11-25 | consistency | 3/10/5 | 12 | 0 | 0 | 0 | 6 |
 | 2 | 2026-11-25 | failure modes | 5/10/4 | 12 | 0 | 0 | 0 | 7 |
 | 3 | 2026-11-25 | implementability | 1/8/8 | 9 | 0 | 0 | 0 | 8 |
+| 4 | 2026-11-25 | planning findings | 1/3/7 | 11 | 0 | 0 | 0 | 0 |
 
 ## Pass 1: consistency (2026-11-25)
 
@@ -79,7 +80,7 @@ Reviewers: 3, with 29 raw findings; 18 after merging 11 duplicates. Dropped in v
 - Location: specs/02-polling.md POL-3 (10 minutes; token rotation is `documented`), POL-12 (last 20), POL-19 (5 s to 5 min), POL-20 (60 s)
 - Status: parked
 
-### H1-17 · low · POL-17's own count misses requests that return no `rateLimit`
+### H1-17 · low · POL-17's own count misses requests that return no `rateLimit` (applied in pass 4: H4-6)
 - Location: specs/02-polling.md POL-17; docs/02-github-api.md §2 (a timed-out query deducts extra points, documented)
 - Status: parked
 
@@ -233,7 +234,7 @@ Reviewers: 3 (implementer, tester, simplifier), with 26 raw findings; 20 after m
 - Location: specs/02-polling.md POL-10, POL-14; specs/01-model.md MOD-16; specs/04-api.md API-13
 - Status: applied: POL-10 has one table, a PR's period (hot, then ended or `asked`, then the tier's); MOD-16 cites it. Closes 04-api H2-15.
 
-### H3-10 · low · POL-12's `more: true` has no observable condition, and disagrees with STA-5
+### H3-10 · low · POL-12's `more: true` has no observable condition, and disagrees with STA-5 (applied in pass 4: H4-2)
 - Location: specs/02-polling.md POL-12; specs/03-state.md STA-5
 - Status: parked
 - Note: the daemon can't see "more than 20 new"; STA-5's "all 20 fetched of a kind are new" is observable. Use it in both.
@@ -268,7 +269,7 @@ Reviewers: 3 (implementer, tester, simplifier), with 26 raw findings; 20 after m
 - Status: parked
 - Note: a waiter's PR is hot already, so the gain is at most `hot_interval` − 3 s; the cost is a third per-PR timer and a 60 s window unlike POL-14's 2 minutes.
 
-### H3-17 · low · The read-through exception to the backoff is stated twice, and is asymmetric
+### H3-17 · low · The read-through exception to the backoff is stated twice, and is asymmetric (in part: pass 4, H4-10)
 - Location: specs/02-polling.md POL-16, POL-19
 - Status: parked
 - Note: an untracked PR probes GitHub during a backoff, a tracked one's `fresh` doesn't. Dropping it loses at most one backoff step for read-throughs.
@@ -276,3 +277,52 @@ Reviewers: 3 (implementer, tester, simplifier), with 26 raw findings; 20 after m
 ## Out of scope, pass 3 (other files, not walked through)
 
 - specs/07-testing.md: no acceptance check for POL-3 (token re-read), POL-7 (batches of 40, finding beyond 200), POL-15 (forced-refresh windows and order), POL-24 (one PR's error, rest applied), POL-26 (clock set back), POL-5's demotion to `asked`, POL-10's `asked` rate, POL-2's 1 s gap, and now POL-20's way out of `auth` and POL-26's tick. Another session was hardening 07-testing during this pass.
+
+## Pass 4: planning findings (2026-11-25)
+
+No reviewers: the findings came from building the implementation plan (`plan/README.md`, "Spec issues found while planning") and from its brief writers and reviewers, and were verified against the spec text.
+
+### H4-1 · high · POL-13's "at least its period ago" makes every poll two requests for good
+- Location: specs/02-polling.md POL-13, POL-4, POL-2; specs/07-testing.md TST-6
+- Status: applied: every request of a poll counts as sent when the poll's first request was; MOD-2's and MOD-6's send times stay each request's own
+
+### H4-2 · medium · `more: true` has no observable condition, and disagrees with STA-5
+- Location: specs/02-polling.md POL-12; specs/03-state.md STA-5
+- Status: applied: all 20 read are new and the count rose by more than 20; for a loaded PR, all 20 new. STA-5 points to POL-12. Closes H3-10.
+
+### H4-3 · medium · POL-19 doesn't say which records go stale
+- Location: specs/02-polling.md POL-19; specs/01-model.md MOD-16
+- Status: applied: the PRs of the failed request and of the poll's requests not yet sent
+
+### H4-4 · medium · POL-20: a refused gh-login token, and `problem` during the one try
+- Location: specs/02-polling.md POL-20; specs/04-api.md API-3
+- Status: applied: API-3's `auth` message names `gh auth login` when GitHub refuses gh's token twice; `auth` stays the problem until a success
+
+### H4-5 · low · `slowed` doubles `interval` even when idle
+- Location: specs/02-polling.md POL-23
+- Status: applied: the tier's interval doubled
+
+### H4-6 · low · An answer without `rateLimit` isn't counted
+- Location: specs/02-polling.md POL-17
+- Status: applied: it counts 1 point. Closes H1-17.
+
+### H4-7 · low · Secondary limits: what counts towards the doubling, and which clock
+- Location: specs/02-polling.md POL-25, POL-26
+- Status: applied: every secondary limit in a row counts; a success ends the row; the wait is on the monotonic clock
+
+### H4-8 · low · POL-11's "3 s later" than what
+- Location: specs/02-polling.md POL-11
+- Status: applied: 3 s after the answer that read `UNKNOWN`; one follow-up request per answer
+
+### H4-9 · low · POL-21's 5 minutes: which clock, which errors
+- Location: specs/02-polling.md POL-21, POL-26
+- Status: applied: the monotonic clock; only the PR's own errors count
+
+### H4-10 · low · A failed read-through during the backoff
+- Location: specs/02-polling.md POL-19, POL-16
+- Status: applied: its failure doesn't move the backoff; its success ends it. Part of H3-17.
+
+### H4-11 · low · POL-15's window edges
+- Location: specs/02-polling.md POL-15
+- Status: applied: a whole poll is forced only when the last forced one was sent more than 10 s ago
+

@@ -1,6 +1,6 @@
 # Operations
 
-**Status:** draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25).
+**Status:** draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25), planning findings (2026-11-25).
 
 Configuration, files, the token, the daemon's life, and how circitor is shipped. Platform facts are in [docs/04](../docs/04-platform.md); nothing in it was checked on a Mac yet.
 
@@ -38,7 +38,7 @@ Configuration, files, the token, the daemon's life, and how circitor is shipped.
   - macOS: in the state directory. macOS has no runtime directory, and its temp directory is cleaned after three idle days (docs/04 §4).
   - `CIRCITOR_SOCKET` overrides the path, for the CLI and the daemon alike. **It must be absolute:** a relative one is refused, naming it, by both. An empty one counts as unset, and so does an empty or relative `XDG_CONFIG_HOME`, `XDG_STATE_HOME` or `XDG_RUNTIME_DIR`.
   - **A socket answers** when `GET /v1/status` gets a complete response within 2 s. A missing file or a refused connection is no daemon; anything else, a timeout included, is a daemon that doesn't answer.
-  - The socket's mode is 0600, set by binding it under a umask of 077. **At start, once the lock is held (STA-11), a file at the socket path is removed only if it's a socket that refuses a connection.** One that answers is another daemon's: the daemon exits as STA-11 says. Anything else stops it, naming the path.
+  - The socket's mode is 0600, set by binding it under a umask of 0177 (on Linux a umask of 077 gives 0700; checked with a local bind on 2026-11-25; macOS isn't checked). **At start, once the lock is held (STA-11), a file at the socket path is removed only if it's a socket that refuses a connection.** One that answers is another daemon's: the daemon exits as STA-11 says. Anything else stops it, naming the path.
   - **A path over 103 bytes is refused** with a message naming `CIRCITOR_SOCKET` (docs/04 §4: the limit is 104 on macOS).
   - **The CLI also tries the socket path in `circitor.lock`** (STA-11, CLI-7).
   
@@ -69,19 +69,19 @@ Configuration, files, the token, the daemon's life, and how circitor is shipped.
   - **The stop has a 5 s deadline.** The final write doesn't wait for STA-7's 5 s spacing, a running `gh` is killed, and a request to GitHub in flight is dropped. A stop not done by then is logged, and the daemon exits at once: the lock goes with the process, and `state.json` stays as last renamed (STA-7).
   - A second `SIGTERM` or `SIGINT` during the stop does the same at once. A final write that failed is logged.
   - **Every stop exits 0**, so a service manager doesn't restart it (OPS-18). Status 1 is for a crash.
-- **OPS-8** **Idle exit.** A spawned daemon exits when it has had no client request and no waiter for `exit_after`. The next CLI call starts a new one; it loses the event history, the cursors' epoch (STA-9) and the `asked` PRs. It stops as OPS-7 does.
+- **OPS-8** **Idle exit.** A spawned daemon exits when it has had no client request and no waiter for `exit_after`, on the monotonic clock (POL-26). A `status` request doesn't count (API-5), so watching a daemon doesn't keep it alive. The next CLI call starts a new one; it loses the event history, the cursors' epoch (STA-9) and the `asked` PRs. It stops as OPS-7 does.
 - **OPS-9** **Logging.** One line per event, `<time> <level> <message>`, to stderr: the time RFC 3339, UTC; the level `error`, `warn`, `info` or `debug`. `info` is the default; `CIRCITOR_LOG` names another, and an unknown value is `info`, with a warning line.
   - **The log file is rotated only before a daemon starts:** the CLI (CLI-7) renames a `circitor.log` over 5 000 000 bytes to `circitor.log.1`, replacing any earlier one, and opens a new one for appending. A foreground daemon's stderr is the service manager's (OPS-18).
-  - **Logging never stops the daemon.** A line that can't be written is dropped, with a warning (API-5) while it lasts.
-  - Logged: start and stop with the version and paths, and the stop's cause (a signal, `stop`, idle, replaced, its socket or lock file not its own, the 5 s deadline); a sleep noticed, with its length (POL-22); the tier changing; a problem beginning and ending (never each retry); quota warnings; a PR tracked, untracked or gone; the state file set aside; every warning of API-5, when it's raised and cleared; a state-file write failing and working again (STA-7); a failed token read (POL-3); a PR's error, once while it lasts (POL-24).
+  - **Logging never stops the daemon.** A line that can't be written is dropped, with the `log_unwritable` warning (API-5) while it lasts.
+  - Logged: start and stop with the version and paths, and the stop's cause (a signal, a shutdown request (API-17: from `stop`, or a CLI replacing it, CLI-9), idle, its socket or lock file not its own, the 5 s deadline); a sleep noticed, with its length (POL-22); the tier changing; a problem beginning and ending (never each retry); quota warnings; a PR tracked, untracked or gone; the state file set aside; every warning of API-5, when it's raised and cleared; a state-file write failing and working again (STA-7); a failed token read (POL-3); a PR's error, once while it lasts (POL-24).
   - **Never logged:** the token, PR titles, or free text from a response (error messages, comment or review content). From a response only names, numbers, states, costs and error `type`s are logged.
   - `CIRCITOR_LOG=debug` adds one line per request to GitHub: its kind, cost and duration.
 
 ## Shipping
 
-- **OPS-10** **Homebrew, from the owner's tap** (`yachiko/homebrew-tap`), with prebuilt binaries from GitHub releases. **Formula or cask, and the release tool, are open** (decision needed, D5). Neither needs `brew services` in v1. A cask is quarantined, so its binary must be notarised; a formula isn't (docs/04 §2). The README installs with the full name, `brew install yachiko/tap/circitor`, which also trusts that item (docs/04 §2).
+- **OPS-10** **Homebrew, from the owner's tap** (`yachiko/homebrew-tap`), with prebuilt binaries from GitHub releases. **A formula written by `dist`** (D5). It doesn't need `brew services` in v1. A cask is quarantined, so its binary must be notarised; a formula isn't (docs/04 §2). The README installs with the full name, `brew install yachiko/tap/circitor`, which also trusts that item (docs/04 §2).
 - **OPS-11** The binary carries its version and commit, printed by `circitor version` and sent as `version` (API-2). **`version` is `MAJOR.MINOR.PATCH`, with `+<commit>` as build metadata** (CLI-9).
-- **OPS-12** **For agents,** the repository ships the guide (CLI-11) in two forms: `skills/circitor/SKILL.md`, read by Claude Code and OpenCode v2, and a section to paste into `AGENTS.md`, read by OpenCode and pi (docs/03 §1). The README says where each goes. Installing them isn't automated in v1. (proposal)
+- **OPS-12** **For agents,** the repository ships the guide (CLI-11) in two forms: `skills/circitor/SKILL.md`, read by Claude Code, OpenCode v2 and pi, each from its own skills folders, and a section to paste into `AGENTS.md`, read by OpenCode and pi (docs/03 §1). The README says where each goes. Installing them isn't automated in v1. (proposal)
 - **OPS-13** **Targets:** macOS arm64 and x86-64, Linux x86-64 and arm64. Windows isn't built.
 - **OPS-14** **Sandboxed agents.** The README gives two Claude Code settings: `sandbox.excludedCommands` for `circitor`, which runs the CLI, and a daemon it starts, outside the sandbox on macOS and Linux; or `sandbox.network.allowUnixSockets` with the socket's path, whose Linux rule is assumed (docs/03 §2). With the second, a daemon the CLI starts may be confined by the sandbox and unable to reach GitHub; the README then recommends starting it outside, with `circitor daemon`. (proposal; untested, docs/03 §6)
 - **OPS-15** **Upgrades.** `brew upgrade` replaces the binary. CLI-9 says which daemons are then replaced; a foreground one runs the old version until it's restarted (OPS-18).
@@ -89,6 +89,7 @@ Configuration, files, the token, the daemon's life, and how circitor is shipped.
   - runs Homebrew's `bin/circitor`, never a versioned path
   - restarts it on failure only, so `circitor stop` stays a stop
   - keeps its stderr: `StandardErrorPath` on macOS, the journal on Linux
+  - on macOS, has the label `dev.circitor.daemon` and writes stderr to `~/Library/Logs/circitor.log`; launchd doesn't expand `~`, so the README's plist shows the absolute path to edit (proposal)
   - says that a daemon `circitor stop` had to kill (CLI-8) is restarted, and that a service is stopped with `systemctl --user stop` or `launchctl bootout`
 
   It names the command that restarts the service after `brew upgrade` or a config change (`launchctl kickstart -k`, `systemctl --user restart`). (proposal)

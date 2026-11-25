@@ -1,12 +1,12 @@
 # The PR record
 
-**Status:** draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25).
+**Status:** draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25), planning findings (2026-11-25).
 
 What circitor knows about one PR, as every other file names it. GitHub's side of each field is in [docs/02 §4](../docs/02-github-api.md#4-the-pr-record).
 
 ## Identity and fields
 
-- **MOD-1** A PR is named **`owner/repo#number`**, compared without regard to case, and keyed by its GraphQL node ID, which is never shown. `pr` is read from `repository.nameWithOwner` and `number` at every refresh, so it follows a renamed or transferred repository. A found or read-through PR whose node ID is already tracked is that record. (proposal; that the node ID survives a rename or a transfer isn't measured)
+- **MOD-1** A PR is named **`owner/repo#number`**, compared without regard to case, and keyed by its GraphQL node ID, which is never shown. `pr` is read from `repository.nameWithOwner` and `number` at every refresh, so it follows a renamed or transferred repository. A found or read-through PR whose node ID is already tracked is that record. **The order of `pr`**, wherever PRs are sorted: by owner, then repository, each compared without case, then by number as a number (`o/r#9` before `o/r#10`). (proposal; that the node ID survives a rename or a transfer isn't measured)
 - **MOD-2** The record's fields:
 
 | Field | Type | From GitHub | Notes |
@@ -32,7 +32,7 @@ What circitor knows about one PR, as every other file names it. GitHub's side of
 | `error` | `{type, since}` or `null` | – | The error that stopped this PR's last refresh (POL-21, POL-24): the GraphQL error's `type`, as GitHub writes it (not lowered, as CLI-3 prints it), and `since`, the first failure of the current run of this PR's errors, whatever their types. A request that fails as a whole (POL-19, POL-20, POL-23) or a failed check page (POL-8) leaves it as it was. `null` once a refresh is applied; a gone record keeps it. |
 
   - **A newer read wins.** A refresh sent before the one last applied to the record isn't applied: the later read already holds what it had. Refreshes are ordered by a number the daemon gives each request as it's sent, never by `fetched_at`.
-  - **A value GitHub sends that this file doesn't list is passed through, lowered**, but for a check's `phase`, which is always one of MOD-3's three. It never fails decoding. Of a check's results, docs/02 §4 verifies `success`, `failure`, `skipped` and `cancelled`; the others aren't measured. (proposal)
+  - **A value GitHub sends that this file doesn't list is passed through, lowered**, but for a check's `phase`, which is always one of MOD-3's three. It never fails decoding. **A PR's `state` is the exception:** a value other than `OPEN`, `MERGED` or `CLOSED`, a node missing a field the record needs, and an error with no `type` are that PR's error (POL-21): the record keeps its last values and is `stale`, and its `error.type` is circitor's own word, `UNLISTED_STATE`, `UNDECODABLE` or `UNTYPED`. The rest of the response is applied. Of a check's results, docs/02 §4 verifies `success`, `failure`, `skipped` and `cancelled`; the others aren't measured. (proposal)
 
 ## Checks
 
@@ -49,7 +49,7 @@ What circitor knows about one PR, as every other file names it. GitHub's side of
 
   - **Whether a check is required isn't read in v1** (D6): a required check that blocks the merge shows as `merge_state: blocked`.
 
-- **MOD-4** **Each read of a check is believed.** Check runs are matched between reads by `id`, commit statuses, which have no `id`, by `name`. GitHub can return an older view of a check run after a newer one (docs/02 §4, observed once: `IN_PROGRESS`, then `QUEUED`). A move between `queued` and `in_progress` isn't a visible change (MOD-14), so that view makes no event. A step back from `completed` is believed at once: it reads `pending`, which is on the safe side, and is what a re-run looks like. A status posted again as pending is a real change too. Any change of head SHA starts a new list. (proposal; a check run's `databaseId` and re-runs aren't measured, docs/02 §6)
+- **MOD-4** **Each read of a check is believed.** Check runs are matched between reads by `id`, commit statuses, which have no `id`, by `name`, and so is a check run whose `id` is `null`. GitHub can return an older view of a check run after a newer one (docs/02 §4, observed once: `IN_PROGRESS`, then `QUEUED`). A move between `queued` and `in_progress` isn't a visible change (MOD-14), so that view makes no event. A step back from `completed` is believed at once: it reads `pending`, which is on the safe side, and is what a re-run looks like. A status posted again as pending is a real change too. Any change of head SHA starts a new list. (proposal; a check run's `databaseId` and re-runs aren't measured, docs/02 §6)
 - **MOD-5** **The summary is computed from the items, never taken from GitHub's rollup** (but for a truncated list, MOD-7), which reads `FAILURE` while checks still run (docs/02 §4). `checks.state` is the first that applies:
 
 | `checks.state` | When |
@@ -62,7 +62,7 @@ What circitor knows about one PR, as every other file names it. GitHub's side of
   - `checks` also carries the counts `total`, `completed` and `failed`, and `failed_items`: the failing items' `name` and `url`.
   - **`failing` is reported only once every check has completed.** Before that, `failed` above 0 says a failure is already in.
 - **MOD-6** **A checks list is believed only once it has settled.** For a few seconds after a push or a PR's creation GitHub shows no checks where some are about to start (docs/02 §4: up to 9 s), and a list that has begun to fill may not be complete. Settling counts from the **settle start**: the send time of the refresh that first read the record (also one loaded from the state file, STA-8), first showed this `head_sha`, or first showed the PR open again after a close. `checks.settled` becomes true at an applied refresh **sent at least the settle time after the settle start**, on the monotonic clock: **20 s for a list with checks, 60 s for an empty one**, since a repository's CI may report late, also on a PR's first head. The refresh that sets the settle start leaves it false, but for the shortcut below. (proposal: 20 s stays above the 9 s checks take to appear, and 60 s stays within API-12's default 100 s)
-  - **It changes only when a refresh is applied, never by the clock alone**, so a `status` it moves takes a revision like any other change (STA-4). Any change of `head_sha`, also back to an earlier one, starts it at false.
+  - **It changes only when a refresh is applied, never by the clock alone**, so a `status` it moves takes a revision like any other change (STA-4). Any change of `head_sha`, also back to an earlier one, starts it at false. Once true, it stays true until the next settle start, also if the list later reads empty.
   - **A reopening starts it at false too**, and is a new settle start: CI may run again on the same head. (proposal; what a reopening does to checks isn't measured)
   - A record first seen, read through or loaded from the state file, with an `updated_at` older than **that list's settle time plus 5 s by GitHub's clock** (25 s, or 65 s with no checks) counts as settled at once: a push moves `updated_at` within the second, so the head is at least that old. GitHub's clock is the `Date` header of the response that carried the record; a response without one never settles at once. (proposal; the `Date` header isn't recorded in docs/02)
   - A check that first reports later than that can't be foreseen: `passing` can return to `pending` on the same head.
@@ -99,6 +99,7 @@ What circitor knows about one PR, as every other file names it. GitHub's side of
 | `ready` | None of the above: open, mergeable, checks settled and passing or none |
 
   - A draft with failing checks reads `checks_failing`: the checks are what its author acts on.
+  - **For `status` only, an unlisted value is read on the safe side:** an unlisted `mergeable` counts as `unknown`, an unlisted `review` as `review_required`. The record shows the value as GitHub sent it (MOD-2).
   - **`gone` is circitor's own state:** GitHub no longer returns the PR (POL-21). Only an open PR becomes gone; a merged or closed one keeps its state. A gone record keeps the other fields it last had, and `fetched_at` is its last successful read.
   - **`gone` needs the same login.** A `NOT_FOUND` counts towards `gone` (POL-21) only in a poll (POL-4), whose finding gives the login (`viewer { login }`): while that login is the one the PR was last read with, and not when the poll refreshed two or more tracked PRs and every one answered `NOT_FOUND`. A `NOT_FOUND` from a hot or forced refresh (POL-14, POL-15) neither counts nor breaks POL-21's run. Otherwise it's a failed attempt and the record is `stale` (MOD-16). (proposal; that lost access looks like `NOT_FOUND` is assumed, docs/02 §5)
   - **A gone PR that GitHub returns again takes GitHub's state**, with that state's kind: `reopened`, `merged` or `closed` (STA-2).
@@ -120,13 +121,14 @@ What circitor knows about one PR, as every other file names it. GitHub's side of
   - Items are reported once, as events (MOD-15). The record itself holds only `counts`.
   - **Only new items are reported.** An edit, a deletion or a resolved thread isn't (non-goal; how GitHub shows them isn't measured).
   - Items by the PR's own author and by bots are reported like any other. (proposal; bots aren't measured, docs/02 §4)
+  - **A review without `submittedAt`** (one not yet submitted) isn't an item: it's neither seen nor new until it is. (proposal; pending reviews aren't measured, docs/02 §4)
 
 ## Revisions and events
 
 - **MOD-13** The daemon keeps **one counter**. Each visible change to any record takes the next number, and that record's `rev` becomes it. So `rev` orders changes across PRs, and "everything after revision N" is one comparison.
   - **A revision is taken, and its record and event stored, in one step.** Every answer reads its records, events and cursor from one view, and its cursor is the highest revision in that view. So no revision at or below a cursor appears after it was handed out.
 - **MOD-14** A **visible change** is a change to any of: `pr`, `state`, `draft`, `head_sha`, `title`, `base`, `mergeable`, `merge_state`, `review`, `status`, a rise in `counts.comments` or `counts.reviews`, or the checks: `checks.state`, `total`, `completed`, `failed`, `truncated`, `failed_items`, or which items are in the list (a check run by `id`, a commit status by `name`). A record's first appearance and its dropping each take a revision too (`tracked`, `untracked`).
-  - **Not a change:** `fetched_at`, `stale`, `error`, `updated_at` by itself, `checks.settled` by itself, a check's `url`, a check moving between `queued` and `in_progress`, and `mergeable` or `merge_state` reading `unknown` where MOD-8 keeps the known value. **Nor is any of these by itself:** `url`, `author`, `head`, `created_at`, `merged_at`, `closed_at` and `source`: `merged_at` and `closed_at` come with a `state` change, and `track` on a tracked PR (API-15) takes no revision.
+  - **Not a change:** `fetched_at`, `stale`, `error`, `updated_at` by itself, `checks.settled` by itself, a check's `url`, a check moving between `queued` and `in_progress`, `mergeable` or `merge_state` reading `unknown` where MOD-8 keeps the known value, and `pr` changing only in case: the record takes the new spelling without a revision. **Nor is any of these by itself:** `url`, `author`, `head`, `created_at`, `merged_at`, `closed_at` and `source`: `merged_at` and `closed_at` come with a `state` change, and `track` on a tracked PR (API-15) takes no revision.
   - **Not a change either:** any other change in `counts`: a count that falls, or `review_threads` alone. Deletions and resolved threads aren't reported (MOD-12).
 - **MOD-15** Each revision is recorded as an **event**: `rev`, `pr`, `at` (the daemon's clock), and `kinds`, one or more of:
 
@@ -139,10 +141,11 @@ What circitor knows about one PR, as every other file names it. GitHub's side of
 | `draft` | The new value |
 | `mergeable` | `mergeable` and `merge_state` |
 | `review` | The new `review` |
-| `activity` | The new `counts`; the new items (MOD-12), which may be none; `more: true` when some were left out (POL-12) |
+| `activity` | The new `counts`; the new items (MOD-12), which may be none, oldest `at` first (comments before reviews at the same `at`, then by `id`); `more: true` when some were left out (POL-12) |
 | `edited` | The names of the fields that changed: `pr`, `title`, `base` |
 | `tracked`, `untracked` | `source` |
 
+  - **In JSON, `kinds` is a list of objects**, in the table's order, each with `kind` and the fields it carries under the record's names: `{"kind": "status", "from": "checks_pending", "to": "ready"}`, `{"kind": "draft", "draft": false}`, `{"kind": "merged"}`. A short SHA is the first 7 characters. (proposal)
   - **Every visible change of MOD-14 has a kind here**, so an event never has none.
   - **One applied refresh (STA-4) makes at most one event per PR:** a count's rise and its items (POL-12), and a PR's check pages (POL-8), are one refresh. When one response changes several PRs, they take revisions in the order of `pr`.
   - A PR's first appearance makes a `tracked` event: what it already had isn't news (STA-5). For a PR loaded from the state file (STA-8) the same event also carries `merged` or `closed` if it was saved open and has ended since, and `activity` for the items STA-5 makes new. Nothing else it already had is news.

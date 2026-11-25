@@ -5,6 +5,7 @@
 | 1 | 2026-11-25 | consistency | 3/10/2 | 12 | 0 | 0 | 0 | 2 |
 | 2 | 2026-11-25 | failure modes | 2/8/9 | 12 | 0 | 0 | 0 | 7 |
 | 3 | 2026-11-25 | implementability | 1/9/6 | 12 | 0 | 0 | 0 | 4 |
+| 4 | 2026-11-25 | planning findings | 0/3/6 | 9 | 0 | 0 | 0 | 0 |
 
 ## Pass 1: consistency (2026-11-25)
 
@@ -231,3 +232,44 @@ Reviewers: 3 (implementer, tester, simplifier), with 25 raw findings; 17 after m
 
 ### Out of scope
 - specs/07-testing.md TST-8: no scenario for `head_moved`, `checks-done --rerun-since` on a re-run, API-18's `starting` and `pending`, or API-14's 65th waiter and a client closing. Each can be scripted on the fake GitHub and the test clock.
+
+## Pass 4: planning findings (2026-11-25)
+
+No reviewers: the findings came from building the implementation plan (`plan/README.md`, "Spec issues found while planning") and from its brief writers, and were verified against the spec text. The `gh_path` key, the `log_unwritable` warning and the `auth` message for a refused gh token were applied from 06-operations' and 02-polling's pass 4 (their H4-3, H4-2 and H4-4).
+
+### H4-1 · medium · Only `list` and `show` say whether a record carries `checks.items`
+- Location: specs/04-api.md API-6, API-7, API-19
+- Status: applied: every single `record` carries them; a list of `records` only in `list` with `checks=1`
+
+### H4-2 · medium · `track` of a loaded PR with no record
+- Location: specs/04-api.md API-15; specs/03-state.md STA-8
+- Status: applied: the saved source becomes `manual` first, then a read-through; a failure answers its error and the source stays saved
+
+### H4-3 · medium · `untrack` of a loaded `manual` PR can't apply its own rule
+- Location: specs/04-api.md API-15
+- Status: applied: it's dropped (`asked` with a waiter); the next poll finds it again if it's the user's own
+
+### H4-4 · low · `paths.state`: directory or file
+- Location: specs/04-api.md API-5
+- Status: applied: `state.json`'s path
+
+### H4-5 · low · `last_poll.outcome`'s values
+- Location: specs/04-api.md API-5, API-16
+- Status: applied: API-16's words without `shared`
+
+### H4-6 · low · A too-old `since` on `list` and `state`
+- Location: specs/04-api.md API-6
+- Status: applied: all the records `state` asks for
+
+### H4-7 · low · A known path with another method
+- Location: specs/04-api.md API-3
+- Status: applied: `unknown_route`, by path or by method
+
+### H4-8 · low · `Circitor-Cursor` on a 200 sent before the waiter is registered
+- Location: specs/04-api.md API-9, API-12
+- Status: applied: every 200 answer to a `wait` carries it
+
+### H4-9 · low · Ended and head moved at once
+- Location: specs/04-api.md API-11
+- Status: applied: the state's reason wins
+
