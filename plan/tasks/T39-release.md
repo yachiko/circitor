@@ -5,7 +5,7 @@ kind: manual
 milestone: M5
 size: M
 status: todo
-depends_on: [T19, T36, T38]
+depends_on: [T19, T36]
 requirements: [OPS-10, U12]
 owns: []
 shares: []
@@ -79,6 +79,7 @@ The owner ticks each line.
 - The tap's credential can write to every formula in the tap. Scope it as narrowly as the tap's other tools do.
 
 ## Open questions
+- **Decided 2026-11-25:** D5 is a formula written by `dist`. There is no CI for now (P9), so `dist`'s own release workflow is the first CI this repository gets, and T38 isn't a dependency any more. Wherever this brief assumes T03's workflow or a green T38 run, skip that step.
 - **D5 is open**, and this task is where it's decided. Until then T19's README carries the formula form, marked as depending on D5.
 - **Whether GoReleaser builds Rust** (docs/04 §8 item 7) and **whether an unsigned binary from a formula runs on Apple Silicon** (item 1) are unverified. The first is checked here by reading; the second here and in T40 by running.
 - **This task's `owns` is empty**, though it adds a release workflow and the tool's configuration, and edits `Cargo.toml`, `specs/decisions.md`, OPS-10's wording and docs/04. They're the owner's own edits; tell the orchestrator which files changed.

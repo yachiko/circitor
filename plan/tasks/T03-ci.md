@@ -4,7 +4,7 @@ title: "CI: format, lints and every test on Linux and macOS, and the four releas
 kind: infra
 milestone: M4
 size: S
-status: todo
+status: blocked
 depends_on: [T01]
 requirements: [TST-14, OPS-13]
 owns: [.github/workflows/]
@@ -13,6 +13,8 @@ shares: []
 
 # T03 · CI: format, lints and every test on Linux and macOS, and the four release targets
 
+
+> **Blocked (2026-11-25):** the owner chose no CI for now (plan decision P9). Don't start this task until the orchestrator unblocks it.
 ## Outcome
 A GitHub Actions workflow runs `make verify` on a Linux and a macOS runner and builds the release binary for the four targets of OPS-13. It's written and checked for syntax here; its first real run is the owner's (T38).
 

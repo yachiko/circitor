@@ -77,11 +77,11 @@
    "id": "T03",
    "title": "CI: format, lints and every test on Linux and macOS, and the four release targets",
    "kind": "infra",
-   "status": "todo",
+   "status": "blocked",
    "milestone": "M4",
    "size": "S",
    "wave": 2,
-   "remaining": 6,
+   "remaining": 2,
    "depends_on": [
     "T01"
    ],
@@ -1160,17 +1160,15 @@
    "id": "T38",
    "title": "Owner: the first CI run, on Linux and macOS",
    "kind": "manual",
-   "status": "todo",
+   "status": "blocked",
    "milestone": "M4",
    "size": "S",
    "wave": 3,
-   "remaining": 5,
+   "remaining": 1,
    "depends_on": [
     "T03"
    ],
-   "dependents": [
-    "T39"
-   ],
+   "dependents": [],
    "requirements": [
     "TST-14"
    ],
@@ -1189,8 +1187,7 @@
    "remaining": 4,
    "depends_on": [
     "T19",
-    "T36",
-    "T38"
+    "T36"
    ],
    "dependents": [
     "T40"

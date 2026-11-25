@@ -4,7 +4,7 @@ title: "Owner: the first CI run, on Linux and macOS"
 kind: manual
 milestone: M4
 size: S
-status: todo
+status: blocked
 depends_on: [T03]
 requirements: [TST-14]
 owns: []
@@ -13,6 +13,8 @@ shares: []
 
 # T38 · Owner: the first CI run, on Linux and macOS
 
+
+> **Blocked (2026-11-25):** the owner chose no CI for now (plan decision P9). Don't start this task until the orchestrator unblocks it.
 ## Outcome
 The repository is on GitHub, the workflow of T03 has run green on a Linux and a macOS runner, and whatever macOS showed that Linux couldn't is fixed or filed.
 
