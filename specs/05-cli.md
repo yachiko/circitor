@@ -1,6 +1,6 @@
 # CLI
 
-**Status:** draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25).
+**Status:** draft 0.2, 2026-11-25: notify and narrower conditions (D7, D8). Draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25).
 
 **The CLI is circitor's contract with agents and people** (log D4). Its commands, text output and exit codes stay stable; the API behind it may change.
 
@@ -12,7 +12,8 @@
 |---|---|---|
 | `circitor list [--all] [--since CURSOR]` | The tracked PRs | API-6 |
 | `circitor show [PR] [--fresh]` | One PR, with its checks | API-7 |
-| `circitor wait [PR] --until merged\|checks-done\|changed [--sha SHA] [--rerun-since CURSOR] [--since CURSOR] [--timeout S]` | Blocks until the condition holds | API-9 |
+| `circitor wait [PR] --until merged\|checks-done\|changed [--sha SHA] [--rerun-since CURSOR] [--fail-fast] [--kind KINDS] [--since CURSOR] [--timeout S]` | Blocks until the condition holds | API-9 |
+| `circitor notify [PR] --until … [--for S]`, `circitor notify [PR] --cancel` | Asks to be told once, in this Claude Code session; returns at once | NTF-11 |
 | `circitor changes [PR] [--since CURSOR]` | What happened since a cursor | API-8 |
 | `circitor track PR`, `circitor untrack PR` | Add or remove a PR by hand | API-15 |
 | `circitor refresh` | Poll now | API-16 |
@@ -22,12 +23,12 @@
 | `circitor guide` | Print the instructions for agents | CLI-11 |
 | `circitor version`, `circitor help` | – | – |
 
-  - `--json` (CLI-4) is taken by `list`, `show`, `wait`, `changes`, `track`, `untrack`, `refresh` and `status`.
+  - `--json` (CLI-4) is taken by `list`, `show`, `wait`, `notify`, `changes`, `track`, `untrack`, `refresh` and `status`.
   - `changes` without `PR` covers every tracked PR (API-8).
 - **CLI-2** **Naming a PR.** `PR` is one of:
   - `owner/repo#12`, or the PR's URL
   - `12`: the repository comes from the `origin` remote of the git repository in the working directory. `#12` isn't taken: a shell reads a word starting with `#` as a comment, so `circitor show #12` would run as `circitor show`.
-  - nothing, for `show` and `wait`: **the open tracked PR whose head branch is the current branch** of that repository. The current branch is the name `git` pushes it to on `origin`: its upstream's branch, or its own name without one. A detached HEAD is exit code 2. **Only a PR whose `author` is the login in use** (API-5's `github.login`) matches: a contributor's PR from a fork can share the branch name. With no open match, the CLI asks for a poll (API-16) and looks again: a PR just opened isn't tracked before a poll finds it (POL-4). **The poll's answer doesn't end the search:** after `shared` or a problem, the CLI still looks again in memory. Only then does it take an ended match (`merged`, `closed` or `gone`), the one with the latest `closed_at` (for a gone one, its `fetched_at`), and its output says so. Two open matches are exit code 2, listing them.
+  - nothing, for `show`, `wait` and `notify`: **the open tracked PR whose head branch is the current branch** of that repository. The current branch is the name `git` pushes it to on `origin`: its upstream's branch, or its own name without one. A detached HEAD is exit code 2. **Only a PR whose `author` is the login in use** (API-5's `github.login`) matches: a contributor's PR from a fork can share the branch name. With no open match, the CLI asks for a poll (API-16) and looks again: a PR just opened isn't tracked before a poll finds it (POL-4). **The poll's answer doesn't end the search:** after `shared` or a problem, the CLI still looks again in memory. Only then does it take an ended match (`merged`, `closed` or `gone`), the one with the latest `closed_at` (for a gone one, its `fetched_at`), and its output says so. Two open matches are exit code 2, listing them.
   
   If the working directory isn't a git repository with a github.com `origin`, or no tracked PR matches the branch, the command fails with exit code 2 and says which form to use. **After the poll, exit code 2 means GitHub was read and no PR matches.** If the poll answered a problem and nothing matched, the command exits with that problem's code (CLI-5). After `shared`, the line adds that a PR opened seconds ago may not be found yet, and to name it by number. The short forms are resolved by the CLI with `git`, not by the daemon. The repository is `origin`'s. In a clone of a fork, where the PR belongs to the parent repository, use the full form (PRs from forks aren't measured, docs/02 §4). (proposal: the short forms)
 
@@ -80,16 +81,18 @@
 | 1 | An unexpected error, or a route the daemon doesn't know |
 | 2 | Wrong usage (`bad_request`), or a PR that couldn't be named (CLI-2) |
 | 3 | `wait`: timed out |
-| 4 | `wait`: ended without the condition (`closed`, `gone`, `head_moved`, or `merged` for `checks-done`) |
+| 4 | `wait`: ended without the condition (`closed`, `gone`, `head_moved`, or `merged` for `checks-done` and for `changed` with `--kind`) |
 | 5 | The PR doesn't exist or can't be seen (`not_found`; that a PR the token can't see answers like a missing one is assumed, docs/02 §5) |
 | 6 | The daemon can't be reached or started |
 | 7 | No usable GitHub login (`auth`) |
-| 8 | `wait --until checks-done`: the checks are done and **some failed** |
+| 8 | `wait --until checks-done`: the checks are done and **some failed**; with `--fail-fast`, one has failed and others may still run |
 | 9 | GitHub can't be read now: `starting`, `github_unavailable` or `rate_limited`. The line says when to try again where the daemon knows (`until`, API-4), and otherwise to try again in a minute. |
-| 10 | `limit`: too many tracked PRs or waiters (STA-3, API-14) |
+| 10 | `limit`: too many tracked PRs, waiters or subscriptions (STA-3, API-14, NTF-2) |
+| 11 | `notify`: not in a session that can be told: no socket in the environment, or `no_session` (NTF-11). The line names the `wait` to run in its place. |
 | 130, 143 | Interrupted by `SIGINT` or `SIGTERM` |
 
   - **Each API error (API-3) has one code.**
+  - **`notify` exits 0 once it's registered or its answer is already known.** It never uses codes 3, 4 and 8 (NTF-11).
   - **Code 8 exists so `circitor wait --until checks-done && next-step` doesn't go on after a failure.** (proposal)
   - **On code 9, `gh` doesn't help**: it spends the same quota (docs/02 §2). The guide says so (CLI-11).
   - Errors go to stderr as one line, and say what to do when there's something to do.
@@ -100,6 +103,7 @@
   - **The outcome line says what the wait found, and on which head:**
     - `checks passed (5/5) on 1a2b3c4`
     - `checks failed (1 of 5) on 1a2b3c4`
+    - `checks failing (1 failed, 3 of 5 done) on 1a2b3c4`: with `--fail-fast`, before the last check has finished (API-10); code 8
     - `no checks reported on 1a2b3c4`: code 0, but nothing ran
     - `merged`; `changed`
     - `ended: closed`, `ended: gone`, `ended: merged`
@@ -115,7 +119,7 @@
     again: circitor wait yachiko/circitor#12 --until checks-done --sha 1a2b3c4 --since k3x9q2mz-418
     cursor: k3x9q2mz-418
     ```
-    It names the PR in full (`owner/repo#number`) and repeats the other parameters given, `--sha` and `--rerun-since` only if they were and as they were, with `--since` set to the cursor.
+    It names the PR in full (`owner/repo#number`) and repeats the other parameters given, `--sha`, `--rerun-since`, `--fail-fast` and `--kind` only if they were and as they were, with `--since` set to the cursor.
   - **A wait that ends without an answer** prints one line, then `again:` and `cursor:`. Their cursor is the `--since` given or, without one, the first `Circitor-Cursor` it got. Never a later one: it would skip events that weren't printed. `<n>` is the timeout the command was given.
     - no time left: `timeout after <n>s: <pr> (no answer from the daemon)`, exit code 3
     - no daemon within 8 s, or a second drop (CLI-10): `daemon stopped`, exit code 6
@@ -126,7 +130,7 @@
 
 ## The daemon
 
-- **CLI-7** **A command that needs the daemon starts it if it isn't running.** If connecting fails, the CLI starts `circitor daemon --spawned` as a detached process: its own session, without `GH_TOKEN` and `GITHUB_TOKEN` (OPS-5), standard streams to the log file, so it never holds the agent's output open, and the root directory as working directory. It then waits up to 8 s for the socket to answer (STA-11's 6 s and start-up), and goes on. If the daemon doesn't come up, exit code 6, with the log's last lines: up to 20 lines the new daemon wrote, from the log's size when the CLI opened it.
+- **CLI-7** **A command that needs the daemon starts it if it isn't running.** If connecting fails, the CLI starts `circitor daemon --spawned` as a detached process: its own session, without `GH_TOKEN` and `GITHUB_TOKEN` (OPS-5) and without `CLAUDE_CODE_MESSAGING_SOCKET` and `CLAUDE_CODE_MESSAGING_TOKEN` (NTF-9), standard streams to the log file, so it never holds the agent's output open, and the root directory as working directory. It then waits up to 8 s for the socket to answer (STA-11's 6 s and start-up), and goes on. If the daemon doesn't come up, exit code 6, with the log's last lines: up to 20 lines the new daemon wrote, from the log's size when the CLI opened it.
   - **Connecting** tries the CLI's socket path (OPS-4), then the one in `circitor.lock` (STA-11), with a warning on stderr naming both when the second answers. Every command connects this way.
   - **Only a missing socket file or a refused connection on both means no daemon.** Any other error starts nothing: exit code 6. A denied permission names `sandbox.excludedCommands` and `sandbox.network.allowUnixSockets` (docs/03 §2); any other error names the path and the system's error. The CLI checks the path's length (OPS-4) before connecting. (proposal; the error each sandbox gives isn't measured, docs/03 §6)
   - **Before starting it, the CLI creates the state directory** (OPS-3, mode 0700), rotates the log if it's over 5 MB (OPS-9), and opens it for appending. If it can't, it exits 6 at once, naming the path and the error.
@@ -136,8 +140,8 @@
     - any other request: 90 s, under the 120 s at which clients stop waiting (docs/03 §5). A read-through can queue behind a request in flight (POL-2, POL-15) and read several pages (POL-8).
 
     A `wait` past its limit ends as one without an answer (CLI-6). Any other command exits 6: `daemon not answering on <path>`.
-  - `--no-spawn`, or `CIRCITOR_NO_SPAWN=1`, turns this off: the command then fails with code 6.
-- **CLI-8** `status`, `stop`, `version`, `help` and `guide` never start a daemon. With none running, `status` says so and exits 6; `stop` exits 0. They connect as CLI-7 does: only a missing socket file or a refused connection on both paths is "not running". They never replace a daemon (CLI-9): `status` shows both versions, and `stop` stops whatever answers.
+  - `--no-spawn`, or `CIRCITOR_NO_SPAWN=1`, turns this off: the command then fails with code 6. `notify --no-spawn` first waits up to 8 s for a daemon to answer (NTF-10).
+- **CLI-8** `status`, `stop`, `version`, `help`, `guide` and `notify --cancel` (NTF-11) never start a daemon. With none running, `status` says so and exits 6; `stop` exits 0. They connect as CLI-7 does: only a missing socket file or a refused connection on both paths is "not running". They never replace a daemon (CLI-9): `status` shows both versions, and `stop` stops whatever answers.
   - **`stop` returns once the daemon has exited:** after the answer it waits up to 8 s for the lock in `circitor.lock` to be released (STA-11, OPS-7), then exits 0. Still held, it goes on as for a daemon that doesn't answer.
   - **`stop` ends a daemon that doesn't answer.** With no answer within its limit (CLI-7), it sends `SIGTERM` to the process in the lock file (STA-11), and `SIGKILL` 5 s later, only while that lock is still held.
 - **CLI-9** **A daemon older than the CLI is replaced.** **A command that needs the daemon reads `GET /v1/status` first.** If its `version` is older than the CLI's, the CLI asks that daemon to shut down, waits up to 8 s for the lock in `circitor.lock` to be released (OPS-7), starts its own, and only then sends the request. Still held, it uses the old daemon and warns on stderr. This is what makes `brew upgrade` take effect (OPS-15). (proposal)
@@ -148,11 +152,11 @@
   - At most one replacement per command.
   - **A `bad_request` or `unknown_route` from an older daemon that isn't replaced** (a foreground one) says the daemon is older than the CLI and how to restart it, and exits 1, not 2.
 - **CLI-10** **A wait whose connection drops without an answer runs its `again:` command once** (CLI-6), with the time left. If its `Circitor-Cursor` had arrived, it starts no daemon: it waits up to 8 s, within the time left, for one to answer, connecting as CLI-7 does. A replacement (CLI-9) or a service manager starts the new daemon; a `stop` or a signal leaves none, and stays a stop. A cursor from the old daemon gets `reset: true` from a new one (STA-9), so nothing is lost silently, whatever the condition. The endings are CLI-6's.
-  - **Any other command whose connection drops before a full answer is tried once more**, as a new command (CLI-7, which may start a daemon), within its limit. So is a wait whose connection drops before its `Circitor-Cursor` arrived. Every route is safe to repeat (API-15, API-16). A second drop is exit code 6.
+  - **Any other command whose connection drops before a full answer is tried once more**, as a new command (CLI-7, which may start a daemon), within its limit. So is a wait whose connection drops before its `Circitor-Cursor` arrived. Every route is safe to repeat (API-15, API-16, NTF-2). A second drop is exit code 6.
 
 ## For agents
 
-- **CLI-11** `circitor guide` prints a short text an agent can follow: when to use circitor in place of `gh`, the commands with one example each, the exit codes, the rule to pass `--sha` after a push, the rule to pass `--rerun-since` with the cursor from before starting CI again on the same head (API-10), and **never to loop `show --fresh`**: each one can cost a point, where a `wait` shares one refresh among every agent (POL-15), and that a cursor from one PR's `wait` or `changes` is for that PR only (API-8). The same text ships as a skill and as an `AGENTS.md` section (OPS-12). It's under 60 lines. (proposal)
+- **CLI-11** `circitor guide` prints a short text an agent can follow: when to use circitor in place of `gh`, the commands with one example each, the exit codes, the rule to pass `--sha` after a push, the rule to pass `--rerun-since` with the cursor from before starting CI again on the same head (API-10), and **never to loop `show --fresh`**: each one can cost a point, where a `wait` shares one refresh among every agent (POL-15), and that a cursor from one PR's `wait` or `changes` is for that PR only (API-8). It names `--fail-fast` and `--kind` (API-10). **For Claude Code it says when `notify` fits better than a long `wait`**: that its exit code doesn't say the condition holds, that a notice arrives as a message from another session and is a hint to run the command in it, to cancel the notify and use `wait` when no confirmation arrives, and that exit code 6 from the command in a `stopped` notice means the daemon was stopped on purpose, and isn't to be started again for a notice; that in an unattended run a background `wait` is the way; and that a notify is lost when the session is resumed or the daemon crashes (NTF-7, NTF-10 to NTF-12). The same text ships as a skill and as an `AGENTS.md` section (OPS-12). It's under 70 lines. (proposal)
 - **CLI-12** **No command asks a question or opens a pager.** Output is never coloured unless stdout is a terminal.
 
 ## For tests

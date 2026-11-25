@@ -1,6 +1,6 @@
 # Polling GitHub
 
-**Status:** draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25), planning findings (2026-11-25).
+**Status:** draft 0.2, 2026-11-25: notify (D7). Draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25), planning findings (2026-11-25).
 
 When circitor asks GitHub, for what, and what it does when GitHub doesn't answer. Costs and timings are from [docs/02](../docs/02-github-api.md).
 
@@ -31,11 +31,12 @@ When circitor asks GitHub, for what, and what it does when GitHub doesn't answer
 | The PR | Refreshed every |
 |---|---|
 | Hot (POL-14), whatever its state | `hot_interval` |
+| Open, with a subscription (NTF-5), whatever its `source` | Its tier's (POL-13) |
 | `merged`, `closed`, `gone`, or `asked` (STA-1) | `idle_interval` |
 | Any other | Its tier's (POL-13) |
 
   - The ended rate still shows a late comment, and the reopening of a PR that isn't the user's own. What the user didn't track isn't followed closely unless a client waits on it or asks for it fresh.
-- **POL-11** **`mergeable` unknown.** When a refresh returns `UNKNOWN` for an **open** PR that has a waiter, was asked for by name in the last 60 s, or is being refreshed for the first time since the daemon started, that PR is refreshed once more 3 s after the answer that read `UNKNOWN`. The PRs of one answer share one request, and the follow-up never causes another. Asking is what makes GitHub compute it. On a new, small PR it took 3–4 s (docs/02 §4); how long a large or long-idle PR takes isn't measured (docs/02 §6). (proposal)
+- **POL-11** **`mergeable` unknown.** When a refresh returns `UNKNOWN` for an **open** PR that has a waiter, was named by a request in the last 60 s (STA-1), or is being refreshed for the first time since the daemon started, that PR is refreshed once more 3 s after the answer that read `UNKNOWN`. The PRs of one answer share one request, and the follow-up never causes another. Asking is what makes GitHub compute it. On a new, small PR it took 3–4 s (docs/02 §4); how long a large or long-idle PR takes isn't measured (docs/02 §6). (proposal)
 - **POL-12** **What's new.** When a refresh shows `counts.comments` or `counts.reviews` higher than before, one more request fetches that PR's last 20 comments and last 20 reviews: `databaseId`, author, time, and for a review its state and its inline comment count. Items STA-5 counts as new become `activity` items (MOD-12).
   - **They're batched.** The PRs of one poll or one hot refresh that need it share requests, up to POL-7's 40 PRs each, sent straight after it. Each PR's part is applied or fails on its own (POL-21). (proposal; by GitHub's formula 40 PRs' last 20 comments and reviews cost 1 point, not measured, docs/02 §2)
   - **A count change and its items are one change.** A refresh whose `counts.comments` or `counts.reviews` rose is applied only once this request has answered, so one event carries the counts and the `activity` items (MOD-15). If the request fails, the refresh is applied with the old values of those two counts, so the next refresh asks again.
@@ -54,11 +55,12 @@ When circitor asks GitHub, for what, and what it does when GitHub doesn't answer
 | **idle** | Otherwise | `idle_interval`, 5 min |
 
   - A request arriving in the idle tier moves it to active, and starts a poll at once if the last one is older than `interval`.
-  - With no waiter and no client for `exit_after`, the daemon exits if the CLI started it (OPS-8).
+  - With no waiter, no subscription and no client for `exit_after`, the daemon exits if the CLI started it (OPS-8).
+  - **A subscription on an open PR keeps the active tier** (NTF-5): while one is held, the tier is active whatever the last client request; once it ends, the tier follows the last client request (`idle_after`). One on a PR that has ended doesn't.
   - **Hot isn't a tier:** it's a cadence for single PRs on top of either (POL-14).
   - **Every cadence runs from send times**, on the monotonic clock. A poll is due its interval after the last poll was sent. **Every request of a poll counts as sent when the poll's first request was**, so a PR refreshed in a poll's later request isn't a second short of its period at the next poll. A PR is due when its last refresh, of any kind, was sent at least its period (POL-10) ago, compared when the request is built. The send times of MOD-2 and MOD-6 stay each request's own.
   - Values are (proposal). A poll costs 1 point while it fits one request: up to 40 PRs to refresh (POL-7), none with more than 100 checks (POL-8). Then active costs about 120 points an hour and idle 12 (docs/02 §2). Each further request is one more point.
-- **POL-14** **Hot PRs.** A PR is hot while it has a waiter, or for 2 minutes after a request named it (STA-1) while its `status` is `checks_pending` or `unknown`. Hot PRs are refreshed every `hot_interval`, **10 s**, by ID, without finding. Hot PRs share one request, up to POL-7's 40; more go in further requests. **A hot PR is due `hot_interval` after its last refresh, of any kind; a poll's counts.** So its hot refreshes fall between polls: one hot PR adds 240 points an hour, 360 with the active tier (60 % of the budget). (proposal)
+- **POL-14** **Hot PRs.** A PR is hot while it has a waiter, or for 2 minutes after a request named it (STA-1) while its `status` is `checks_pending` or `unknown`. Hot PRs are refreshed every `hot_interval`, **10 s**, by ID, without finding. Hot PRs share one request, up to POL-7's 40; more go in further requests. **A hot PR is due `hot_interval` after its last refresh, of any kind; a poll's counts.** So its hot refreshes fall between polls: one hot PR adds 240 points an hour, 360 with the active tier (60 % of the budget). (proposal) **A subscription doesn't make its PR hot** (NTF-5).
 - **POL-15** **Forced refreshes.** `fresh` (API-7) and a wait's arrival (API-13) refresh that one PR by ID, as a hot refresh does. `refresh` (API-16) runs a whole poll. Requests arriving while one is in flight share its result. One PR is force-refreshed only when its last refresh, of any kind, was sent more than 5 s ago, on the monotonic clock, and a whole poll only when the last forced poll was sent more than 10 s ago; a request inside the window gets what's in memory. When capped or in reserve (POL-23) both windows are 30 s. **A forced refresh, a read-through and a `track` go next:** they're sent before the rest of a poll in flight, between its requests (POL-2), so one waits at most for the request in flight. (proposal: the values)
 - **POL-16** **Reading through.** A request for a PR that isn't tracked fetches it at once by owner, repository and number. If GitHub returns it, it's tracked with source `asked` (STA-1) and answered. If GitHub answers `NOT_FOUND` for the repository or the PR, the answer is `not_found` (API-3). If GitHub can't be reached, it's `github_unavailable`; another error `type` on the PR or its repository is too, with the type named (API-3); in the `auth` state (POL-20), `auth`; with the limit exhausted (POL-18), `rate_limited`. None of these tracks the PR. A just-created PR is therefore never "not found" for lack of a poll. A read-through is tried even during POL-19's backoff, at most one per step of it. (proposal: trying during the backoff)
 
@@ -97,7 +99,7 @@ When circitor asks GitHub, for what, and what it does when GitHub doesn't answer
 - **POL-22** **Sleep and wake.** A sleep is noticed by comparing how far the wall clock and the monotonic clock moved since the last check: a gap over 30 s. The check runs at every tick (POL-26) and client request. On a sleep:
   - every record is `stale` until its next refresh (MOD-16)
   - POL-19's backoff starts again at 5 s
-  - a poll starts at once if a waiter is held or a client asked within `idle_after`
+  - a poll starts at once if a waiter or a subscription (NTF-4) is held or a client asked within `idle_after`
   - every waiter's deadline is checked: its timeout on the monotonic clock plus the sleep noticed since it arrived. A `wait` that outlived it ends on waking (API-12); a clock set back doesn't lengthen it.
   
   (proposal; how tokio's timers behave across a suspend isn't checked, docs/04 §8)
@@ -107,5 +109,5 @@ When circitor asks GitHub, for what, and what it does when GitHub doesn't answer
   - **A secondary limit:** a 403, or a 200 with an error, whose message names a secondary rate limit. Nothing is sent, read-throughs and forced refreshes included, until its `Retry-After` has passed; without one, for 60 s, doubling on each one in a row up to `idle_interval`. Every secondary limit counts towards the row, with a `Retry-After` or without; a request that succeeds ends it. The wait goes by the monotonic clock (POL-26).
 - **POL-26** **Clocks.** (proposal; the monotonic clock and tokio's timers across a suspend aren't checked, docs/04 §8)
   - **GitHub's own windows, and the daemon's retention, go by the wall clock:** POL-17's hour, POL-25's reset time, MOD-8's 60 s, and STA-1's and STA-2's durations, checked at each tick, not slept on. A wall time ahead of now, after the clock was set back, counts as now.
-  - **Every other duration goes by the monotonic clock**, for example POL-2's, POL-11's, POL-13's tiers, POL-14's, POL-15's, POL-19's and a waiter's timeout (API-12).
-  - **The tick** is a timer every 10 s on the monotonic clock, beside the poll, hot and backoff timers. At each tick the sleep check (POL-22), the quota state (POL-23), POL-25's reset time, and STA-1's and STA-2's durations are checked. It sends nothing by itself.
+  - **Every other duration goes by the monotonic clock**, for example POL-2's, POL-11's, POL-13's tiers, POL-14's, POL-15's, POL-19's and a waiter's timeout (API-12). A subscription's `for` runs as a waiter's timeout does, and is checked at the tick (NTF-4).
+  - **The tick** is a timer every 10 s on the monotonic clock, beside the poll, hot and backoff timers. At each tick the sleep check (POL-22), the quota state (POL-23), POL-25's reset time, STA-1's and STA-2's durations, and every subscription's socket, expiry and `problem` (NTF-4) are checked. It sends nothing to GitHub by itself.

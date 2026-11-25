@@ -1,6 +1,6 @@
 # Overview
 
-**Status:** draft 0.1, 2026-11-24.
+**Status:** draft 0.2, 2026-11-25: notify (D7). Draft 0.1, 2026-11-24.
 
 ## Summary
 
@@ -8,6 +8,7 @@
 - asks GitHub's GraphQL API about the user's pull requests, on a cadence that follows demand
 - keeps each PR's state in memory: checks, mergeability, review state, and what's new in comments
 - answers the CLI over a Unix socket: the list, one PR, what changed, or a `wait` that blocks until something happens
+- posts one message into a Claude Code session that asked to be told about a PR (D7)
 
 Run as a CLI, it's what coding agents call instead of `gh`. One poller serves every agent session, so watching PRs stops multiplying against the GitHub quota.
 
@@ -28,6 +29,7 @@ Run as a CLI, it's what coding agents call instead of `gh`. One poller serves ev
 | U11 | It uses **gh's login**. It has no authentication of its own. (log D7) |
 | U12 | **Rust**, shipped through **Homebrew for macOS first**; Linux later. (log D3, D9) |
 | U13 | **github.com and one account** in v1. (D4) |
+| U14 | **A Claude Code session can ask to be told once** when a PR is merged, its checks are done, or it changed, and work on or sit idle meanwhile. (D7) |
 
 ## Non-goals (v1)
 
@@ -37,7 +39,8 @@ Run as a CLI, it's what coding agents call instead of `gh`. One poller serves ev
 - An MCP server, a menu bar widget, a `gh` extension. Each is a later client of the same API (log D4, D7, D8).
 - Windows, GitHub Enterprise Server, several accounts or hosts.
 - Free-form search queries, PRs awaiting the user's review, issues, notifications.
-- A TCP listener. The Unix socket is the only transport in v1. (proposal: log D5 allowed TCP as an opt-in; nothing in v1 needs it)
+- A TCP listener. The Unix socket is the only way in to the daemon in v1. (proposal: log D5 allowed TCP as an opt-in; nothing in v1 needs it) The one connection the daemon makes besides GitHub's is to a session's own socket, to post a notice (D7).
+- Notices that repeat, one per event, and notices for clients other than Claude Code (D7).
 - `brew services`. The daemon's foreground mode is enough for a user who wants a service (D1).
 - Edited and deleted comments, resolved threads, auto-merge and the merge queue: reported only as far as [01-model](01-model.md) says.
 
@@ -58,6 +61,7 @@ Run as a CLI, it's what coding agents call instead of `gh`. One poller serves ev
 |---|---|---|
 | CLI | Parses commands, starts the daemon if it isn't running, prints compact text or JSON, maps outcomes to exit codes | [05-cli](05-cli.md) |
 | api | The HTTP routes on the socket; registers and answers waiters | [04-api](04-api.md) |
+| notifier | Holds subscriptions, and posts a notice into a Claude Code session when one ends | [08-notify](08-notify.md) |
 | state | The tracked PRs, their revisions and events; retention; the state file | [03-state](03-state.md), [01-model](01-model.md) |
 | poller | Decides when to ask GitHub and for what; keeps to the quota budget; backs off on errors | [02-polling](02-polling.md) |
 | github | Builds the queries, sends them one at a time, turns responses into records | [02-polling](02-polling.md) |
@@ -82,6 +86,7 @@ src/github/        queries, the GraphQL client, response decoding
 src/poller/        cadence, quota, backoff
 src/state/         the tracked set, retention, the state file
 src/api/           routes, JSON types, waiters
+src/notify/        subscriptions, posting to a session's socket
 src/cli/           commands, output, exit codes, starting the daemon
 src/daemon/        start, stop, the lock, the socket, signals, logging
 src/config/        the config file and defaults
@@ -104,6 +109,8 @@ specs/  docs/  plan/
 | Poll | One round of asking GitHub: finding PRs and refreshing the known ones |
 | Tier | The cadence the poller is in: idle, active, or hot for single PRs (POL-13) |
 | Waiter | A `wait` request the daemon is holding open |
+| Subscription | A request to be told once, held without a connection (NTF-1) |
+| Notice | The one message circitor posts into a session (NTF-6) |
 | Tracked | In the daemon's set: authored, added by hand, or asked about (STA-1) |
 | Owner | The user or organisation a repository belongs to |
 | Point | The unit of GitHub's GraphQL rate limit: 5 000 an hour (docs/02 §2) |

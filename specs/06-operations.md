@@ -1,6 +1,6 @@
 # Operations
 
-**Status:** draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25), planning findings (2026-11-25).
+**Status:** draft 0.2, 2026-11-25: notify (D7). Draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25), planning findings (2026-11-25).
 
 Configuration, files, the token, the daemon's life, and how circitor is shipped. Platform facts are in [docs/04](../docs/04-platform.md); nothing in it was checked on a Mac yet.
 
@@ -65,16 +65,16 @@ Configuration, files, the token, the daemon's life, and how circitor is shipped.
   - `circitor daemon`: in the foreground, logging to stderr, for launchd, systemd or a terminal. It never exits for idleness.
   - `circitor daemon --spawned`: what the CLI starts (CLI-7). Its stderr is the log file (CLI-7), and it exits when idle (OPS-8).
   - **A foreground daemon takes over from a spawned one.** If the lock's holder answers with `mode: spawned` (API-5), it asks it to shut down (API-17) and waits for the lock as STA-11 says. **It repeats the takeover** each time the holder answers with `mode: spawned`, until it holds the lock or 15 s have passed. **A foreground daemon never exits 0 for want of the lock:** without it by then, it exits 1 naming the holder's socket, so a service manager starts it again. The spawned daemon's waiters reconnect to it (CLI-10). A foreground holder is left alone: a second foreground daemon exits with an error naming the holder's socket.
-- **OPS-7** **Stopping.** On `SIGTERM`, `SIGINT`, `SIGHUP` or a shutdown request: stop accepting connections and remove the socket if it's still its own (STA-11), stop polling, close every open connection without an answer, waiters' and others' alike (CLI-10 repeats them), write the state file (STA-7) unless STA-8 left it alone, release the lock, exit 0. **A waiter that reconnects starts no daemon** (CLI-10): a stop stays a stop.
+- **OPS-7** **Stopping.** On `SIGTERM`, `SIGINT`, `SIGHUP` or a shutdown request: stop accepting connections and remove the socket if it's still its own (STA-11), stop polling, post `stopped` to every open subscription (NTF-10), close every open connection without an answer, waiters' and others' alike (CLI-10 repeats them), write the state file (STA-7) unless STA-8 left it alone, release the lock, exit 0. **A waiter that reconnects starts no daemon** (CLI-10): a stop stays a stop.
   - **The stop has a 5 s deadline.** The final write doesn't wait for STA-7's 5 s spacing, a running `gh` is killed, and a request to GitHub in flight is dropped. A stop not done by then is logged, and the daemon exits at once: the lock goes with the process, and `state.json` stays as last renamed (STA-7).
   - A second `SIGTERM` or `SIGINT` during the stop does the same at once. A final write that failed is logged.
   - **Every stop exits 0**, so a service manager doesn't restart it (OPS-18). Status 1 is for a crash.
-- **OPS-8** **Idle exit.** A spawned daemon exits when it has had no client request and no waiter for `exit_after`, on the monotonic clock (POL-26). A `status` request doesn't count (API-5), so watching a daemon doesn't keep it alive. The next CLI call starts a new one; it loses the event history, the cursors' epoch (STA-9) and the `asked` PRs. It stops as OPS-7 does.
+- **OPS-8** **Idle exit.** A spawned daemon exits when it has had no client request, no waiter and no open subscription (NTF-5) for `exit_after`, on the monotonic clock (POL-26). A `status` request doesn't count (API-5), so watching a daemon doesn't keep it alive. The next CLI call starts a new one; it loses the event history, the cursors' epoch (STA-9) and the `asked` PRs. It stops as OPS-7 does.
 - **OPS-9** **Logging.** One line per event, `<time> <level> <message>`, to stderr: the time RFC 3339, UTC; the level `error`, `warn`, `info` or `debug`. `info` is the default; `CIRCITOR_LOG` names another, and an unknown value is `info`, with a warning line.
   - **The log file is rotated only before a daemon starts:** the CLI (CLI-7) renames a `circitor.log` over 5 000 000 bytes to `circitor.log.1`, replacing any earlier one, and opens a new one for appending. A foreground daemon's stderr is the service manager's (OPS-18).
   - **Logging never stops the daemon.** A line that can't be written is dropped, with the `log_unwritable` warning (API-5) while it lasts.
-  - Logged: start and stop with the version and paths, and the stop's cause (a signal, a shutdown request (API-17: from `stop`, or a CLI replacing it, CLI-9), idle, its socket or lock file not its own, the 5 s deadline); a sleep noticed, with its length (POL-22); the tier changing; a problem beginning and ending (never each retry); quota warnings; a PR tracked, untracked or gone; the state file set aside; every warning of API-5, when it's raised and cleared; a state-file write failing and working again (STA-7); a failed token read (POL-3); a PR's error, once while it lasts (POL-24).
-  - **Never logged:** the token, PR titles, or free text from a response (error messages, comment or review content). From a response only names, numbers, states, costs and error `type`s are logged.
+  - Logged: start and stop with the version and paths, and the stop's cause (a signal, a shutdown request (API-17: from `stop`, or a CLI replacing it, CLI-9), idle, its socket or lock file not its own, the 5 s deadline); a sleep noticed, with its length (POL-22); the tier changing; a problem beginning and ending (never each retry); quota warnings; a PR tracked, untracked or gone; the state file set aside; every warning of API-5, when it's raised and cleared; a state-file write failing and working again (STA-7); a failed token read (POL-3); a PR's error, once while it lasts (POL-24). A subscription registered and ended, with its end's name and never a notice's text; a notice that couldn't be posted (NTF-6, NTF-10).
+  - **Never logged:** the token, a session's token (NTF-9), PR titles, or free text from a response (error messages, comment or review content). From a response only names, numbers, states, costs and error `type`s are logged.
   - `CIRCITOR_LOG=debug` adds one line per request to GitHub: its kind, cost and duration.
 
 ## Shipping
@@ -93,7 +93,7 @@ Configuration, files, the token, the daemon's life, and how circitor is shipped.
   - says that a daemon `circitor stop` had to kill (CLI-8) is restarted, and that a service is stopped with `systemctl --user stop` or `launchctl bootout`
 
   It names the command that restarts the service after `brew upgrade` or a config change (`launchctl kickstart -k`, `systemctl --user restart`). (proposal)
-- **OPS-16** **Privacy.** circitor talks to `api.github.com` and to nothing else. There's no telemetry and no update check.
+- **OPS-16** **Privacy.** circitor talks to `api.github.com`, and to the socket of a Claude Code session on the same machine that asked for a notice (NTF-6). It talks to nothing else. There's no telemetry and no update check.
 
 ## Targets for behaviour
 

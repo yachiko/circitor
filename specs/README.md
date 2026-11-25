@@ -1,6 +1,6 @@
 # Software spec
 
-**Draft 0.1, 2026-11-24.** This is the specification for `circitor`, a local daemon that watches the user's GitHub pull requests for coding agents. It's built on [direction](../docs/01-direction.md) and the facts in `docs/02` to `docs/04`.
+**Draft 0.2, 2026-11-25: notify and narrower conditions (D7, D8). Draft 0.1, 2026-11-24.** This is the specification for `circitor`, a local daemon that watches the user's GitHub pull requests for coding agents. It's built on [direction](../docs/01-direction.md) and the facts in `docs/02` to `docs/04`.
 
 ## Files
 
@@ -14,16 +14,17 @@
 | [05-cli](05-cli.md) | Commands, output, exit codes, starting the daemon | `src/cli` |
 | [06-operations](06-operations.md) | Config, directories, the token, the daemon's life, logging, distribution | `src/daemon`, `src/config` |
 | [07-testing](07-testing.md) | The fake GitHub, fixtures, the fake clock, scenarios, acceptance | tests |
+| [08-notify](08-notify.md) | Telling a Claude Code session once: subscriptions, notices, the `notify` command | `src/notify` |
 | [decisions](decisions.md) | Resolved and open decisions | – |
 
 **Reading order:** first 00, then 01 (every other file uses its field and status names), then the file for the part you're working on.
 
 ## Conventions
 
-- **Requirement IDs.** Each file numbers its requirements with its own prefix: MOD, POL, STA, API, CLI, OPS and TST. User requirements are U1, U2, …. Tests and implementation tasks cite these IDs.
+- **Requirement IDs.** Each file numbers its requirements with its own prefix: MOD, POL, STA, API, CLI, OPS, TST and NTF. User requirements are U1, U2, …. Tests and implementation tasks cite these IDs.
   - IDs are never reused. A dropped requirement stays in place, struck through.
 - **(proposal)** marks a suggestion waiting for the owner's approval: usually a value or a rule the owner hasn't chosen. **(decision needed)** marks an item listed under open decisions in [decisions](decisions.md).
-- **Facts vs behaviour.** What GitHub, the agent clients and the platform do lives in [docs/02](../docs/02-github-api.md), [docs/03](../docs/03-clients.md) and [docs/04](../docs/04-platform.md), each fact with a confidence label. Those docs are the source of truth for facts.
+- **Facts vs behaviour.** What GitHub, the agent clients and the platform do lives in [docs/02](../docs/02-github-api.md), [docs/03](../docs/03-clients.md) and [docs/04](../docs/04-platform.md), each fact with a confidence label. Those docs are the source of truth for facts. The Claude Code session socket's facts are in [docs/07](../docs/07-notify.md), cited the same way.
   - These files say what the software does with those facts, and cite them as "docs/02 §4" instead of copying their tables.
   - A requirement resting on a fact labelled `observed`, `documented` or `assumed` says so, and is a (proposal) until the fact is measured.
 - **A PR's name** is `owner/repo#number`, as GitHub writes it.

@@ -1,6 +1,6 @@
 # Decisions
 
-**Status:** draft 0.1, 2026-11-24.
+**Status:** draft 0.2, 2026-11-25: notify and narrower conditions (D7, D8). Draft 0.1, 2026-11-24.
 
 The spec's decisions, numbered D1, D2, … in the order they were raised. [docs/06 decision log](../docs/06-decision-log.md) is the project's history up to the first spec draft. It uses its own numbers, so cite those as "log D5". New decisions go here.
 
@@ -18,12 +18,29 @@ Decided before the spec and binding on it: one local poller (log D1), polling wi
 | D4 | Hosts and accounts | **github.com and gh's active account** in v1 (OPS-5). Decided 2026-11-24 (log D17). |
 | D5 | Formula or cask, and the release tool | **A formula written by `dist`** (OPS-10). Decided 2026-11-25. |
 | D6 | Measuring required checks and reviews before v1 | **Not before v1:** `blocked` and `behind` are built as (proposal) (MOD-9, MOD-11); measured later on a small public repository, if the owner creates one. Decided 2026-11-25. |
+| D7 | Telling a session (`notify`) | **In v1, a Claude Code session can ask to be told once**, through its own inbox socket ([08-notify](08-notify.md), U14). The subscription is refreshed at the normal rate, not hot (NTF-5); a daemon that stops in order tells each session, and subscriptions live in memory only (NTF-9, NTF-10). It narrows the non-goal "the Unix socket is the only transport" to "the only way in". Everything that posts is a (proposal): the message format is known only from Claude Code's debug log (docs/07). Decided 2026-11-25. See below. |
+| D8 | Narrower conditions | **`--kind` on `changed` and `--fail-fast` on `checks-done`**, for `wait` and `notify` alike (API-10, API-11, CLI-5, CLI-6). Decided 2026-11-25. See below. |
 
 ## Open
 
 None.
 
 ## Notes on resolved decisions
+
+**D7: telling a session** (resolved 2026-11-25)
+- The owner's idea, after seeing one Claude Code session message another: the daemon keeps a session's address, a PR and a condition, and posts to the session when the condition holds. Measured the same day (docs/07): a script can post into a session, and an idle session wakes on it.
+- **Cadence:** the owner chose the normal rate. A hot PR costs about 240 points an hour, and a subscription can stay open for a day.
+- **On an orderly stop** the owner chose to tell each session and drop the subscription, over saving subscriptions in the state file. A crash tells nobody.
+- **One notice per subscription.** A session that wants more asks again; the notice carries a cursor, so nothing between two is lost.
+- **A confirmation is posted when registering**, because the socket never answers: a held or refused notice looks like a delivered one from outside, and only the agent can tell (NTF-7).
+- **A session that bypasses permission prompts holds notices** unless its user sets `crossSessionInbound` to `accept` (docs/07, verified). circitor never claims a permission mode to get past that (NTF-6).
+- **`notify`'s exit code doesn't carry the condition** (NTF-11): 0 would otherwise mean both "registered" and "passed".
+- `wait` is unchanged, and stays the way for OpenCode and pi.
+
+**D8: narrower conditions** (resolved 2026-11-25)
+- Raised while drafting D7: `changed` fires on any change, so an agent waiting for a review was woken by a check finishing; and `checks-done` reports a failure only when the last check has finished.
+- `--kind` filters `changed` by MOD-15's event kinds. With it, a merge or a close ends the wait unless its kind is named.
+- `--fail-fast` is the flag `gh pr checks --watch` has. Exit code 8 then also means "one failed, others may still run".
 
 **D5: the release tool** (resolved 2026-11-25)
 - The tap's other tools are casks written by GoReleaser. `dist` builds Rust releases and writes a formula, not a cask (docs/04 §3).
