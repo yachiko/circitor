@@ -10,7 +10,7 @@
    "milestone": "M1",
    "size": "S",
    "wave": 1,
-   "remaining": 22,
+   "remaining": 19,
    "depends_on": [],
    "dependents": [
     "T02",
@@ -43,11 +43,11 @@
    "id": "T02",
    "title": "Contracts as code: the module tree, every seam's declarations, and the small shared types",
    "kind": "infra",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M1",
    "size": "L",
    "wave": 2,
-   "remaining": 22,
+   "remaining": 19,
    "depends_on": [
     "T01"
    ],

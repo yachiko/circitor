@@ -4,7 +4,7 @@ title: "Contracts as code: the module tree, every seam's declarations, and the s
 kind: infra
 milestone: M1
 size: L
-status: in-progress
+status: done
 depends_on: [T01]
 requirements: [API-19, CLI-13, NTF-9]
 owns: [src/]
@@ -99,3 +99,11 @@ Unit tests beside the code. Where one needs a clock, a ten-line `Clock` inside t
 - **API-19's names, MOD-15's `kinds` as tagged objects, `gh_path` in `status`, `log_unwritable`, and the order of `pr`** are (proposal). Build them as the contracts write them. If a type can't carry the JSON a spec writes, that's a contract change to report, here or when T41's test finds it.
 - **The contracts may still move while you build.** Take them as they stand at your start; a later change reaches you through the orchestrator, not by re-reading.
 - D5 doesn't touch this task. **D6:** `Status::Blocked` exists as written; nothing here reads a check's `required`.
+
+## Evidence
+- **2026-11-26**, branch `t02-contracts` (commit ab3e947, rebased onto T50's 5aa9128), executor on **Opus, medium**; reviewed by the orchestrator, with four read-only Opus reviewers comparing every code block of `plan/contracts/` against the code (one slice each: api/transport/testkit; model/github/log/clock; state/poller/config; cli/daemon/notify). **No declaration was found wrong.**
+- In the worktree: `make verify` passes (T01's Makefile, without check-macos), 36 lib tests; `cargo test --lib` without the feature passes; `cargo build --release` passes. Every test the brief names exists, and `sta9_too_old` besides.
+- On main after the merge: fmt, both clippy runs and `cargo test --features test-endpoint` (36) pass; **`check-macos` stops with `check-macos needs zig`**: zig isn't installed system-wide yet (T50). To rerun once it is.
+- Stubs: `grep -rn 'unimplemented!("T' src | wc -l` is 325: T04 35, T05 4, T06 3, T07 4, T08 22, T09 11, T10 20, T11 4, T12 4, T13 9, T14 7, T15 30, T16 10, T17 7, T18 9, T21 11, T24 9, T27 7, T28 9, T43 69, T44 2, T45 10, T46 28, T48 1. `StartError::code` is `match *self {}` over an empty enum, not a stub.
+- **Choices where a contract is silent** (accepted; each sits in its builder's leaf): `EndpointError`, `ConfigError`, `DirError`, `StartError` are empty enums (every user depends on the filler); `PathError` has `RelativeSocket`, `TooLong`, `NoHome`, and `config::MAX_SOCKET_PATH` is 103; `TimeError`, `NameError`, `CursorError` are unit structs; `ErrorCode::http()` returns `http::StatusCode`; `NotifyBody::as_wait` is also `None` without an outcome; `NoNotify::look` is `Looked::Failed("no notifier")`; `InterruptTrigger` is `Clone`, first code wins; `PrName` takes `[A-Za-z0-9._-]+` and a number ≥ 1, `from_url` only `https://github.com/` (host case-blind); `Cursor` accepts leading zeros in `rev`; `Time` clamps at chrono's range; the fakes' constructors return `Arc`, `ScriptedGitHub::hold(&Activity)`, `FakeTokenSource::set_kind`/`set_gh_path` (T13 writes its own source regardless), `FakePoller`'s counters; `testkit::github::schema()` returns `&'static apollo_compiler::Schema`; `WarningCode` has no `Ord` (T04 sorts `list`); `NewSubscription` derives `Debug`.
+- Clippy allowances: `large_enum_variant` on `model::Merged`; `ptr_arg` on `conn::ensure`, `conn::existing`, `conn::stop`, `commands::find_bare`. `Default` beside `new()` for `StopHandle`, `Backoff`, `ShortDir`.
