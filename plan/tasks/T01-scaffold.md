@@ -13,6 +13,8 @@ shares: []
 
 # T01 · Scaffold: the package, every dependency, the toolchain, make verify
 
+Follow-ups: T50
+
 ## Outcome
 An empty `circitor` package builds, lints and tests with `make verify`: every dependency the plan needs is declared and locked, the `test-endpoint` feature exists, and the binary knows its version and commit (OPS-11). No later task edits `Cargo.toml`, `Cargo.lock` or the Makefile.
 

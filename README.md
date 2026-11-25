@@ -12,3 +12,14 @@ A small local daemon that watches your GitHub pull requests, so coding agents ca
 | `.claude/skills/` | `harden`, `build-plan` and `add-feature`: how the specs and the plan are made |
 
 Start with [direction](docs/01-direction.md).
+
+## Building
+
+`make verify` formats, lints, tests, and builds for macOS. **From Linux, the macOS build needs zig and cargo-zigbuild:**
+
+```sh
+sudo pacman -S zig    # or your system's package, or ziglang.org
+cargo install cargo-zigbuild --locked
+```
+
+On a Mac, plain cargo builds for macOS, so neither is needed.

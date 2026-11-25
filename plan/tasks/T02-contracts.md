@@ -4,7 +4,7 @@ title: "Contracts as code: the module tree, every seam's declarations, and the s
 kind: infra
 milestone: M1
 size: L
-status: todo
+status: in-progress
 depends_on: [T01]
 requirements: [API-19, CLI-13, NTF-9]
 owns: [src/]

@@ -31,7 +31,7 @@ T11 wrote the guide and its two shipped forms, `skills/circitor/SKILL.md` and `A
 - `README.md` as it is; `skills/circitor/SKILL.md` and `AGENTS.section.md` (T11's)
 
 ## Scope
-- **Keep** the README's first paragraph and its folder table. Update the status line, the `plan/` row, and add rows for `skills/`, `packaging/` and `src/`. Then these sections, in this order. Short sentences, British spelling, bold for the key phrase.
+- **Keep** the README's first paragraph, its folder table and its "Building" section (T50: zig and cargo-zigbuild for `make verify`). Update the status line, the `plan/` row, and add rows for `skills/`, `packaging/` and `src/`. Then these sections, in this order. Short sentences, British spelling, bold for the key phrase.
 - **Install (OPS-10's share).** `brew install yachiko/tap/circitor`, by its full name, and one line on why (it trusts that one item, docs/04 §2). It needs `gh`, logged in (`gh auth login`). **It's a formula, written by `dist`** (D5, OPS-10): the README needn't say so. No `brew services`: OPS-10 and D1 leave it out of v1. Publishing the release and the tap is T39's share of OPS-10.
 - **First use.** `circitor list` starts the daemon; `circitor guide` prints what an agent needs; `circitor status` and `circitor stop`. Three or four lines, no copy of the guide.
 - **For agents (OPS-12's README share).** Where the two files go, per client, from docs/03 §1: the skill folder for Claude Code, OpenCode v2 and pi, in the project or under `~`; `AGENTS.section.md` pasted into `AGENTS.md` for OpenCode and pi, or into `CLAUDE.md`. Say that installing isn't automated in v1. Add Claude Code's `permissions.allow` entry `"Bash(circitor *)"` (docs/03 §2).

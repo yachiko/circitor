@@ -19,7 +19,7 @@ shares: []
 The repository is on GitHub, the workflow of T03 has run green on a Linux and a macOS runner, and whatever macOS showed that Linux couldn't is fixed or filed.
 
 ## Context
-T03 wrote the CI workflow and checked its syntax; it has never run, because the repository has no remote. The development machine is Linux, with no Mac at hand, and `make check-macos` probably can't compile for macOS from there (a C dependency). So **the first run on a macOS runner is the first time the code meets macOS at all.** This task is **the owner's**: put the repository on GitHub, run the workflow, and turn what macOS shows into fixes or follow-up tasks.
+T03 wrote the CI workflow and checked its syntax; it has never run, because the repository has no remote. The development machine is Linux, with no Mac at hand. `make check-macos` builds for macOS from there through cargo-zigbuild (T50), but nothing has run on macOS. So **the first run on a macOS runner is the first time the code runs on macOS at all.** This task is **the owner's**: put the repository on GitHub, run the workflow, and turn what macOS shows into fixes or follow-up tasks.
 
 ## Read first
 - `.github/workflows/` (T03): the jobs, and which commands each runs.
@@ -75,5 +75,5 @@ The owner ticks each line.
 ## Open questions
 - **This task depends on T03 only, on purpose:** the early run is worth having. Its Outcome is met only by the second run, on a commit that holds T36; T39 waits for this task.
 - **TST-14's CI service is a (proposal).** GitHub Actions is the plan's choice (P9); the owner can still pick another, which makes T03 a different task.
-- **Whether `make check-macos` works from Linux** is T01's finding. If it doesn't, this run is the only macOS compile check there is.
+- **`make check-macos` builds for macOS from Linux** (T50, through cargo-zigbuild), so compile errors show before this run. It proves nothing about running there.
 - D5 belongs to T39. D6 doesn't touch this task.

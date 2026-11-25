@@ -150,7 +150,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | OPS-10 |  | T19, T39 |
 | OPS-11 |  | T01 |
 | OPS-12 | proposal | T11, T19 |
-| OPS-13 |  | T03 |
+| OPS-13 |  | T03, T50 |
 | OPS-14 | proposal | T19 |
 | OPS-15 |  | T19 |
 | OPS-16 |  | T07, T46 |
