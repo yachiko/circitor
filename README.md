@@ -15,7 +15,7 @@ Start with [direction](docs/01-direction.md).
 
 ## Building
 
-`make verify` formats, lints, tests, and builds for macOS. **From Linux, the macOS build needs zig and cargo-zigbuild:**
+`make verify` formats, lints, tests, and checks that the code compiles for macOS. **From Linux, the macOS build needs zig and cargo-zigbuild:**
 
 ```sh
 sudo pacman -S zig    # or your system's package, or ziglang.org
