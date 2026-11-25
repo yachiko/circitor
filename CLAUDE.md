@@ -13,3 +13,8 @@ A local Rust daemon that polls GitHub for the user's pull requests and serves th
 
 - The order is docs, then specs, then plan. A feature enters at the specs (`/add-feature`), a spec is reviewed with `/harden`, and the plan is built with `/build-plan`.
 - Docs and specs use short sentences, British spelling, and bold for the key phrase.
+
+## Building
+
+- Every task follows `plan/conventions.md`.
+- `make verify` must pass before a change is done.
