@@ -33,7 +33,7 @@ from datetime import date
 from pathlib import Path
 
 # the facts docs (GitHub API, clients, platform): their sections are snapshotted as well
-SNAPSHOT_DOCS = ["docs/02-github-api.md", "docs/03-clients.md", "docs/04-platform.md"]
+SNAPSHOT_DOCS = ["docs/02-github-api.md", "docs/03-clients.md", "docs/04-platform.md", "docs/07-notify.md"]
 STATUSES = ["todo", "in-progress", "review", "done", "blocked", "dropped"]
 KINDS = ["infra", "code", "test", "integration", "manual"]
 SIZE_WEIGHT = {"S": 1, "M": 2, "L": 3}

@@ -1,6 +1,6 @@
 # Seam: the poller
 
-**Purpose.** Two seams in one file. **Outside:** `PollerHandle`, what the API, the waiters and the daemon ask of the poller (POL-13 to POL-16, API-13, API-16, API-18, API-4, API-5). **Inside:** the three parts the engine is built from, each a task of its own: limits (POL-17 to POL-19, POL-23, POL-25), cadence (POL-10, POL-13 to POL-15, MOD-16) and the token's life (POL-3, POL-20).
+**Purpose.** Two seams in one file. **Outside:** `PollerHandle`, what the API, the waiters and the daemon ask of the poller (POL-13 to POL-16, API-13, API-16, API-18, API-4, API-5). **A subscription asks nothing of it** (NTF-5): the engine reads their number from the store. **Inside:** the three parts the engine is built from, each a task of its own: limits (POL-17 to POL-19, POL-23, POL-25), cadence (POL-10, POL-13 to POL-15, MOD-16) and the token's life (POL-3, POL-20).
 
 **Producer:** T02 declares `PollerHandle`, its types, `Tier`, `QuotaState` and `Policy`; T43 builds `FakePoller`. T08 builds `poller::limits`, T09 `poller::cadence`, T13 `poller::auth`, T21 the engine and its poll, T25 the engine's demand side. **Consumers:** T22, T23 (through `PollerHandle`), T28 (wiring), T26.
 
@@ -47,6 +47,10 @@ pub struct PollerStatus {
     pub last_poll_at: Option<Time>,                              // the last poll applied (API-4)
     pub last_poll: Option<(Time, PollOutcome)>,                  // API-5's `last_poll`
     pub problem: Option<DaemonProblem>,
+    /// Monotonic time `problem`'s code last changed to what it is now; `None` with no problem. A try with a
+    /// new token in `auth` doesn't move it: `problem` stays `auth` through the try (POL-20). NTF-4's `problem`
+    /// end counts its 10 minutes from it (`notify.md`).
+    pub problem_since: Option<Mono>,
     pub cost_last_hour: u32,
     pub remaining: Option<u32>, pub reset_at: Option<Time>, pub login: Option<String>,   // API-5's `github`
     pub token_source: TokenSourceKind, pub gh_path: String,
@@ -54,10 +58,11 @@ pub struct PollerStatus {
 
 #[async_trait::async_trait]
 pub trait PollerHandle: Send + Sync + 'static {
-    /// A client request arrived (POL-13). Every route but `status` and `shutdown` calls it first. Moves the tier to
-    /// active, starts a poll if one is due, and runs POL-22's check. Never waits.
+    /// A client request arrived (POL-13). Every route but `status` and `shutdown` calls it first, the two
+    /// notify routes included. Moves the tier to active, starts a poll if one is due, and runs POL-22's check. Never waits.
     fn client_request(&self);
-    /// Monotonic time of the last `client_request`, or of the start (OPS-8).
+    /// Monotonic time of the last `client_request`, or of the start (OPS-8). Waiters and subscriptions
+    /// aren't in it: T28 asks the store for those.
     fn idle_since(&self) -> Mono;
     /// POL-16: fetch an untracked PR by name, track it as `asked`, apply its first refresh. `Ok` holds its ID.
     /// Also for a loaded PR with no record (STA-8), which keeps its saved source.
@@ -69,7 +74,7 @@ pub trait PollerHandle: Send + Sync + 'static {
     async fn refresh_pr(&self, id: &NodeId) -> Refreshed;
     /// API-16: a whole poll now. Answers when it's done; never waits out a backoff or a reset.
     async fn poll_now(&self) -> PollReport;
-    /// The hot set may have changed (a waiter came or went): look again.
+    /// The hot set may have changed (a waiter came or went): look again. Never called for a subscription.
     fn nudge(&self);
     fn first_poll(&self) -> tokio::sync::watch::Receiver<FirstPoll>;
     fn status(&self) -> PollerStatus;
@@ -139,9 +144,17 @@ Pure: no clock inside, no I/O. The caller passes the time. The sliding hour, the
 
 ```rust
 pub fn tier(last_request: Option<Mono>, now: Mono, cfg: &Config) -> Tier;                    // POL-13
-pub fn hot(status: Option<Status>, timing: &Timing, now: Mono) -> bool;                      // POL-14
-/// POL-10's table, with the configured values (MOD-16 needs those, not slowed ones).
-pub fn period(class: Class, source: Source, hot: bool, tier: Tier, cfg: &Config) -> Duration;
+/// POL-13 with NTF-5: while a subscription on an open PR is held the tier is active, whatever the last client
+/// request; once none is, it follows the last client request. So: `now` while `open` is above 0, else
+/// `last_request`. The engine passes the result to `tier` as its `last_request`.
+pub fn last_ask(last_request: Option<Mono>, open: u32, now: Mono) -> Option<Mono>;
+/// POL-14. It reads `timing.waiters` and `timing.named`, never `timing.subscriptions`: a subscription
+/// can't make its PR hot (NTF-5), and the notify routes don't set `named` (`state.md`).
+pub fn hot(status: Option<Status>, timing: &Timing, now: Mono) -> bool;
+/// POL-10's table, with the configured values (MOD-16 needs those, not slowed ones). `subscribed`:
+/// `timing.subscriptions` is above 0. An open PR with a subscription has its tier's period whatever its
+/// `source`; an ended one `idle_interval` (NTF-5).
+pub fn period(class: Class, source: Source, hot: bool, subscribed: bool, tier: Tier, cfg: &Config) -> Duration;
 /// MOD-16. A `gone` record is never stale.
 pub fn stale(record: &Record, timing: &Timing, tier: Tier, cfg: &Config, now: Mono) -> bool;
 pub fn poll_due(last_poll_sent: Option<Mono>, policy: &Policy) -> Option<Mono>;              // `None`: no polls; never polled: `Mono::ZERO`, due at once
@@ -152,7 +165,8 @@ pub fn in_poll(targets: &[Target], listed: Option<&HashSet<NodeId>>, tier: Tier,
 pub struct HotDue { pub now: Vec<NodeId>, pub next: Option<Mono> }
 pub fn hot_due(targets: &[Target], policy: &Policy, now: Mono) -> HotDue;                    // POL-14
 pub fn may_force_pr(timing: &Timing, policy: &Policy, now: Mono) -> bool;                    // POL-15's window
-pub fn may_force_poll(last_poll_sent: Option<Mono>, policy: &Policy, now: Mono) -> bool;
+/// POL-15: "only when the last forced poll was sent more than 10 s ago". An ordinary poll doesn't count.
+pub fn may_force_poll(last_forced_poll: Option<Mono>, policy: &Policy, now: Mono) -> bool;
 /// POL-11: whether a refresh that read `UNKNOWN` for this open PR gets one follow-up.
 pub fn wants_follow_up(target: &Target, first_since_start: bool, policy: &Policy, now: Mono) -> bool;
 pub fn batches<T: Clone>(items: &[T]) -> Vec<Vec<T>>;                                        // POL-7: 40 a request
@@ -209,8 +223,9 @@ impl Engine {
 // impl PollerHandle for Engine
 ```
 
-- **A poll's requests all count as sent when the poll was** (plan decision P10). `store.mark_sent` gets the send time of the poll's first request for every PR the poll refreshes, in whichever of its requests. Otherwise a PR refreshed in a poll's second request falls due a second after the next poll's first request is built, and every poll takes two requests for good (POL-13, TST-6). `ReadMeta` keeps each request's own send times: settling and "a newer read wins" go by those.
+- **A poll's requests all count as sent when the poll was** (POL-13). `store.mark_sent` gets the send time of the poll's first request for every PR the poll refreshes, in whichever of its requests. Otherwise a PR refreshed in a poll's second request falls due a second after the next poll's first request is built, and every poll takes two requests for good (POL-13, TST-6). `ReadMeta` keeps each request's own send times: settling and "a newer read wins" go by those.
 - **The tier at start is idle:** `cadence::tier` gets `None` until the first `client_request` (POL-13). `idle_since()` answering the start time is for OPS-8 only.
+- **How the cadence learns of open subscriptions (NTF-5, POL-13).** Wherever the engine works out the tier (each time its loop wakes, and in `status()`), it passes `cadence::tier` the result of `cadence::last_ask(last client request, open, now)`, with `open = store.open_subscriptions()` (`state.md`). So the tier stays active while a subscription on an open PR is held, and **once none is, it follows the last client request** (POL-13): it reads idle at once when that request is `idle_after` or more ago. One on a PR that has ended doesn't keep it. **Nothing wakes the engine for it:** registering is itself a client request (`client_request`), and while active the loop wakes at least every `interval`. A subscription's PR is refreshed by the ordinary poll, at its tier's rate also when it's `asked` (POL-10, through `period`), and is never hot: `hot`, `hot_due` and `wants_follow_up` don't read `Timing::subscriptions`, and the notify routes name their PR with `store.name_quiet`, which leaves `Timing::named` alone (`state.md`): **STA-1 is where the rule is stated** (the notify routes name their PR for its 60 minutes only), and POL-11 and POL-14 cite it.
 - **`poll_now` while a poll is in flight joins it:** it answers when that poll is done, with `Shared` and cost 0 (API-16).
 - **One loop, one request at a time (POL-2).** The loop owns the gate (the 1 s gap, the 20 s timeout, the request numbers and send times of MOD-2), `Quota`, `Backoff` and `Auth`. Commands from `PollerHandle` reach it over a channel; a forced refresh, a read-through and a `track` go next, between a poll's requests (POL-15).
 - **T21 builds** the loop, the gate, the poll (POL-4 to POL-8, POL-10, POL-12), whole-request errors (POL-19, POL-24, POL-25), a node's error as far as `store.attempt_failed` (POL-21's "keeps its last values and is stale"), the tick and the sleep reaction (POL-22, POL-26), `client_request`, `idle_since`, `poll_now`, `nudge`, `first_poll` and `status`. Its `read_through`, `track` and `refresh_pr` answer `GithubUnavailable` and `NotSent`, marked `// T25`.

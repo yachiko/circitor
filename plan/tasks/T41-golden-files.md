@@ -22,7 +22,7 @@ T02 wrote the API's and the model's types from `plan/contracts/`. This task writ
 ## Read first
 - `plan/conventions.md`: "JSON names", "Tests" (golden files; every file under `tests/` starts with the feature's `cfg`).
 - `plan/contracts/api.md`: the body types, and in "Semantics" the list of files to write. `plan/contracts/model.md`: `Record`, `Checks`, `Item`, `Event`, `EventKind`. `plan/contracts/testkit.md`: `golden::check`.
-- `specs/04-api.md`: API-2 to API-5 and API-19 in `#basics`; then each route's section for what its answer holds (API-6 to API-12, API-15, API-16).
+- `specs/04-api.md`: API-2 to API-5 and API-19 in `#basics`; then each route's section for what its answer holds (API-6 to API-12, API-15, API-16). `specs/08-notify.md#subscriptions`: NTF-2 and NTF-3, for the two notify routes' answers.
 - `specs/01-model.md`: MOD-2, MOD-3, MOD-5, MOD-8, MOD-11, MOD-12, MOD-15.
 - `specs/03-state.md#cursors` (STA-9's form), `specs/06-operations.md#shipping` (OPS-11's version), `specs/README.md` "Conventions" (times, names).
 - `docs/02-github-api.md` §4: values a real record holds (a merged PR's `mergeable`, `mergedAt` equal to `closedAt`).
@@ -38,16 +38,17 @@ T02 wrote the API's and the model's types from `plan/contracts/`. This task writ
   - `list.json`: two records in API-6's order, **without `checks.items`** and with `failed_items`; `untracked` and `pending` empty, `reset` false. `list-reset.json`: `reset` true, a name in `pending`.
   - `show.json`: a record with `checks.items`: a run with its `id`, a commit status with `id` `null`, one of them failed. `track.json`: `source` `manual`. `untrack-null.json`: `record` `null`.
   - `changes.json`: events that between them hold **every one of MOD-15's fourteen kinds**, each with what MOD-15 says it carries; one `activity` with a comment and a review of `inline` 1 with its `fetch_inline` (MOD-12); `records` and `pending` empty.
-  - `wait-satisfied.json`: `outcome` `satisfied`, `reason` `null`, the record with `checks.items` (API-9 doesn't say; T23 follows this file), one event. `wait-timeout-no-record.json`: `timeout`, `record` `null`, every list empty.
-  - `refresh.json`: `polled` and a cost. `status.json`: API-5's keys with `gh_path` (plan decision P10), no problem, `warnings` empty. `status-problem.json`: a `daemon.problem` with its `message` and `until`, and two warnings of API-5's table.
-  - The errors: `until` set for `github_unavailable` and `rate_limited`, `null` for the rest (API-3).
+  - `wait-satisfied.json`: `outcome` `satisfied`, `reason` `null`, the record with `checks.items` (API-19: every single `record` has them), one event. `wait-timeout-no-record.json`: `timeout`, `record` `null`, every list empty. `wait-reset.json`: `reset` true, `events` empty, and `records` holding the record **without `checks.items`** (API-19: a reset leaves them out), beside `record`, which has them.
+  - `notify-registered.json` (NTF-2): `registered` true, `replaced` false, `expires_at` a day after the answer's times, `outcome` and `reason` `null`, a record with a running check, every list empty. `notify-already.json`: `registered` false, `expires_at` `null`, `outcome` `satisfied`, a record whose one check failed (`checks.state` `failing`, settled), one event. `notify-cancelled.json`: `cancelled` 1. **No file holds a `socket` or a `token`:** no answer does (NTF-9).
+  - `refresh.json`: `polled` and a cost. `status.json`: API-5's keys, `subscriptions` and `gh_path` among them, no problem, `warnings` empty. `status-problem.json`: a `daemon.problem` with its `message` and `until`, and two warnings of API-5's table.
+  - The errors: `until` set for `github_unavailable` and `rate_limited`, `null` for the rest (API-3). `error-no_session.json`'s message names a system error of your own wording (`No such file or directory (os error 2)`).
 - **`testdata/model/`**: `record-open.json` (open, checks with items, one failed) and `record-merged.json`, each a bare record.
 - **`testdata/github/schema.graphql`**: GitHub's public schema, downloaded once, with no token and no header of your own: `curl -fsSL https://docs.github.com/public/fpt/schema.docs.graphql -o testdata/github/schema.graphql` (plan decision P6; about 1.5 MB). **If the download fails, report it and stop that part. Never write, trim or patch a schema by hand.** Put the date and the file's `sha256sum` in your report.
 - **`tests/golden_types.rs`**: the tests under Acceptance, with one table of `(file, type)` that every test walks.
 
 ## Interfaces
-- Consumes: `api::types::{Envelope, ListBody, RecordBody, ChangesBody, WaitBody, RefreshBody, StatusBody, ErrorBody, ErrorCode}`, `model::Record`, `testkit::golden::compare` (T02); `apollo-compiler` (T01's dependency set).
-- Provides: the files, at the paths api.md names. T10, T24 and T27 feed them to the CLI; T22 and T23 compare their answers' keys with them; T07 and T14 read the schema. **After this task a changed file is a contract change.**
+- Consumes: `api::types::{Envelope, ListBody, RecordBody, ChangesBody, WaitBody, NotifyBody, CancelBody, RefreshBody, StatusBody, ErrorBody, ErrorCode}`, `model::Record`, `testkit::golden::compare` (T02); `apollo-compiler` (T01's dependency set).
+- Provides: the files, at the paths api.md names. T10, T24, T27 and T48 feed them to the CLI; T22, T23 and T47 compare their answers' keys with them; T07 and T14 read the schema. **After this task a changed file is a contract change.**
 
 ## Out of scope
 - The types, `golden::check`, anything under `src/`: T02's. **A file and a type that disagree are not yours to reconcile** (see Traps).
@@ -58,11 +59,12 @@ T02 wrote the API's and the model's types from `plan/contracts/`. This task writ
 ## Acceptance
 `tests/golden_types.rs`, starting with `#![cfg(feature = "test-endpoint")]`:
 - `api19_files_and_types_agree`: each file decodes into its type, and the type's pretty JSON plus a newline equals the file, through `golden::compare`, which never writes. A string comparison: it proves every key, every value and the order.
-- `api19_every_file_has_its_rows_keys`: read as plain JSON, each file's top-level keys are the envelope's three plus exactly API-19's row for its route (for `status.json`, API-5's keys and `gh_path`); an error file has `version` and `error` with `code`, `message`, `until`.
-- `api19_empty_lists_and_flags_are_written`: `list.json` has `untracked: []`, `pending: []`, `reset: false`; `wait-timeout-no-record.json` has `reason: null`, `record: null`, `events: []`, `records: []`, `more_events: false`, `reset: false`; `untrack-null.json` has `record: null`; `status.json` has `warnings: []` and `daemon.problem`, `message`, `until` all `null`.
-- `api3_one_error_file_per_code`: the eight files exist, each one's `error.code` is the code in its name, and `until` is set only for `github_unavailable` and `rate_limited`.
+- `api19_every_file_has_its_rows_keys`: read as plain JSON, each file's top-level keys are the envelope's three plus exactly API-19's row for its route (for `status.json`, API-5's keys; for the two `notify-` files, the row's ten, `replaced` among them); an error file has `version` and `error` with `code`, `message`, `until`.
+- `api19_empty_lists_and_flags_are_written`: `list.json` has `untracked: []`, `pending: []`, `reset: false`; `wait-timeout-no-record.json` has `reason: null`, `record: null`, `events: []`, `records: []`, `more_events: false`, `reset: false`; `untrack-null.json` has `record: null`; `notify-registered.json` has `outcome: null`, `reason: null`, `events: []`, `records: []`, `more_events: false`, `reset: false`, and `notify-already.json` has `expires_at: null`; `status.json` has `subscriptions: 0`, `warnings: []` and `daemon.problem`, `message`, `until` all `null`.
+- `api3_one_error_file_per_code`: the nine files exist, each one's `error.code` is the code in its name, and `until` is set only for `github_unavailable` and `rate_limited`.
 - `mod15_changes_holds_every_kind`: the fourteen `kind` words each appear in `changes.json`; no event has an `id` key; the review item has `inline` 1 and a `fetch_inline` ending `/comments`, the comment item has neither `inline` nor `review_state`.
-- `api6_list_leaves_items_out_and_show_has_them`: no record of `list.json` has `checks.items`, every one has `failed_items`; `show.json` and `wait-satisfied.json` have `items`.
+- `api6_list_leaves_items_out_and_show_has_them`: no record of `list.json` has `checks.items`, every one has `failed_items`; `show.json`, `wait-satisfied.json`, `notify-registered.json` and `notify-already.json` have `items` in `record`; `wait-reset.json` has them in `record` and not in `records` (API-19).
+- `ntf9_no_answer_holds_a_session`: no file under `testdata/api/` has a key `socket` or `token` at any depth.
 - `every_file_is_in_the_table`: a file in `testdata/api/` or `testdata/model/` that the table doesn't name fails the test, and so does a row of the table with no file. The table holds every name of api.md's list.
 - `p6_schema_validates`: the downloaded file validates as a schema with `apollo-compiler`, and has the type `PullRequest`, the field `statusCheckRollup` on `Commit`, and `nodes` and `viewer` on `Query`.
 - **By hand, said in your report:** each file read once more against its spec section, naming the section per file.
@@ -79,7 +81,6 @@ T02 wrote the API's and the model's types from `plan/contracts/`. This task writ
 - The download goes to docs.github.com, not to the API: no token, no `gh`, nothing about this project in the request.
 
 ## Open questions
-- **API-19's key names, API-5's names and codes, and MOD-15's `kinds` as objects tagged `kind`** are (proposal) or plan decision P10 (as are `gh_path` in `status`, and `last_poll.outcome` taking API-16's words). Write them as the specs and the contracts have them today; a later decision shows here as a diff.
-- **Whether a wait's record carries `checks.items`** isn't in API-9. The file has them, as `show`'s; list it under Open items.
+- **API-19's key names, API-5's names and codes, and MOD-15's `kinds` as objects tagged `kind`** are (proposal). Write them as the specs and the contracts have them today; a later decision shows here as a diff.
 - **The schema is a snapshot.** GitHub changes it without notice; a refresh is a new plan decision, never a quiet re-download.
 - D5 doesn't touch this task. **D6:** no file needs a `blocked` record; if you write one, it's MOD-11's row as it stands.

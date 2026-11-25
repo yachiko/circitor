@@ -1,6 +1,6 @@
 # Decisions
 
-**Status:** draft 0.2, 2026-11-25: notify and narrower conditions (D7, D8). Draft 0.1, 2026-11-24.
+**Status:** draft 0.2, 2026-11-25: notify and narrower conditions (D7, D8); the owner's answers to the planning questions (D9, 2026-11-26). Draft 0.1, 2026-11-24.
 
 The spec's decisions, numbered D1, D2, … in the order they were raised. [docs/06 decision log](../docs/06-decision-log.md) is the project's history up to the first spec draft. It uses its own numbers, so cite those as "log D5". New decisions go here.
 
@@ -20,12 +20,27 @@ Decided before the spec and binding on it: one local poller (log D1), polling wi
 | D6 | Measuring required checks and reviews before v1 | **Not before v1:** `blocked` and `behind` are built as (proposal) (MOD-9, MOD-11); measured later on a small public repository, if the owner creates one. Decided 2026-11-25. |
 | D7 | Telling a session (`notify`) | **In v1, a Claude Code session can ask to be told once**, through its own inbox socket ([08-notify](08-notify.md), U14). The subscription is refreshed at the normal rate, not hot (NTF-5); a daemon that stops in order tells each session, and subscriptions live in memory only (NTF-9, NTF-10). It narrows the non-goal "the Unix socket is the only transport" to "the only way in". Everything that posts is a (proposal): the message format is known only from Claude Code's debug log (docs/07). Decided 2026-11-25. See below. |
 | D8 | Narrower conditions | **`--kind` on `changed` and `--fail-fast` on `checks-done`**, for `wait` and `notify` alike (API-10, API-11, CLI-5, CLI-6). Decided 2026-11-25. See below. |
+| D9 | Gaps found while planning | **The owner's answers to the plan's open spec issues**, written into the specs they touch: `fail_fast` doesn't wait for `settled` (API-10); `again:` repeats `--timeout` and `--json` when given, and `more events:` names the PR after a per-PR answer (CLI-3, CLI-6); durations leave out a zero second unit (CLI-3); the guide is under 120 lines (CLI-11); the fake GitHub marks check names and logins by default (TST-11); a forward clock step is a sleep (NTF-4, TST-8 `clock-back`); `pr_failing`'s notice, the exit-11 line, a cancel during a post (NTF-3, NTF-8, NTF-11). Decided 2026-11-26. See below. |
 
 ## Open
 
 None.
 
 ## Notes on resolved decisions
+
+**D9: gaps found while planning** (resolved 2026-11-26)
+- Raised as spec issues in `plan/README.md` (numbers 23, 24, 30, 32, 33, 38, 39, 41, and two readings of 08-notify's third pass). The owner took the recommended answer each time.
+- **`--fail-fast`:** a failed check answers at the first refresh that shows it, `settled` included; TST-8's `fail-fast` row already read that way.
+- **`again:`** repeats every parameter given, so it runs as printed. **`more events:`** names the PR when the cursor covers one PR, so running it doesn't show every PR's events.
+- **A forward step of the wall clock** can't be told from a sleep (POL-22), so a subscription's `for` counts it, as it counts a sleep. Not counting wall-only sleep would let a 1-day notify outlive a night on a platform whose monotonic clock stops in suspend.
+- **`pr_failing`'s notice** is the `auth` sentence with its own code.
+- **The exit-11 line** names the PR as typed: `notify` without a session exits before it starts a daemon or asks GitHub. After `no_session` the one line is all it prints.
+- **A notice already being posted** isn't counted by a cancel and isn't replaced: nothing waits on anything, as NTF-6 has it.
+- **The guide's cap** goes to 120 lines: everything CLI-11 asks for doesn't fit in 70.
+- **Check names and logins carry markers by default** in the fake GitHub, so every scenario proves NTF-8 and OPS-9, not only the notify ones.
+- Left to the executors, fixed by golden files and reviewed in their reports: the text of `track`, `untrack`, a `refresh` that met a problem, an `activity` with no items, and the stream of CLI-6's endings without an answer (issue 23).
+- Left as it is: which HTTP status an exhausted limit has (docs/02 §6); the client handles a 403 and a 200 alike.
+- Recorded the same day: the full listen queue's `EAGAIN` (docs/05, docs/07), which NTF-6 and TST-16 cite.
 
 **D7: telling a session** (resolved 2026-11-25)
 - The owner's idea, after seeing one Claude Code session message another: the daemon keeps a session's address, a PR and a condition, and posts to the session when the condition holds. Measured the same day (docs/07): a script can post into a session, and an idle session wakes on it.

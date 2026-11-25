@@ -169,3 +169,12 @@ Reported by the owner: `$TMPDIR` is `/var/folders/26/<id>`, the usual per-user t
 - **No login** (`GH_CONFIG_DIR` set to an empty directory, `GH_TOKEN` and `GITHUB_TOKEN` unset): exit status 1, nothing on stdout, `no oauth token found for github.com` on stderr. With `--user nosuchuser`, also exit 1, with `no oauth token found for github.com account nosuchuser`.
 - **`GH_TOKEN` set** to a marker: `gh auth token --hostname github.com` printed the marker. The same with only `GITHUB_TOKEN` set.
 - **`GH_TOKEN` set but empty:** the stored login's token was printed, so an empty variable is ignored.
+
+## 2026-11-25: a session socket's full listen queue
+
+**Setup:** Linux, the development machine, run locally during the third hardening pass of 08-notify. No request went to GitHub and no session was posted to. The probe was a throwaway script in a scratch directory, not kept.
+
+- **A Unix stream socket whose listen queue is full** (a listener that never accepts, its backlog filled by connections of the probe's own): a further connect **fails at once with `EAGAIN`**, also with a 1 s timeout set. It never hangs.
+- **macOS wasn't measured.** Its kernel source refuses such a connect with `ECONNREFUSED`; that's read, not measured.
+
+Used by NTF-6 (a post that fails ends its subscription) and TST-16 (the fake session socket's fourth mode). Summarised in [docs/07](07-notify.md#the-session-socket).

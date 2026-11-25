@@ -37,7 +37,7 @@ impl Logger {
 pub enum WarningCode {
     QuotaCapped, QuotaReserve, PrLimit, PrFailing,
     StateFileSetAside, StateFileNewer, StateFileUnwritable,
-    LogUnwritable,                           // plan decision P10: OPS-9 asks for it, API-5 has no row yet
+    LogUnwritable,                           // OPS-9, API-5: a log line couldn't be written
 }
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Warning { pub code: WarningCode, pub message: String, pub since: Time }
@@ -50,6 +50,8 @@ impl Warnings {
     pub fn raise(&self, code: WarningCode, key: &str, message: String);
     pub fn clear(&self, code: WarningCode, key: &str);      // nothing when it isn't raised
     pub fn list(&self) -> Vec<Warning>;                     // by `since`, then code, then key
+    /// Since when `code` has been raised for `key`; `None` when it isn't (the notifier's `pr_failing`, NTF-4).
+    pub fn since(&self, code: WarningCode, key: &str) -> Option<Time>;
 }
 ```
 
@@ -59,7 +61,7 @@ impl Warnings {
 - **`Logger` never fails and never blocks for long.** A line the sink refuses is dropped; `failing_since` is set until a line is written again. The status route (T22) adds a `log_unwritable` warning while it's set.
 - **`Warnings::raise` and `clear` log** one `warn` line when a warning is first raised and one `info` line when it's cleared (OPS-9), never on a repeat.
 - **A warning's `key` is never logged or shown.** For `pr_failing` it's a node ID (MOD-1); the message names the PR.
-- **Messages are built by circitor's own code.** A warning's message and a log line never carry a title, GitHub's text, `gh`'s output or the token (OPS-9, OPS-5). TST-11's marker sweep is what proves it.
+- **Messages are built by circitor's own code.** A warning's message and a log line never carry a title, GitHub's text, `gh`'s output, the token, **a session's token or a notice's text** (OPS-9, OPS-5, NTF-9). TST-11's marker sweep is what proves it.
 
 ## Who logs what (OPS-9's list)
 
@@ -76,6 +78,7 @@ impl Warnings {
 | A PR tracked, untracked or gone (`tracked`, `untracked`, `gone`) | info | T15 |
 | The state file set aside, left alone (newer), an entry skipped (`state file set aside`, `state file newer`, `state file entry skipped`). A write failing and working again is the `state_file_unwritable` warning's two lines, below | warn | T16 |
 | Every warning raised and cleared (`warning raised`, `warning cleared`, with `code=`) | warn, info | T04 (`Warnings`) |
+| A subscription registered, and ended with its end's name (`subscription registered`, `subscription ended`, with `pr=`, `until=` and `end=`, and `why=` for `problem`); a notice that couldn't be posted (`notice not posted`, with `reason=`); a socket whose `stat` failed otherwise, once per subscription (`socket not checked`, with `pr=`; NTF-4); never a notice's text, a token or a socket's path (NTF-6, NTF-9, NTF-10) | info, warn | T46 |
 | `debug`: one line per request to GitHub: its kind, cost and duration (`request`) | debug | T21 |
 
 ## The fake

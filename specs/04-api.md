@@ -1,6 +1,6 @@
 # API
 
-**Status:** draft 0.2, 2026-11-25: notify and narrower conditions (D7, D8). Draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25), planning findings (2026-11-25).
+**Status:** draft 0.2, 2026-11-25: notify and narrower conditions (D7, D8). Owner's answers to the planning questions (D9, 2026-11-26). Draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25), planning findings (2026-11-25).
 
 What the daemon answers on its socket. **The API is private to circitor's own CLI** (log D5): agents and people use the CLI ([05-cli](05-cli.md)), and nothing else is promised a stable API in v1.
 
@@ -98,7 +98,7 @@ What the daemon answers on its socket. **The API is private to circitor's own CL
   - **`rerun_since` is how an agent that started CI again on the same head avoids the previous run's result:** a re-run, `gh pr ready`, a close and reopen. It passes the cursor it had before. If CI never runs again, the wait times out. A too-old `rerun_since` (STA-9) drops this part, and the answer has `reset: true`. (proposal; a re-run isn't measured, docs/02 §6)
   - **A truncated `failing` may be early** (MOD-7): unread checks may still run, and nothing circitor reads says when they end (the rollup reads `FAILURE` while they run, docs/02 §4). It still holds `checks-done`; the answer keeps `checks.truncated`. (proposal)
   - **`kind` narrows `changed` to the events an agent cares about** (D8). It's a comma-separated list of MOD-15's kinds, but `tracked` and `untracked`: `activity` is a new comment, review or thread reply (MOD-12), `review` the review decision. An unknown kind is `bad_request` (API-1). A too-old `since` (STA-9) still holds at once: what was missed can't be told apart. (proposal)
-  - **`fail_fast` answers at the first failure** (D8), where `checks-done` alone waits for the last check; `gh pr checks --watch --fail-fast` does the same. It's a flag (API-1). The `sha` and `rerun_since` parts still have to hold. The outcome is `satisfied`, and the record's `checks.state` is still `pending`. (proposal)
+  - **`fail_fast` answers at the first failure** (D8), where `checks-done` alone waits for the last check; `gh pr checks --watch --fail-fast` does the same. It's a flag (API-1). **The failure stands in for `checks.settled` too**: it answers at the first refresh that shows it, without waiting for the checks to be quiet (D9). The `sha` and `rerun_since` parts still have to hold. The outcome is `satisfied`, and the record's `checks.state` is still `pending`. (proposal)
 - **API-11** **Outcomes:**
 
 | `outcome` | Meaning | `reason` |

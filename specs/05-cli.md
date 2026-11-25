@@ -1,6 +1,6 @@
 # CLI
 
-**Status:** draft 0.2, 2026-11-25: notify and narrower conditions (D7, D8). Draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25).
+**Status:** draft 0.2, 2026-11-25: notify and narrower conditions (D7, D8). Owner's answers to the planning questions (D9, 2026-11-26). Draft 0.1, 2026-11-24. Hardened: pass 1 (2026-11-25), pass 2 (2026-11-25), pass 3 (2026-11-25).
 
 **The CLI is circitor's contract with agents and people** (log D4). Its commands, text output and exit codes stay stable; the API behind it may change.
 
@@ -57,13 +57,13 @@
     yachiko/circitor#12  tracked (manual)
     ```
     `closed`, `reopened`, `gone` and `untracked` print like `merged`.
-  - **Durations** are the largest unit and the next: `45s`, `4m`, `1h3m`, `2d5h`.
+  - **Durations** are the largest unit and the next, the next left out when it's zero: `45s`, `4m`, `1h3m`, `2d5h`, `1d` (D9).
   - **A title** is in double quotes, with `"` and `\` escaped by `\` and control characters as `\u{..}`. It's never cut.
   - **After the events, in this order:** the `pending` and `untracked` lines, the outcome (`wait`), `more events:`, `again:`, `problem:`, and `cursor:`.
   - `refresh` prints `refresh: polled, 1 point` or `refresh: shared`; `stop`, `stopped` or `not running`. `status` prints one `key: value` line per key of API-5, in its order, and the CLI's version when it differs.
   - **A new comment or review is printed with the command that fetches it** (MOD-12), and a review with `inline` above 0 also with the one that lists its comments (`fetch_inline`): a thread reply's text is only there.
   - `more: true` prints `more new items than shown` with the paths that list them.
-  - **`changes` and `wait` print at most 50 events** (`limit`, API-8), so the output stays under the clients' cut (docs/03 §2: 30 000 characters in Claude Code). With more, they end, before the cursor, with `more events: circitor changes --since <cursor>`. (proposal: 50)
+  - **`changes` and `wait` print at most 50 events** (`limit`, API-8), so the output stays under the clients' cut (docs/03 §2: 30 000 characters in Claude Code). With more, they end, before the cursor, with `more events: circitor changes <pr> --since <cursor>` after an answer about one PR (`wait`, `notify`, `changes` of one PR), whose cursor covers that PR only (API-8), and `more events: circitor changes --since <cursor>` after `changes` over every PR (D9). (proposal: 50)
   - **A reset is never silent.** When the answer has `reset: true` (STA-9), `changes` and `wait` first print `reset: cursor too old, current state follows` and one `list` line per record in the answer, then the events.
   - A stale record is marked `(stale, 4m old)`, and `(stale, 4m old, error FORBIDDEN)` when its own refresh fails (MOD-2 `error`).
   - **A daemon problem is never silent.** When `daemon.problem` (API-4) isn't `null`, the output ends, before the cursor, with one line: its code and its message, which says what to do. A time is relative, with the local time after: `problem: rate_limited for 12m (until 14:05 local), …`.
@@ -119,7 +119,7 @@
     again: circitor wait yachiko/circitor#12 --until checks-done --sha 1a2b3c4 --since k3x9q2mz-418
     cursor: k3x9q2mz-418
     ```
-    It names the PR in full (`owner/repo#number`) and repeats the other parameters given, `--sha`, `--rerun-since`, `--fail-fast` and `--kind` only if they were and as they were, with `--since` set to the cursor.
+    It names the PR in full (`owner/repo#number`) and repeats the other parameters given, `--sha`, `--rerun-since`, `--fail-fast`, `--kind`, `--timeout` and `--json` only if they were and as they were, with `--since` set to the cursor (D9).
   - **A wait that ends without an answer** prints one line, then `again:` and `cursor:`. Their cursor is the `--since` given or, without one, the first `Circitor-Cursor` it got. Never a later one: it would skip events that weren't printed. `<n>` is the timeout the command was given.
     - no time left: `timeout after <n>s: <pr> (no answer from the daemon)`, exit code 3
     - no daemon within 8 s, or a second drop (CLI-10): `daemon stopped`, exit code 6
@@ -156,7 +156,7 @@
 
 ## For agents
 
-- **CLI-11** `circitor guide` prints a short text an agent can follow: when to use circitor in place of `gh`, the commands with one example each, the exit codes, the rule to pass `--sha` after a push, the rule to pass `--rerun-since` with the cursor from before starting CI again on the same head (API-10), and **never to loop `show --fresh`**: each one can cost a point, where a `wait` shares one refresh among every agent (POL-15), and that a cursor from one PR's `wait` or `changes` is for that PR only (API-8). It names `--fail-fast` and `--kind` (API-10). **For Claude Code it says when `notify` fits better than a long `wait`**: that its exit code doesn't say the condition holds, that a notice arrives as a message from another session and is a hint to run the command in it, to cancel the notify and use `wait` when no confirmation arrives, and that exit code 6 from the command in a `stopped` notice means the daemon was stopped on purpose, and isn't to be started again for a notice; that in an unattended run a background `wait` is the way; and that a notify is lost when the session is resumed or the daemon crashes (NTF-7, NTF-10 to NTF-12). The same text ships as a skill and as an `AGENTS.md` section (OPS-12). It's under 70 lines. (proposal)
+- **CLI-11** `circitor guide` prints a short text an agent can follow: when to use circitor in place of `gh`, the commands with one example each, the exit codes, the rule to pass `--sha` after a push, the rule to pass `--rerun-since` with the cursor from before starting CI again on the same head (API-10), and **never to loop `show --fresh`**: each one can cost a point, where a `wait` shares one refresh among every agent (POL-15), and that a cursor from one PR's `wait` or `changes` is for that PR only (API-8). It names `--fail-fast` and `--kind` (API-10). **For Claude Code it says when `notify` fits better than a long `wait`**: that its exit code doesn't say the condition holds, that a notice arrives as a message from another session and is a hint to run the command in it, to cancel the notify and use `wait` when no confirmation arrives, and that exit code 6 from the command in a `stopped` notice means the daemon was stopped on purpose, and isn't to be started again for a notice; that in an unattended run a background `wait` is the way; and that a notify is lost when the session is resumed or the daemon crashes (NTF-7, NTF-10 to NTF-12). The same text ships as a skill and as an `AGENTS.md` section (OPS-12). It's under 120 lines (D9). (proposal)
 - **CLI-12** **No command asks a question or opens a pager.** Output is never coloured unless stdout is a terminal.
 
 ## For tests

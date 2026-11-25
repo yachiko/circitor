@@ -2,14 +2,15 @@
 
 **Purpose.** The one place the tracked PRs, their records, the revision counter and the event history live (STA-1 to STA-5, STA-9, STA-10, MOD-13); and `state.json` (STA-6 to STA-8). The engine writes to the store, the API and the waiters read it, the saver turns it into the file.
 
-**Producer:** T02 declares every type and signature below, with `unimplemented!()` bodies. T15 builds `state::store`; T16 builds `state::file`. **Consumers:** T21, T25 (the engine), T22 (routes), T23 (waiters), T28 (wiring), T29.
+**Producer:** T02 declares every type and signature below, with `unimplemented!()` bodies. T15 builds `state::store`; T16 builds `state::file`. **Consumers:** T21, T25 (the engine), T22 (routes), T23 (waiters), T46 (the notifier), T47 (the notify routes), T28 (wiring), T29.
 
 ## Declarations (`src/state/mod.rs`, shared)
 
 ```rust
-#[derive(Clone, Copy, Debug, thiserror::Error)] #[error("limit")] pub struct Limit;   // STA-3's 200, API-14's 64
+#[derive(Clone, Copy, Debug, thiserror::Error)] #[error("limit")] pub struct Limit;   // STA-3's 200, API-14's 64, NTF-2's 64
 pub const MAX_PLACES: usize = 200;        // STA-3
 pub const MAX_WAITERS: u32 = 64;          // API-14
+pub const MAX_SUBSCRIPTIONS: u32 = 64;    // NTF-2; counted apart from the waiters
 pub const MAX_EVENTS: usize = 500;        // STA-10; also `limit`'s range (API-8)
 
 /// STA-9. `Display` is `<epoch>-<rev>`; `FromStr` takes exactly that (8 of `[a-z0-9]`, `-`, digits) or fails.
@@ -17,6 +18,7 @@ pub const MAX_EVENTS: usize = 500;        // STA-10; also `limit`'s range (API-8
 
 /// What `state.json` holds, version 1 (STA-6), without its `version`: reading and writing that key,
 /// and the object around `prs`, are `state::file`'s own (T16). Serde names are the file's.
+/// **No subscription is ever in it** (STA-6, NTF-9): there's no field for one, and none is added.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct FileContent { pub prs: Vec<FileEntry> }
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -63,7 +65,8 @@ pub struct Timing {
     pub attempt_failed: bool,                 // MOD-16: its last attempt failed
     pub slept: bool,                          // MOD-16: a sleep was noticed since it was fetched
     pub waiters: u32,
-    pub named: Option<Mono>,                  // when a request last named it (POL-14, POL-11)
+    pub named: Option<Mono>,                  // when a request other than `notify`'s last named it (POL-14, POL-11)
+    pub subscriptions: u32,                   // open ones on this PR: POL-10's period reads it, `hot` never does (NTF-5)
 }
 #[derive(Clone, Debug)]
 pub struct Target {
@@ -87,6 +90,7 @@ pub struct View {
     pub pending: Vec<PrName>,                 // `Loaded` and `First`, sorted
     pub tracked: [u32; 3],                    // counts by source: authored, manual, asked (API-5)
     pub waiters: u32,
+    pub subscriptions: u32,                   // open ones, over every PR (API-5, NTF-9)
 }
 impl View {                                   // built by T02: pure over the public fields above (T43's `window` uses them)
     pub fn cursor(&self) -> Cursor;
@@ -126,7 +130,7 @@ impl Store {
     /// API-15 `track`: source `manual`. `true` if the file's content changed. On a `Loaded` entry it
     /// changes the saved source: the one change a saved entry takes before its first refresh (STA-8).
     pub fn set_manual(&self, id: &NodeId) -> bool;
-    /// API-15 `untrack`, whole: `authored`, `asked` (with a waiter), dropped with an `untracked` event, or nothing.
+    /// API-15 `untrack`, whole: `authored`, `asked` (with a waiter or a subscription), dropped with an `untracked` event, or nothing.
     pub fn untrack(&self, name: &PrName) -> Untracked;
 
     // ---- refreshes (the engine) ----
@@ -147,24 +151,41 @@ impl Store {
     /// POL-22: every record is `stale` until its next refresh.
     pub fn mark_slept(&self);
     /// The tick (POL-26): drops what STA-1's hour and STA-2's `keep_done` say, by wall time, in the
-    /// order of `pr`, each with an `untracked` event. Never a PR with a waiter.
+    /// order of `pr`, each with an `untracked` event. Never a PR with a waiter or a subscription (STA-1).
     pub fn sweep(&self);
 
     // ---- readers (the API, the waiters) ----
     pub fn view(&self) -> View;
     /// Changes after every `apply` (changed or not), `attempt_failed`, `mark_gone`, `sweep` that
-    /// dropped something, `untrack`, `set_manual` and `demote_unlisted`. Waiters evaluate on it (STA-4).
+    /// dropped something, `untrack`, `set_manual` and `demote_unlisted`. Waiters and the notifier evaluate on it (STA-4, NTF-4).
     pub fn changed(&self) -> tokio::sync::watch::Receiver<u64>;
     /// A request names this PR (STA-1): `Timing::named` is now. Dropping the guard is the request's end,
     /// from which an `asked` PR's 60 minutes run.
     pub fn name(&self, id: &NodeId) -> Named;
+    /// The same for the two notify routes (STA-1, which states the rule; NTF-2, NTF-3): the request counts for STA-1's 60 minutes, and
+    /// **`Timing::named` is left as it was**, so POL-14's 2 minutes and POL-11's 60 s don't start.
+    pub fn name_quiet(&self, id: &NodeId) -> Named;
     /// A waiter on this PR (API-9, API-14: at most 64 in all). Dropping the guard removes it, and
     /// carries out a drop that fell due meanwhile (STA-1).
     pub fn add_waiter(&self, id: &NodeId) -> Result<Waiting, Limit>;
     /// When the last waiter ended; `None` if there never was one (OPS-8's "no waiter for `exit_after`").
     pub fn last_waiter_ended(&self) -> Option<Mono>;
+    /// A subscription on this PR (NTF-4: it stays tracked; NTF-2: at most 64 in all, apart from the
+    /// waiters). **Dropping the guard is the subscription's end, and counts as the end of a request that
+    /// named the PR (STA-1):** an `asked` PR's 60 minutes start again, and an ended PR is kept 60 minutes
+    /// past it even when `keep_done` has passed. It also carries out a drop that fell due meanwhile, once
+    /// those 60 minutes are over. It counts in `Timing::subscriptions` and nowhere else in `Timing`: the PR
+    /// is no hotter for it (NTF-5).
+    pub fn add_subscription(&self, id: &NodeId) -> Result<Subscribed, Limit>;
+    /// The subscriptions held now: what `View::subscriptions` holds, without building a view (OPS-8's idle exit).
+    pub fn subscriptions(&self) -> u32;
+    /// When the last subscription ended; `None` if there never was one (OPS-8).
+    pub fn last_subscription_ended(&self) -> Option<Mono>;
+    /// The subscriptions held on PRs whose record's `state` is `open`: the engine's tier (POL-13, NTF-5: only a
+    /// subscription on an open PR keeps the active tier; once none is, the tier follows the last client request; `poller.md`).
+    pub fn open_subscriptions(&self) -> u32;
 }
-pub struct Named(/* … */);  pub struct Waiting(/* … */);     // guards; `Drop` does the work
+pub struct Named(/* … */);  pub struct Waiting(/* … */);  pub struct Subscribed(/* … */);   // guards; `Drop` does the work
 // impl FileSource for Store
 ```
 
@@ -213,9 +234,10 @@ impl Saver {
 - **A place** is held by every tracked PR of any class (STA-3). `reserve` on a name that's `Loaded` under another ID doesn't happen: IDs are the key, names are looked up first (`lookup`).
 - **The same PR under a new name (MOD-1).** `apply` takes `read.pr` as the name; `lookup` finds a record by its current name, and a `Loaded` entry by its saved one.
 - **`Untracked::record`** for a PR that was dropped is its last record, with the `rev` of its `untracked` event; it has no `Timing`, so the route serves it as it is (`stale: false`).
-- **An `asked` PR's 60 minutes** (STA-1) start whenever a PR becomes `asked` (a read-through, `untrack` with a waiter, `demote_unlisted`), and start again at each `Named` drop.
+- **An `asked` PR's 60 minutes** (STA-1) start whenever a PR becomes `asked` (a read-through, `untrack` with a waiter or a subscription, `demote_unlisted`), and start again at each `Named` and `Subscribed` drop. **A `Subscribed` drop also keeps an ended PR** (any source) until 60 minutes of wall time after it, whatever `keep_done` says (STA-1, NTF-4): `sweep` drops it at the later of the two.
+- **A subscription is a guard and a count, nothing more.** The store doesn't know its condition or its session: `notify::Notifier` (`notify.md`) holds one `Subscribed` per subscription and evaluates on `changed()`, exactly as a waiter's body holds a `Waiting`. `untrack` treats a subscription as it treats a waiter (API-15).
 - **`untrack` and `set_manual` never call GitHub** and never wait. The route calls `Flush::flush` afterwards when `file_changed` (STA-7).
-- **`sweep` and waiters (STA-1, STA-2).** A drop that falls due while a PR has a waiter waits for `Waiting`'s `Drop`. The refresh that ends a PR is applied, and `changed()` moved, before any drop, also with `keep_done` 0: `sweep` runs at the tick, never inside `apply`.
+- **`sweep`, waiters and subscriptions (STA-1, STA-2).** A drop that falls due while a PR has a waiter or a subscription waits for the `Drop` of the last `Waiting` or `Subscribed` on it. The refresh that ends a PR is applied, and `changed()` moved, before any drop, also with `keep_done` 0: `sweep` runs at the tick, never inside `apply`.
 - **`View::too_old`** is judged on the view the answer is built from (STA-9), so a waiter calls it again when it answers.
 - **The saver** reads `FileSource` only. It writes `state.json.tmp`, syncs it, renames it over `state.json`, syncs the directory (STA-7), through `StateFs`. A failed write raises `state_file_unwritable`; a good one clears it. With `writable: false` it never writes (STA-8).
 - **Order at start (STA-11, T28):** `load`, then `Store::new(deps, content)`, then `Saver::spawn`.

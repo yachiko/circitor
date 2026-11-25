@@ -71,6 +71,7 @@ Unit tests in `src/state/file/`, on `TestClock` and `FaultFs`, with a hand-made 
 
 ## Traps
 - **`rename` is atomic only inside one directory:** the temporary file is `state.json.tmp` beside the target, never in a temp directory.
+- **No subscription is ever written** (STA-6, NTF-9): `FileContent` has no field for one, and none is to be added. A session's socket path or token in the file is a bug in whoever put it there.
 - **Sync before the rename.** Without it a power cut leaves an empty `state.json`. `FaultFs` must be faithful enough to fail that test.
 - `StateFs` is blocking: the saver calls it inside `spawn_blocking`, and takes `activity.begin()` when it wakes (conventions).
 - All of the saver's waiting is on the clock: `clock.sleep_until` with absolute times, never `tokio::time`.

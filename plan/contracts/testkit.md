@@ -1,8 +1,8 @@
 # Seam: the test kit
 
-**Purpose.** The fake GitHub (TST-3) and the harness (TST-5): what every scenario task builds on. Compiled only in a test build or under `cfg(test)` (TST-1).
+**Purpose.** The fake GitHub (TST-3), the fake session socket (TST-16) and the harness (TST-5): what every scenario task builds on. Compiled only in a test build or under `cfg(test)` (TST-1).
 
-**Producer:** T02 declares the module and `MARKER_TOKEN`. T14 builds `testkit::github` (the world and the GraphQL engine), T20 `testkit::server` (the HTTP server around it), T29 `testkit::harness`. **Consumers:** T26, T29, T36 (the fake GitHub), T30 to T35 (the harness).
+**Producer:** T02 declares the module and `MARKER_TOKEN`. T14 builds `testkit::github` (the world and the GraphQL engine), T20 `testkit::server` (the HTTP server around it), **T45 `testkit::session`** (the fake session socket), T29 `testkit::harness`. **Consumers:** T26, T29, T36 (the fake GitHub), T30 to T35 and T49 (the harness).
 
 ## Declarations (`src/testkit/mod.rs`, T02)
 
@@ -16,6 +16,14 @@ pub const TEST_VERSION: &str = "1.2.3+test";
 /// The fake GitHub puts these in every title, every error `message` and the 401's body (TST-11).
 pub const MARKER_TITLE: &str = "MARKER-TITLE";
 pub const MARKER_GITHUB_TEXT: &str = "MARKER-GITHUB-TEXT";
+/// A session's token in every test (TST-11, NTF-9): swept like `MARKER_TOKEN`. Only an auth line posted
+/// to a session socket, and the request body that carries it to the daemon, may ever hold it.
+pub const MARKER_SESSION_TOKEN: &str = "CIRCITOR_TEST_SESSION_MARKER_000";       // 32 characters, as docs/07 measured
+/// In every check's name and every login the fake GitHub makes, unless a test names one itself (TST-11, D9):
+/// no posted notice may hold either, nor `MARKER_TITLE` (NTF-8), and the log and the state file never hold
+/// `MARKER_CHECK`. A login may be in the state file (STA-6) and the log.
+pub const MARKER_CHECK: &str = "MARKER-CHECK";
+pub const MARKER_LOGIN: &str = "marker-login";
 /// A short directory under `/tmp`, removed when dropped (socket paths stay under 103 bytes, OPS-4).
 pub struct ShortDir(/* … */);
 impl ShortDir { pub fn new() -> ShortDir; pub fn path(&self) -> &Path; }
@@ -68,7 +76,7 @@ pub fn describe(request: &[u8]) -> Result<Asked, Rejected>;
 
 ## The fake GitHub: what T20 gives everyone (`src/testkit/server/`)
 
-`FakeGitHub::start(clock: Arc<TestClock>) -> FakeGitHub` serves `POST /graphql` on `127.0.0.1:0` and adds itself to the test clock as a probe. **`FakeGitHub::start_real(clock: SharedClock)`** is the same server on the system clock, for T36's real processes: its world's clock and its POL-2 rule then run on real time, and its per-daemon rules are held per connection (it can't tell processes apart otherwise; plan decision P10). It must offer, with names of T20's choosing documented in the module:
+`FakeGitHub::start(clock: Arc<TestClock>) -> FakeGitHub` serves `POST /graphql` on `127.0.0.1:0` and adds itself to the test clock as a probe. **`FakeGitHub::start_real(clock: SharedClock)`** is the same server on the system clock, for T36's real processes: its world's clock and its POL-2 rule then run on real time, and its per-daemon rules are held **per process, told apart by the `x-circitor-test-pid` header** a test build's client sends (TST-1, TST-3); requests without the header count as one process. It must offer, with names of T20's choosing documented in the module:
 
 - `url()`: the full `http://127.0.0.1:<port>/graphql` (TST-1); `client()`: a `github::client::Client` pointed at it.
 - `world(|w| …)`: change the world now, and schedule changes; its clock follows the test clock's wall time forward and never back, with an optional fixed skew (TST-3).
@@ -79,16 +87,56 @@ pub fn describe(request: &[u8]) -> Result<Asked, Rejected>;
 - **The rules that fail the test:** a mutation, a request while another is in flight, a request under 1 s after the last ended on the clock's monotonic time (POL-1, POL-2), a query the schema refuses. `new_daemon()` starts the per-daemon checks afresh; the harness calls it at every start, restart and crash. A broken rule is recorded and panics at `check()` and at drop, with the offending request.
 - It implements `clock::SettleProbe`: settled when every connection it accepted is answered, closed, or held by script. While it holds an answer by script it also holds `clock.activity().excuse()`, so the daemon's request in flight isn't counted (`clock.md`).
 
+## The fake session socket (`src/testkit/session/`, T45)
+
+What a Claude Code session's inbox looks like from outside (TST-16, docs/07): a Unix stream socket, mode 0600, in a directory of mode 0700, that takes lines and never answers.
+
+```rust
+/// One line as it arrived.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Line { pub conn: usize /* which connection, from 0 */, pub at: Time, pub mono: Mono, pub text: String }
+/// One connection read as a notice (NTF-6): its auth line's token if it sent one, and the message's `content`.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Notice { pub at: Time, pub mono: Mono, pub token: Option<String>, pub text: String }
+
+pub struct FakeSession { /* … */ }
+impl FakeSession {
+    /// Binds `<dir>/<name>.sock` and adds itself to the clock as a `SettleProbe`. `dir` is a short one (`ShortDir`).
+    pub fn bind(dir: &Path, name: &str, clock: Arc<TestClock>) -> Arc<FakeSession>;
+    pub fn path(&self) -> &Path;
+    pub fn token(&self) -> &'static str;                         // `MARKER_SESSION_TOKEN`
+    /// Every line posted so far, in the order read, each with the clock's time when it was read. Reads what's pending first.
+    pub fn lines(&self) -> Vec<Line>;
+    /// The same, one per connection. Panics, naming the line, on anything that isn't NTF-6's shape: an
+    /// optional `{"type":"auth","token":…}` line, then exactly one `{"type":"user","message":{"role":"user","content":…}}` line.
+    pub fn notices(&self) -> Vec<Notice>;
+    /// TST-16's four. `refuse`: the listener is closed and its file left, so a connect is refused and a
+    /// `stat` still sees the same socket. `vanish`: the file is removed too. `accept_and_never_read`:
+    /// connections are accepted and nothing is ever read from them. `queue_full`: it listens without
+    /// accepting until its backlog is full, so a connect fails at once.
+    pub fn refuse(&self);  pub fn vanish(&self);  pub fn accept_and_never_read(&self);  pub fn queue_full(&self);
+    /// Back to recording, on the same path. After `vanish` the socket is a new one: another inode.
+    pub fn restore(&self);
+}
+```
+
+- **It never writes a byte and never closes a connection first** (docs/07: "the socket never answers").
+- **A line's time is the clock's at the settle that read it.** As a `SettleProbe` it reads what's there each time the clock asks whether it's settled: it accepts what's pending, reads each connection to its end, and **is settled once it has read every connection it accepted to its end, but those of `accept_and_never_read`** (TST-4). `TestClock::advance` settles after every timer, so a notice posted at an instant is read, and stamped, at that instant. It needs no task of its own.
+- **`accept_and_never_read` makes no post fail:** the kernel takes a short line, and the poster sees it written: it counts as posted (NTF-6). Its connections' lines are never in `lines()`.
+- **`queue_full` on Linux** makes a connect fail at once with `EAGAIN` (TST-16; NTF-6 cites the measurement of 2026-11-25, not yet in docs/05). To the poster that's NTF-6's "a connect that fails": the subscription ends, logged, and nothing is tried again. So nothing hangs, and nothing needs excusing from the work in flight. macOS isn't measured; from source it refuses instead (`ECONNREFUSED`), which the poster reads as the session gone, with the same outcome.
+- **It shares no code with `src/notify/`:** it parses the lines as JSON by itself, so a wrong key in the poster fails a test.
+
 ## The harness (`src/testkit/harness/`, T29)
 
 `Harness::start(opts)` gives a running in-process daemon on the test clock (TST-5's defaults: `spawned`, OPS-2's defaults but `exit_after` 0, a buffer for the log, the clock at 2026-11-24T22:00:00Z, a fixed seed, `TEST_VERSION` for the daemon and the CLI). **`opts` sets everything that must hold before the daemon's first request:** a closure that scripts the world; config values (`owners`, `keep_done`, `exit_after`, `quota.*`, the intervals); faults and a held answer in force from the first request; the token source's first answer and delay; the fake GitHub's clock skew; the daemon's version and `mode`; and **`no_daemon`**, for a harness whose daemon isn't running yet (the fake spawner then starts it, and counts its spawns). It must offer:
 
 - `clock()`, `github()` (the `FakeGitHub`), `token()` (the `FakeTokenSource`), `fs()` (the `FaultFs`), `log()`, `state_file()`, `paths()`.
+- **`session()`: the fake session socket** (TST-16), bound in the harness's `ShortDir` at `start`. **Every command's `Env` holds `CLAUDE_CODE_MESSAGING_SOCKET` set to its path and `CLAUDE_CODE_MESSAGING_TOKEN` set to `MARKER_SESSION_TOKEN`**, as a command run inside a Claude Code session has them (docs/07); the environment variant can take them out or point them elsewhere. `env()` gives the `Env` every command gets by default. `new_session(name)` binds another one in the same directory. The daemon's `Deps::poster` is `notify::RealPoster`.
 - `cli(&["wait", "o/r#1", "--until", "merged"]) -> Output`, awaited; `cli_bg(…)` for a command the test advances time under (every `wait`, every command that spawns, a `list` before the first poll has finished); variants that set the working directory, the environment, the CLI's version and the spawner. A background command counts for settling: the harness adds a `SettleProbe` that's unsettled while one has been woken and not yet polled. Its handle says whether it's done without awaiting, gives the `Output` when awaited, and has **`cancel()`**: the client closes its connection, and `cancel` returns once the daemon has seen the close (`Running::open_connections`), so a test can look at `waiters` right after.
 - `api_raw(method, path_and_query, body) -> (status, body)`: a request the CLI can't send (an unknown parameter, `timeout=3601`; TST-7).
 - `stop()`, `crash()`, `restart()` and `restart_with(config)` on the same directories; a daemon with another version or `mode`. **The daemon's own exit is visible:** `exited() -> Option<i32>` (an idle exit, a stop for files not its own), and a `restart()` after it. **Each start gets another seed** (the fixed seed plus the start's number): the epoch comes from the seed alone, and a restart must give a new one (STA-9).
 - `git_repo(origin, branch) -> PathBuf`: a temporary git repository (TST-5).
-- **`finish()`**, which every test ends with: TST-11's sweep for `MARKER_TOKEN` of the log, the state file, all CLI output seen (`--json` output is the API's body), every `api_raw` answer, and a `status`, a `list` and a `changes` fetched then; and of the log and the state file for the two GitHub markers; then the fake GitHub's `check()`.
+- **`finish()`**, which every test ends with: TST-11's sweep for `MARKER_TOKEN` of the log, the state file, all CLI output seen (`--json` output is the API's body), every `api_raw` answer, and a `status`, a `list` and a `changes` fetched then; **the same sweep for `MARKER_SESSION_TOKEN`** (NTF-9); of the log and the state file for the two GitHub markers and `MARKER_CHECK`; **of every notice every fake session socket recorded for `MARKER_TITLE`, `MARKER_GITHUB_TEXT`, `MARKER_CHECK` and `MARKER_LOGIN`** (NTF-8), with `notices()` called on each so a malformed line fails the test; then the fake GitHub's `check()`.
 
 ## What the world must be able to play (T14)
 

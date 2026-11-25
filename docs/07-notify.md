@@ -1,6 +1,6 @@
 # Notify: pushing a message into a session
 
-**Status:** an idea, recorded 2026-11-25. **The owner wants it in v1** (the same day). It isn't in the specs or the plan yet: it enters through `/add-feature`, like any feature. This doc holds the owner's idea, what was measured about Claude Code's session socket, and a first sketch.
+**Status:** specified in [08-notify](../specs/08-notify.md) (D7, 2026-11-25) and planned. Recorded as an idea on 2026-11-25. This doc holds the owner's idea, what was measured about Claude Code's session socket, and a first sketch. **The sketch, "What it costs" and "To measure before specifying" are the idea's record, not the design:** where they differ from the spec (a hot PR, a place among the waiters, `--every`, a URL in the message), the spec decides.
 
 Labels are those of [GitHub API facts](02-github-api.md): **verified**, **observed**, **documented**, **assumed**. The facts here aren't yet in [client facts](03-clients.md), which the plan takes a snapshot of; they move there when the feature is specified.
 
@@ -51,6 +51,7 @@ Measured on Claude Code 2.1.332 on Linux, in two rounds: by posting to the measu
 | **A resumed session** | Keeps its session ID and gets **a new socket path** (`…/330319.sock`, then `…/332088.sock`): the path belongs to the process. | verified |
 | **A session that has ended** | **Its socket file is gone.** Checked for the six headless test sessions after each had ended in order. | verified (six of six, 2026-11-25) |
 | A session that is killed | Whether its socket file stays behind isn't measured | assumed |
+| **A full listen queue** | A connect to a Unix socket whose backlog is full **fails at once with `EAGAIN`** on Linux, also with a timeout set; it never hangs. On macOS the kernel source refuses it with `ECONNREFUSED`. | verified on Linux (one local probe, 2026-11-25, [docs/05](05-measurements.md#2026-11-25-a-session-sockets-full-listen-queue)); macOS assumed (from source) |
 | Limits | A connection with no complete line within 30 s is closed. About a million characters a message. At most 50 messages queued, 100 held. | documented |
 | Sessions without the socket | Those started in bare mode | documented |
 | **A subagent's shell** | Has the **parent session's** socket path and token. A `notify` run by a subagent would register the main conversation, and the notice would arrive there. | verified |
@@ -69,7 +70,7 @@ Source for the documented rows: https://code.claude.com/docs/en/cross-session-me
 
 ## A first sketch
 
-Not a spec. Each line would become a requirement, or be dropped, in `/add-feature`.
+Not a spec, and superseded by [08-notify](../specs/08-notify.md). Kept as the idea's record.
 
 - **A new command:** `circitor notify [PR] --until merged|checks-done|changed [--sha SHA] [--every]`. It reads the two variables from its own environment, hands them to the daemon with the PR and the condition, prints what it registered, and exits at once. Outside a session that has the socket, it fails and says to use `wait`.
 - **The address is the socket path**, not a session ID: it's what the daemon delivers to, and it stops existing when the session's process does. A resumed session has a new path and registers again.

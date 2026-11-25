@@ -38,10 +38,10 @@ The fake GitHub is two tasks. This one is everything that decides **what** an an
 - **Three behaviours of TST-3's "misbehave" list are built here,** because they change the answer and not the transport: `mergeable` `UNKNOWN` for a number of reads, the old head served for a while after a push, a check read out of order. So are a PR's node answering `null` with `NOT_FOUND` or another error `type`, and an error with a path inside the node (docs/02 §5's shapes, for `nodes` and for `repository.pullRequest`). T20 exposes them with the rest of the list.
 - **What T20 needs from the world:** the login (settable); `World::set_rate` and a way to spend a cost, with `execute` answering `rateLimit`'s `remaining` and `resetAt` from them and computing `cost`; `Executed.node_ids`; and, for its request log, what a request asked: whether it held a finding and that page's cursor, what was asked of each node (the record, the items, a check page), and a by-name lookup's owner, repository and number. That's `describe(request) -> Asked`, declared in testkit.md beside `execute`.
 - **Paging** is by cursor over the world as it is at this call, so a change between two pages shifts them (TST-3). `first: 100` and `last: 20` are honoured, `totalCount` is the true count.
-- **Markers (TST-11's fake side).** Every title holds `MARKER_TITLE`; every error `message` holds `MARKER_GITHUB_TEXT`.
+- **Markers (TST-11's fake side).** Every title holds `MARKER_TITLE`; every error `message` holds `MARKER_GITHUB_TEXT`; **every check's name and every login the world makes up holds `MARKER_CHECK` and `MARKER_LOGIN`** (TST-11, D9), the viewer's login included. A name or login a test gives is used exactly as given.
 
 ## Interfaces
-- **Consumes:** `clock::Time`; `testkit::{MARKER_TITLE, MARKER_GITHUB_TEXT}`; `apollo-compiler`; `testdata/github/schema.graphql` (T41).
+- **Consumes:** `clock::Time`; `testkit::{MARKER_TITLE, MARKER_GITHUB_TEXT, MARKER_CHECK, MARKER_LOGIN}`; `apollo-compiler`; `testdata/github/schema.graphql` (T41).
 - **Provides:** `testkit::github::{schema, World, Executed, Rejected, execute, describe, Asked, AskedOf}` as `plan/contracts/testkit.md` declares them; and, of this task's design, `cost_of` and the world's building methods.
 
 ## Out of scope
@@ -63,7 +63,7 @@ Unit tests in `src/testkit/github/`, with hand-written queries.
 - `tst3_paging`: 150 open PRs give 100 with `hasNextPage` and then 50, newest `updatedAt` first; a PR closed between the two calls shifts the second page; 187 checks are two pages with `totalCount` 187; `comments(last: 20)` of 25 gives the newest 20.
 - `tst3_checklist`, one small case per line of `contracts/testkit.md`'s checklist, built only with the world's methods. Among them: a force-push back to an earlier SHA shows its old checks; a run concluding `FOO` is answered as `FOO`; 100 checks are one page and 101 two, 300 and 301 and 400 report their `totalCount`, with the tail's state and the rollup as chosen; `updatedAt` 2 minutes behind the world's clock; `UNKNOWN` for 3 reads on every PR at once; a renamed and a transferred repository keep their node IDs; a hidden PR leaves the open list, answers `NOT_FOUND` by node and by name, and comes back with its ID, open and merged; an error `type` on one node until cleared; worlds of 41, 150, 200 and 205 PRs with distinct `updatedAt`; two PRs on one head branch, one by another author; a change set to repeat, 26 PRs flipping `draft` every 30 s.
 - `tst3_what_was_asked`: for a poll's request, the description says it held a finding with no cursor and names each node with what was asked of it; for a lookup, the owner, repository and number.
-- `tst11_markers`: every title in an answer holds `MARKER_TITLE`, every error message `MARKER_GITHUB_TEXT`.
+- `tst11_markers`: every title in an answer holds `MARKER_TITLE`, every error message `MARKER_GITHUB_TEXT`, every check's name and login left to the world `MARKER_CHECK` and `MARKER_LOGIN`; a check the test names `build` is `build`.
 - `cargo test --features test-endpoint --lib testkit::github::` and `make verify` pass.
 
 ## Traps

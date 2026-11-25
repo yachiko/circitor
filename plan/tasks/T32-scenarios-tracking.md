@@ -30,7 +30,7 @@ T29's harness runs the whole daemon in-process on the test clock, against the fa
 - `docs/02-github-api.md` §2 (the measured costs of `nodes(ids:)`), §3 and §5. `docs/measurements/2026-11-24/b1.log`: a PR is in the open list 1 s after creation, with `mergeable` `UNKNOWN`.
 
 ## Scope
-**TST-8's share here: these eleven rows**, in `tests/scn_tracking.rs`. The row is the spec; each entry below adds only the world's concrete values and what to assert. **Where a row and the requirement it cites differ, the requirement wins** (TST-8): then assert the requirement and report the row. `many-prs` has such a case.
+**TST-8's share here: these eleven rows**, in `tests/scn_tracking.rs`. The row is the spec; each entry below adds only the world's concrete values and what to assert. **Where a row and the requirement it cites differ, the requirement wins** (TST-8): then assert the requirement and report the row.
 
 How every scenario is written:
 - **One `#[tokio::test] async fn scn_<name>()` per row**, hyphens as underscores, with `// TST-8: <name>` and the row's IDs (`// POL-21:`) above it. A row with several worlds may be several functions named `scn_<name>_<part>`, so an `#[ignore]` costs one part. Each starts its own harness and **ends with `h.finish()`**.
@@ -59,9 +59,9 @@ The scenarios:
 - **`many-prs`** (POL-7, STA-3). Worlds of settled PRs with distinct `updatedAt`.
   - *41:* a poll is two requests, naming 40 nodes and 1, each costing 1.
   - *150:* the first poll's finding is two requests (the second with a cursor), and `list --all --json` holds 150 records.
-  - *200:* all tracked. `track else/lib#1`: exit 10, `limit`, no request. `wait else/lib#1 --until merged`: exit 10, no request. `show else/lib#1`: **exit 10, `limit`, nothing sent** (STA-3). The row says it "answers without tracking it"; STA-3 wins, and the row is in the plan's spec issues.
+  - *200:* all tracked. `track else/lib#1`: exit 10, `limit`, no request. `wait else/lib#1 --until merged`: exit 10, no request. `show else/lib#1`: **exit 10, `limit`, nothing sent** (STA-3).
   - *205:* the 200 newest by `updatedAt` are tracked; the 5 oldest are in neither `records` nor `pending`; `status --json` has `pr_limit`. Close those five in the world: after the next poll the warning is gone.
-- **`track-untrack`** (API-15, STA-1, STA-3; the row also cites CLI-10, where API-9 is what it uses).
+- **`track-untrack`** (API-15, API-9, STA-1, STA-3).
   - `track else/lib#1`: one request; `source: manual`; one `tracked` event; `h.state_file()` holds it as soon as the command returns, with no advance (STA-7). A second `track`: exit 0, no request, the cursor unchanged. The same second `track` in a world with 200 tracked PRs.
   - `untrack else/lib#7`, never tracked: exit 0, no request, `record: null`.
   - `untrack octo/app#1`, `authored`: nothing changes, no event.
@@ -119,10 +119,10 @@ The scenarios:
 - **`gone` counts polls only**, under one login, never when every PR of the poll is `NOT_FOUND` (MOD-11): each part of `repo-gone` needs its other PRs chosen on purpose.
 - **A 200-PR world is slow to start:** two finding pages and five first refreshes, 1 s apart (POL-2). Advance 10 s before the first `list`.
 - **GitHub's error text must not reach an answer** (API-3, OPS-9). `finish()` sweeps the log and the state file for it, not API responses: assert it yourself in `pr-error`.
-- An event's `kinds` is a list of objects tagged `kind`; the order "of `pr`" is owner, repository, then the number as a number (plan decision P10).
+- An event's `kinds` is a list of objects tagged `kind`; the order "of `pr`" is owner, repository, then the number as a number (MOD-1).
 
 ## Open questions
-- **`many-prs`: the row and STA-3 differ on `show` at the limit.** Decided for the plan: STA-3 (`limit`, exit 10, nothing sent), as `plan/contracts/poller.md` has it. The row is listed in the plan's spec issues; nothing more to report.
+- **`many-prs`:** at the limit a `show` of an untracked PR answers `limit` (STA-3, and the row), as `plan/contracts/poller.md` has it.
 - **`track-untrack` cites CLI-10**, which is about a wait's reconnect. The part "with a waiter makes it `asked`" is tested against API-9 and API-15.
 - **That a node ID survives a rename or a transfer, and that lost access looks like `NOT_FOUND`, aren't measured** (MOD-1, docs/02 §5). STA-1's 60 minutes, STA-2, STA-3, POL-5's second rule, POL-15's windows and POL-21's "three, and 5 minutes" are (proposal). Test them as written.
 - **`bare-pr`'s `shared` part** is staged with `hold_next()`. If the CLI's first look already finds the PR, the staging is wrong, not the CLI: don't loop until it happens.

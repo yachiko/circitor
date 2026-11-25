@@ -64,6 +64,7 @@ Tell the user in one line what's about to happen, e.g. "Pass 2 on 03-state (fail
 | 05-cli | `04-api`, `06-operations`, `docs/03-clients.md` |
 | 06-operations | `02-polling`, `03-state`, `05-cli`, `docs/03-clients.md`, `docs/04-platform.md` |
 | 07-testing | every spec file it cites, `docs/05-measurements.md`, the recorded responses docs/05 points to |
+| 08-notify | `04-api`, `05-cli`, `02-polling`, `06-operations`, `docs/07-notify.md` (the session socket's facts, and the measurements behind them), `docs/03-clients.md` |
 | 00-overview, decisions | all spec files, `docs/01-direction.md` |
 
 - **Also:** any file the target links to, or whose requirement IDs it cites.

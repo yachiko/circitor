@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-25",
+ "generated": "2026-11-26",
  "scope": null,
  "tasks": [
   {
@@ -61,11 +61,13 @@
     "T11",
     "T14",
     "T41",
-    "T43"
+    "T43",
+    "T44"
    ],
    "requirements": [
     "API-19",
-    "CLI-13"
+    "CLI-13",
+    "NTF-9"
    ],
    "owns": [
     "src/"
@@ -117,7 +119,8 @@
     "T16",
     "T17",
     "T18",
-    "T20"
+    "T20",
+    "T45"
    ],
    "requirements": [
     "TST-4",
@@ -288,7 +291,9 @@
    "dependents": [
     "T21",
     "T22",
-    "T23"
+    "T23",
+    "T46",
+    "T47"
    ],
    "requirements": [
     "POL-10",
@@ -296,7 +301,8 @@
     "POL-14",
     "POL-15",
     "POL-11",
-    "MOD-16"
+    "MOD-16",
+    "NTF-5"
    ],
    "owns": [
     "src/poller/cadence/"
@@ -312,13 +318,14 @@
    "milestone": "M3",
    "size": "L",
    "wave": 4,
-   "remaining": 13,
+   "remaining": 16,
    "depends_on": [
     "T02",
     "T41"
    ],
    "dependents": [
-    "T27"
+    "T27",
+    "T46"
    ],
    "requirements": [
     "CLI-3",
@@ -330,7 +337,11 @@
     "CLI-6:a-wait-that-ends-without",
     "CLI-9:a-bad-request-or-unknown-route-from",
     "CLI-5",
-    "TST-7"
+    "TST-7",
+    "NTF-11:when-the-answer-is-already-known",
+    "NTF-11:otherwise-it-prints",
+    "NTF-11:a-registered-answer-with-reset",
+    "NTF-11:when-already"
    ],
    "owns": [
     "src/cli/render/",
@@ -361,7 +372,8 @@
     "CLI-11",
     "CLI-12",
     "OPS-12",
-    "U8"
+    "U8",
+    "NTF-11"
    ],
    "owns": [
     "src/cli/args/",
@@ -474,7 +486,8 @@
    "dependents": [
     "T21",
     "T22",
-    "T23"
+    "T23",
+    "T46"
    ],
    "requirements": [
     "STA-1",
@@ -487,6 +500,7 @@
     "MOD-13",
     "STA-8:a-loaded-pr-keeps-its",
     "STA-8:entries-past-their-keep-done-are-dropped-on-load",
+    "NTF-4:a-pr-with-a-subscription-stays-tracked",
     "U3",
     "U7"
    ],
@@ -601,7 +615,8 @@
     "OPS-14",
     "OPS-15",
     "OPS-18",
-    "OPS-10"
+    "OPS-10",
+    "NTF-12"
    ],
    "owns": [
     "README.md",
@@ -685,6 +700,7 @@
     "API-16",
     "OPS-9:logged",
     "OPS-9:circitor-log-debug-adds-one-line-per-request-to",
+    "NTF-5",
     "U2"
    ],
    "owns": [
@@ -722,7 +738,8 @@
     "API-15",
     "API-16",
     "API-17",
-    "API-18"
+    "API-18",
+    "NTF-9"
    ],
    "owns": [
     "src/api/server/"
@@ -742,7 +759,8 @@
    "depends_on": [
     "T09",
     "T15",
-    "T41"
+    "T41",
+    "T44"
    ],
    "dependents": [
     "T28"
@@ -870,7 +888,8 @@
    ],
    "dependents": [
     "T29",
-    "T36"
+    "T36",
+    "T48"
    ],
    "requirements": [
     "CLI-4",
@@ -909,7 +928,8 @@
     "T18",
     "T21",
     "T22",
-    "T23"
+    "T23",
+    "T46"
    ],
    "dependents": [
     "T29",
@@ -924,7 +944,9 @@
     "API-14",
     "TST-1",
     "OPS-9:logged",
-    "OPS-5:the-token-is-read-after"
+    "OPS-5:the-token-is-read-after",
+    "NTF-5",
+    "NTF-10"
    ],
    "owns": [
     "src/daemon/run/",
@@ -948,7 +970,8 @@
     "T25",
     "T26",
     "T27",
-    "T28"
+    "T28",
+    "T45"
    ],
    "dependents": [
     "T30",
@@ -956,11 +979,13 @@
     "T32",
     "T33",
     "T34",
-    "T35"
+    "T35",
+    "T49"
    ],
    "requirements": [
     "TST-5",
-    "TST-11"
+    "TST-11",
+    "TST-16"
    ],
    "owns": [
     "src/testkit/harness/",
@@ -1088,12 +1113,14 @@
    "kind": "test",
    "status": "todo",
    "milestone": "M5",
-   "size": "M",
+   "size": "L",
    "wave": 8,
-   "remaining": 2,
+   "remaining": 3,
    "depends_on": [
     "T29",
-    "T42"
+    "T42",
+    "T47",
+    "T48"
    ],
    "dependents": [],
    "requirements": [
@@ -1178,7 +1205,7 @@
   },
   {
    "id": "T39",
-   "title": "Owner: decide D5, set up the release tool, publish to the tap",
+   "title": "Owner: set up the release tool, publish to the tap",
    "kind": "manual",
    "status": "todo",
    "milestone": "M5",
@@ -1212,7 +1239,9 @@
    "depends_on": [
     "T19",
     "T36",
-    "T39"
+    "T39",
+    "T47",
+    "T48"
    ],
    "dependents": [],
    "requirements": [
@@ -1230,7 +1259,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 16,
+   "remaining": 18,
    "depends_on": [
     "T02"
    ],
@@ -1240,7 +1269,8 @@
     "T14",
     "T22",
     "T23",
-    "T24"
+    "T24",
+    "T47"
    ],
    "requirements": [
     "API-19"
@@ -1269,7 +1299,8 @@
    "dependents": [
     "T31",
     "T32",
-    "T35"
+    "T35",
+    "T49"
    ],
    "requirements": [
     "POL-21",
@@ -1297,7 +1328,8 @@
    "dependents": [
     "T13",
     "T15",
-    "T17"
+    "T17",
+    "T46"
    ],
    "requirements": [
     "API-1",
@@ -1315,6 +1347,189 @@
    ],
    "shares": [],
    "file": "plan/tasks/T43-api-shared-fakes.md"
+  },
+  {
+   "id": "T44",
+   "title": "Conditions: checking and evaluating a wait's or a subscription's condition, once",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M2",
+   "size": "M",
+   "wave": 3,
+   "remaining": 15,
+   "depends_on": [
+    "T02"
+   ],
+   "dependents": [
+    "T23",
+    "T46"
+   ],
+   "requirements": [
+    "API-10",
+    "API-11",
+    "NTF-4:a-subscription-searches-the-event-history-once"
+   ],
+   "owns": [
+    "src/api/condition.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T44-conditions.md"
+  },
+  {
+   "id": "T45",
+   "title": "Fake session socket: what a Claude Code session's inbox looks like from outside",
+   "kind": "test",
+   "status": "todo",
+   "milestone": "M3",
+   "size": "S",
+   "wave": 4,
+   "remaining": 7,
+   "depends_on": [
+    "T04"
+   ],
+   "dependents": [
+    "T29"
+   ],
+   "requirements": [
+    "TST-16"
+   ],
+   "owns": [
+    "src/testkit/session/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T45-fake-session.md"
+  },
+  {
+   "id": "T46",
+   "title": "Notify: subscriptions, the loop that evaluates them, the poster, and every notice's words",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M2",
+   "size": "L",
+   "wave": 5,
+   "remaining": 13,
+   "depends_on": [
+    "T09",
+    "T10",
+    "T15",
+    "T43",
+    "T44"
+   ],
+   "dependents": [
+    "T28",
+    "T47",
+    "T48"
+   ],
+   "requirements": [
+    "NTF-1",
+    "NTF-2",
+    "NTF-3",
+    "NTF-4",
+    "NTF-6",
+    "NTF-7",
+    "NTF-8",
+    "NTF-9",
+    "NTF-10",
+    "OPS-16",
+    "OPS-9:logged",
+    "TST-7"
+   ],
+   "owns": [
+    "src/notify/",
+    "tests/golden/notify/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T46-notify-core.md"
+  },
+  {
+   "id": "T47",
+   "title": "Notify routes: registering a subscription and cancelling it",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M2",
+   "size": "M",
+   "wave": 6,
+   "remaining": 5,
+   "depends_on": [
+    "T09",
+    "T41",
+    "T46"
+   ],
+   "dependents": [
+    "T35",
+    "T40",
+    "T49"
+   ],
+   "requirements": [
+    "NTF-2",
+    "NTF-3",
+    "NTF-5",
+    "API-3"
+   ],
+   "owns": [
+    "src/api/notify/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T47-api-notify.md"
+  },
+  {
+   "id": "T48",
+   "title": "CLI: the notify command",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M3",
+   "size": "M",
+   "wave": 7,
+   "remaining": 5,
+   "depends_on": [
+    "T27",
+    "T46"
+   ],
+   "dependents": [
+    "T35",
+    "T40",
+    "T49"
+   ],
+   "requirements": [
+    "NTF-11",
+    "U14",
+    "CLI-5:notify-exits-0-once-it-s",
+    "TST-7"
+   ],
+   "owns": [
+    "src/cli/notify/",
+    "tests/golden/notify_cmd/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T48-cli-notify.md"
+  },
+  {
+   "id": "T49",
+   "title": "Scenarios: notify",
+   "kind": "test",
+   "status": "todo",
+   "milestone": "M5",
+   "size": "L",
+   "wave": 8,
+   "remaining": 3,
+   "depends_on": [
+    "T29",
+    "T42",
+    "T47",
+    "T48"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-8",
+    "NTF-5",
+    "NTF-9",
+    "NTF-10"
+   ],
+   "owns": [
+    "tests/scn_notify.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T49-scenarios-notify.md"
   }
  ],
  "dropped_tasks": [],
@@ -1335,7 +1550,8 @@
    "T11",
    "T38",
    "T41",
-   "T43"
+   "T43",
+   "T44"
   ],
   [
    "T07",
@@ -1347,7 +1563,8 @@
    "T16",
    "T17",
    "T18",
-   "T19"
+   "T19",
+   "T45"
   ],
   [
    "T20",
@@ -1355,18 +1572,21 @@
    "T22",
    "T23",
    "T24",
-   "T37"
+   "T37",
+   "T46"
   ],
   [
    "T25",
    "T26",
    "T27",
-   "T28"
+   "T28",
+   "T47"
   ],
   [
    "T29",
    "T36",
-   "T42"
+   "T42",
+   "T48"
   ],
   [
    "T30",
@@ -1375,7 +1595,8 @@
    "T33",
    "T34",
    "T35",
-   "T39"
+   "T39",
+   "T49"
   ],
   [
    "T40"
@@ -1393,12 +1614,12 @@
   "T40"
  ],
  "coverage": {
-  "in_scope": 131,
+  "in_scope": 145,
   "uncovered": [],
   "partial": []
  },
  "snapshot": {
-  "date": "2026-11-25",
+  "date": "2026-11-26",
   "requirements": {
    "U1": {
     "hash": "d8170c7990626767",
@@ -1452,12 +1673,16 @@
     "hash": "6994d0a7bb98f052",
     "dropped": false
    },
+   "U14": {
+    "hash": "c8f4020e37ca857e",
+    "dropped": false
+   },
    "MOD-1": {
-    "hash": "82514cb227a4c8f1",
+    "hash": "2d7ef5ad7a27c54f",
     "dropped": false
    },
    "MOD-2": {
-    "hash": "50f0a65f93bb682e",
+    "hash": "debef3d914a2884f",
     "dropped": false
    },
    "MOD-3": {
@@ -1465,7 +1690,7 @@
     "dropped": false
    },
    "MOD-4": {
-    "hash": "8b8d97943419b8e0",
+    "hash": "7acc209e9763021e",
     "dropped": false
    },
    "MOD-5": {
@@ -1473,7 +1698,7 @@
     "dropped": false
    },
    "MOD-6": {
-    "hash": "ca9766f0c7dabb27",
+    "hash": "553ae1ccb72dcc16",
     "dropped": false
    },
    "MOD-7": {
@@ -1493,11 +1718,11 @@
     "dropped": false
    },
    "MOD-11": {
-    "hash": "804afd06fc273b19",
+    "hash": "4b72e154d9945467",
     "dropped": false
    },
    "MOD-12": {
-    "hash": "1ca15df0bdad20c1",
+    "hash": "ede6d40719c2235f",
     "dropped": false
    },
    "MOD-13": {
@@ -1505,11 +1730,11 @@
     "dropped": false
    },
    "MOD-14": {
-    "hash": "bcf3882efe4ce989",
+    "hash": "3b4c11f18aee4c5e",
     "dropped": false
    },
    "MOD-15": {
-    "hash": "f19109eb5ed85fd3",
+    "hash": "0547c12d818c84a8",
     "dropped": false
    },
    "MOD-16": {
@@ -1553,27 +1778,27 @@
     "dropped": true
    },
    "POL-10": {
-    "hash": "c12690e34955e39f",
+    "hash": "a82bda1f6bdc30db",
     "dropped": false
    },
    "POL-11": {
-    "hash": "5c49602862a61654",
+    "hash": "1006422c8c8b38d5",
     "dropped": false
    },
    "POL-12": {
-    "hash": "b95c6531dd145036",
+    "hash": "353c40fe46ac70e9",
     "dropped": false
    },
    "POL-13": {
-    "hash": "606a0665ec8767bc",
+    "hash": "b5ef93b49dcc7a2e",
     "dropped": false
    },
    "POL-14": {
-    "hash": "1616f69e18898930",
+    "hash": "59dfd374c66c1929",
     "dropped": false
    },
    "POL-15": {
-    "hash": "c28465871a87a7af",
+    "hash": "e9c38ed363cc2474",
     "dropped": false
    },
    "POL-16": {
@@ -1581,7 +1806,7 @@
     "dropped": false
    },
    "POL-17": {
-    "hash": "30aa083c828c8849",
+    "hash": "1423c3e551c99e0c",
     "dropped": false
    },
    "POL-18": {
@@ -1589,23 +1814,23 @@
     "dropped": false
    },
    "POL-23": {
-    "hash": "a89af1271b85be43",
+    "hash": "870960cb8c0c467f",
     "dropped": false
    },
    "POL-19": {
-    "hash": "2731ca2c98028746",
+    "hash": "52b1dff285c9906b",
     "dropped": false
    },
    "POL-20": {
-    "hash": "08fcd12e33b710a1",
+    "hash": "69e06a601fe5825d",
     "dropped": false
    },
    "POL-21": {
-    "hash": "99557f294cd20cc8",
+    "hash": "e112d34eafd2d309",
     "dropped": false
    },
    "POL-22": {
-    "hash": "c8e95e409c0fd33e",
+    "hash": "c024c25f52bde351",
     "dropped": false
    },
    "POL-24": {
@@ -1613,15 +1838,15 @@
     "dropped": false
    },
    "POL-25": {
-    "hash": "b5c0fec021894914",
+    "hash": "0c82a754dd3fcd55",
     "dropped": false
    },
    "POL-26": {
-    "hash": "27f8c65aabd8dcc9",
+    "hash": "17799a09b26e50a4",
     "dropped": false
    },
    "STA-1": {
-    "hash": "37bf8e8989fa1b4c",
+    "hash": "ed104e7dcacb7855",
     "dropped": false
    },
    "STA-2": {
@@ -1633,15 +1858,15 @@
     "dropped": false
    },
    "STA-4": {
-    "hash": "db4e777c8cd99095",
+    "hash": "f25f6553ac0a25d9",
     "dropped": false
    },
    "STA-5": {
-    "hash": "5088e421cd213837",
+    "hash": "f421b79c64c33251",
     "dropped": false
    },
    "STA-6": {
-    "hash": "34c065d3b457a62e",
+    "hash": "eb94bbc35348577b",
     "dropped": false
    },
    "STA-7": {
@@ -1677,7 +1902,7 @@
     "dropped": false
    },
    "API-3": {
-    "hash": "489697a055962b57",
+    "hash": "79333b74b643f5e2",
     "dropped": false
    },
    "API-4": {
@@ -1685,15 +1910,15 @@
     "dropped": false
    },
    "API-5": {
-    "hash": "f99ab5fcc4a9e3c7",
+    "hash": "d7e780fccb806885",
     "dropped": false
    },
    "API-19": {
-    "hash": "a46aa7d3e90b9b42",
+    "hash": "0a2e1ba86e70f55e",
     "dropped": false
    },
    "API-6": {
-    "hash": "dd44c476c17d4207",
+    "hash": "15223448953e4454",
     "dropped": false
    },
    "API-7": {
@@ -1705,15 +1930,15 @@
     "dropped": false
    },
    "API-9": {
-    "hash": "1184f6e7e3918836",
+    "hash": "27ec0d9d44ff530f",
     "dropped": false
    },
    "API-10": {
-    "hash": "64902ff57cfe9b04",
+    "hash": "0221aeea91504f90",
     "dropped": false
    },
    "API-11": {
-    "hash": "948902e91f81d792",
+    "hash": "3e6d16706820d606",
     "dropped": false
    },
    "API-12": {
@@ -1729,7 +1954,7 @@
     "dropped": false
    },
    "API-15": {
-    "hash": "be662127786ea5ad",
+    "hash": "72efc388086284ab",
     "dropped": false
    },
    "API-16": {
@@ -1741,19 +1966,19 @@
     "dropped": false
    },
    "API-18": {
-    "hash": "05e4bd2d5cea92d9",
+    "hash": "bdf70b6e60d84af0",
     "dropped": false
    },
    "CLI-1": {
-    "hash": "98a52833a49ca01c",
+    "hash": "7654b0d1345f57c6",
     "dropped": false
    },
    "CLI-2": {
-    "hash": "ac3816a2c9c2ac50",
+    "hash": "d175c1e5b266b6d1",
     "dropped": false
    },
    "CLI-3": {
-    "hash": "c69bb9446b8563f1",
+    "hash": "39e00f066ae84d34",
     "dropped": false
    },
    "CLI-4": {
@@ -1761,19 +1986,19 @@
     "dropped": false
    },
    "CLI-5": {
-    "hash": "4b35abdd183ca6ff",
+    "hash": "cef19fc5d979cebc",
     "dropped": false
    },
    "CLI-6": {
-    "hash": "6cc31581be7beb63",
+    "hash": "638ea911df8fafca",
     "dropped": false
    },
    "CLI-7": {
-    "hash": "3c70aeb0149cff5b",
+    "hash": "0c8d0cdf45ca3d15",
     "dropped": false
    },
    "CLI-8": {
-    "hash": "7a75f0200b463926",
+    "hash": "1e560e61a71bb73b",
     "dropped": false
    },
    "CLI-9": {
@@ -1781,11 +2006,11 @@
     "dropped": false
    },
    "CLI-10": {
-    "hash": "a152c62ee47bd2d1",
+    "hash": "df04c7c5073aea64",
     "dropped": false
    },
    "CLI-11": {
-    "hash": "277be91b14c2cbc5",
+    "hash": "6975660a08b78189",
     "dropped": false
    },
    "CLI-12": {
@@ -1809,7 +2034,7 @@
     "dropped": false
    },
    "OPS-4": {
-    "hash": "de8b3e5a23ab61fa",
+    "hash": "edc439762debe27c",
     "dropped": false
    },
    "OPS-5": {
@@ -1821,19 +2046,19 @@
     "dropped": false
    },
    "OPS-7": {
-    "hash": "ec24d849fde42c3c",
+    "hash": "7bfb3928bd0a70da",
     "dropped": false
    },
    "OPS-8": {
-    "hash": "ab554b00e34afe7d",
+    "hash": "6b6bc9e51c6797e1",
     "dropped": false
    },
    "OPS-9": {
-    "hash": "ed80a8f5ef9c37ac",
+    "hash": "40ae72588aa1f6ef",
     "dropped": false
    },
    "OPS-10": {
-    "hash": "6b80a0049a9c83b7",
+    "hash": "8f772632e7969ea5",
     "dropped": false
    },
    "OPS-11": {
@@ -1841,7 +2066,7 @@
     "dropped": false
    },
    "OPS-12": {
-    "hash": "187df660ff84a8dc",
+    "hash": "bf05f511bb5cbf88",
     "dropped": false
    },
    "OPS-13": {
@@ -1857,11 +2082,11 @@
     "dropped": false
    },
    "OPS-18": {
-    "hash": "6ac99cdbd358bba2",
+    "hash": "b20a3bf5032ef783",
     "dropped": false
    },
    "OPS-16": {
-    "hash": "34b3559d1b407d3b",
+    "hash": "c00214c60809b998",
     "dropped": false
    },
    "OPS-17": {
@@ -1869,7 +2094,7 @@
     "dropped": false
    },
    "TST-1": {
-    "hash": "c0cb31800f3df2cc",
+    "hash": "86cf05c79d66392d",
     "dropped": false
    },
    "TST-2": {
@@ -1877,31 +2102,35 @@
     "dropped": false
    },
    "TST-3": {
-    "hash": "bc2b981a7aa72235",
+    "hash": "2fdf3fa35a9af3c1",
     "dropped": false
    },
    "TST-4": {
-    "hash": "8ad382cab3e2157b",
+    "hash": "c65fcd39da311496",
     "dropped": false
    },
    "TST-5": {
     "hash": "a60fcc5fe1e83c49",
     "dropped": false
    },
+   "TST-16": {
+    "hash": "f78156653d4daa33",
+    "dropped": false
+   },
    "TST-6": {
-    "hash": "9d4fc591e90b94e6",
+    "hash": "b894d47c9a5bff36",
     "dropped": false
    },
    "TST-7": {
-    "hash": "31d299003b33fa7f",
+    "hash": "4714ffd780c2ad8e",
     "dropped": false
    },
    "TST-8": {
-    "hash": "af4af7bf332ccb41",
+    "hash": "4aca919a423da00f",
     "dropped": false
    },
    "TST-9": {
-    "hash": "db6fb2ec5c99e670",
+    "hash": "3a3dd757830ea1fe",
     "dropped": false
    },
    "TST-10": {
@@ -1909,11 +2138,11 @@
     "dropped": false
    },
    "TST-11": {
-    "hash": "e8f27b15df07ef00",
+    "hash": "f065324dcc2d6610",
     "dropped": false
    },
    "TST-12": {
-    "hash": "10b6092e42056221",
+    "hash": "b686cfdd07505101",
     "dropped": false
    },
    "TST-15": {
@@ -1921,21 +2150,69 @@
     "dropped": false
    },
    "TST-13": {
-    "hash": "0416c3ee776b1756",
+    "hash": "0cb4c13d233b7ad5",
     "dropped": false
    },
    "TST-14": {
-    "hash": "166526e8453b66f8",
+    "hash": "abd3e954be168990",
+    "dropped": false
+   },
+   "NTF-1": {
+    "hash": "68a809a8c76c2b34",
+    "dropped": false
+   },
+   "NTF-2": {
+    "hash": "fee790314d01abbb",
+    "dropped": false
+   },
+   "NTF-3": {
+    "hash": "2330f8808b788793",
+    "dropped": false
+   },
+   "NTF-4": {
+    "hash": "8b643874203d4d80",
+    "dropped": false
+   },
+   "NTF-5": {
+    "hash": "eb85f1912e57cb89",
+    "dropped": false
+   },
+   "NTF-6": {
+    "hash": "f2a92fac4e31bd0e",
+    "dropped": false
+   },
+   "NTF-7": {
+    "hash": "75f3fc0942422ffc",
+    "dropped": false
+   },
+   "NTF-8": {
+    "hash": "35f34506d2ed1035",
+    "dropped": false
+   },
+   "NTF-9": {
+    "hash": "239e3156bcd2426f",
+    "dropped": false
+   },
+   "NTF-10": {
+    "hash": "1c180a644ed3a0f9",
+    "dropped": false
+   },
+   "NTF-11": {
+    "hash": "dd18b6b42cb14b78",
+    "dropped": false
+   },
+   "NTF-12": {
+    "hash": "c539178d26c7a4d8",
     "dropped": false
    }
   },
   "parts": {
    "MOD-2:a-newer-read-wins": "d48918e665f03489",
-   "MOD-2:a-value-github-sends-that": "a3e8d86c682b37f0",
+   "MOD-2:a-value-github-sends-that": "6237d0af682213f8",
    "MOD-3:whether-a-check-is-required": "c000223e632d3189",
    "MOD-5:checks-also-carries-the-counts-total": "b5c3a654af1c06a6",
    "MOD-5:failing-is-reported-only-once": "46a887fd9f7c1180",
-   "MOD-6:it-changes-only-when-a-refresh-is-applied": "d73f159aec362c43",
+   "MOD-6:it-changes-only-when-a-refresh-is-applied": "742948353bc26138",
    "MOD-6:a-reopening-starts-it-at-false-too": "196ef8b01241f303",
    "MOD-6:a-record-first-seen": "ca7fd6677e787148",
    "MOD-6:a-check-that-first-reports": "1b8539932d292d1b",
@@ -1945,6 +2222,7 @@
    "MOD-9:seen": "411410e39d5bf710",
    "MOD-9:never-seen": "dab9c91e5eb60298",
    "MOD-11:a-draft-with-failing-checks-reads-checks-failing": "0305d18a0afd0c8b",
+   "MOD-11:for-status-only": "0f380220b6789e22",
    "MOD-11:gone-is-circitor-s-own-state": "f1180c20a334a693",
    "MOD-11:gone-needs-the-same-login": "bfb52f54a15f6a19",
    "MOD-11:a-gone-pr-that-github": "8a4d1a7c1f92ce4b",
@@ -1952,9 +2230,11 @@
    "MOD-12:items-are-reported-once": "1010839c823c3eff",
    "MOD-12:only-new-items-are-reported": "cb5d16cdb10f178a",
    "MOD-12:items-by-the-pr-s-own": "fa6fd185c4696f76",
+   "MOD-12:a-review-without-submittedat": "1cefd8580b025da2",
    "MOD-13:a-revision-is-taken": "3acc9d9100edf272",
-   "MOD-14:not-a-change": "887fb221c26b5611",
+   "MOD-14:not-a-change": "ba7a380691da8103",
    "MOD-14:not-a-change-either": "b4d15e4a8042aeb9",
+   "MOD-15:in-json": "8bf19a90e11e87a4",
    "MOD-15:every-visible-change-of-mod-14": "bce8f1ac1400d09f",
    "MOD-15:one-applied-refresh": "dacc98c62608912b",
    "MOD-15:a-pr-s-first-appearance-makes-a-tracked-event": "29d9a6d01ab99b89",
@@ -1966,49 +2246,51 @@
    "POL-12:they-re-batched": "91f72f617962ba17",
    "POL-12:a-count-change-and-its": "2e987e6be93f1d83",
    "POL-12:counts-are-the-trigger-because": "3d0dc737a755054f",
-   "POL-12:more-than-20-new-items": "2f081b7e2341699b",
+   "POL-12:more": "481657f59fd1a642",
    "POL-12:a-count-that-goes-down-makes-no-items": "53940646d012ddc7",
    "POL-12:an-older-item-that-slides": "2b2e648fc611e0ae",
    "POL-13:a-request-arriving-in-the": "c6ed6437f1e0e3be",
-   "POL-13:with-no-waiter-and-no-client-for-exit-after": "e711ea35f26b39e0",
+   "POL-13:with-no-waiter": "7b1d3576719fd432",
+   "POL-13:a-subscription-on-an-open": "416a337e1f5168e4",
    "POL-13:hot-isn-t-a-tier": "38b9cd664fd47d78",
-   "POL-13:every-cadence-runs-from-send-times": "1b1a64db217b36a7",
+   "POL-13:every-cadence-runs-from-send-times": "1de5a5c03ba34876",
    "POL-13:values-are": "435c24d00533a106",
    "POL-17:its-budget-is-quota-max-per-hour": "052c0dc8c85aa901",
    "POL-23:pol-12-s-request-is-sent-whenever-its-refresh-wa": "863ba47d0579db74",
    "POL-23:each-warning-follows-its-own-condition": "04a707d3e4adf0d2",
-   "POL-19:the-backoff-holds-every-request": "42586ea4d2ea6ec3",
+   "POL-19:the-backoff-holds-every-request": "0eb6a95799c52106",
    "POL-19:any-request-that-succeeds-ends-it": "8de54897d6130868",
    "POL-19:a-first-poll-that-fails": "0467bbb3d73f88e9",
    "POL-20:tracked-prs-are-still-answered-from-memory": "9d555ac218b83655",
    "POL-20:a-request-that-can-t-be-answered-without-github": "1032458d9d4d1f6d",
    "POL-20:waiters-stay-registered": "68e55296106259cd",
    "POL-20:the-token-is-read-again-every-60-s": "91987a094ccdc5fa",
-   "POL-20:a-read-that-gives-another": "ac4dfdca4b352bdc",
+   "POL-20:a-read-that-gives-another": "27838c46dd82b504",
    "POL-22:every-record-is-stale-until-its-next-refresh": "7e5df94c77caa99d",
    "POL-22:pol-19-s-backoff-starts-again-at-5-s": "9b4af2426cf6d0ed",
-   "POL-22:a-poll-starts-at-once": "0cd03c0a09211a70",
+   "POL-22:a-poll-starts-at-once": "10de5a5a61d40d56",
    "POL-22:every-waiter-s-deadline-is-checked": "f00f464d61386f6b",
    "POL-25:exhausted": "3425110a2aa59d11",
-   "POL-25:a-secondary-limit": "b5057fae587d3f04",
+   "POL-25:a-secondary-limit": "c9de3a386d236ce3",
    "POL-26:github-s-own-windows": "cf6299b02166e222",
-   "POL-26:every-other-duration-goes-by-the-monotonic-clock": "0137867ab5b2b7cb",
-   "POL-26:the-tick-is-a-timer": "93be2c0185c4c202",
+   "POL-26:every-other-duration-goes-by-the-monotonic-clock": "4cc02134380b1d10",
+   "POL-26:the-tick-is-a-timer": "37e97c43fa60c83c",
    "STA-1:a-pr-tracked-for-two": "93adc83b63ebb713",
    "STA-1:untrack-changes-only-a-manual-pr": "1b1ad1a15decbb33",
-   "STA-1:a-request-names-a-pr": "5351c2c644ce3e11",
-   "STA-1:no-pr-is-dropped-while": "9e8ea066711c8330",
+   "STA-1:a-request-names-a-pr": "b58adba2c2545a64",
+   "STA-1:notify-s-two-routes": "09b2b1249ad1b6eb",
+   "STA-1:no-pr-is-dropped-while": "045faaea687c20e3",
    "STA-2:the-clock-is-cleared-when-state-becomes-open": "84d940cd9f387311",
    "STA-2:the-refresh-that-ends-a": "16affabac9da2d2d",
    "STA-2:keep-done-and-sta-1-s-60-minutes": "ebc4c5a98a066e66",
    "STA-2:dropping-a-pr-makes-an-untracked-event": "f5cfc859988f772f",
    "STA-5:the-daemon-remembers": "c7ccd59934ab3fae",
-   "STA-5:a-pr-loaded-from-the": "bd1fa5d1c588d407",
+   "STA-5:a-pr-loaded-from-the": "e99feeeaa86fd0be",
    "STA-6:every-tracked-pr-but-the-asked-ones": "df68725432c3a87f",
    "STA-6:for-a-merged": "e4423cb83a71a245",
    "STA-6:per-pr-and-kind": "b325a7b5e0c1509e",
    "STA-6:per-pr": "6bdd5c73e5825f0c",
-   "STA-6:a-version-number": "b44ae259c397360b",
+   "STA-6:a-version-number": "9bf3a5324dd95f0e",
    "STA-8:a-loaded-pr-keeps-its": "9ecf3dde58e00d44",
    "STA-8:a-binary-reads-every-earlier-version": "24852ab00583417a",
    "STA-8:a-file-that-isn-t-json": "8aff54561f066e7c",
@@ -2026,8 +2308,9 @@
    "API-4:message-says-what-the-problem": "ed7ae975ea89b83c",
    "API-4:last-poll-at-is-the-last-poll-applied": "259b957eb25ad467",
    "API-5:warnings": "52b0685887711346",
+   "API-19:checks-items-are-in-every-single-record": "e989e337032928dc",
    "API-6:state-open": "25b4bfbe8ab31002",
-   "API-6:since-cursor-returns-only-records-whose": "3d282689424bcf01",
+   "API-6:since-cursor-returns-only-records-whose": "bf0b5ba152a058ef",
    "API-6:each-record-is-as-mod-2": "7f68d407dc695b99",
    "API-7:a-pr-with-no-record-is-read-through": "7afcf9bf2e92d6a4",
    "API-7:fresh-1-forces-a-refresh-first": "5df34e1cdb632a44",
@@ -2038,33 +2321,36 @@
    "API-9:the-condition-is-first-evaluated": "02e3c07a25124f02",
    "API-9:a-wait-s-arrival": "ef6e2efb5fd2e792",
    "API-9:a-pr-with-no-record": "6e65f363b101737f",
-   "API-9:the-arrival-cursor-is-sent-at-once": "8bf9c7ae2901a5f5",
+   "API-9:the-arrival-cursor-is-sent-at-once": "38e73229e903f0e8",
    "API-9:once-the-waiter-is-registered": "ad8c81e04ac0d9dd",
    "API-9:a-pr-with-a-waiter-stays-tracked": "930f1cb17bf5e7d6",
-   "API-10:since-is-taken-by-every-condition": "e329f6b2a6d53286",
+   "API-10:since-is-taken-by-every-condition": "f89ea8c4d15923ff",
    "API-10:sha-is-how-an-agent": "bd6f33bb773efea8",
    "API-10:while-sha-is-given-and-head-sha-doesn-t-match": "c79c4d2f2ec80cc3",
    "API-10:rerun-since-is-how-an-agent": "bb5b53fe465f46df",
    "API-10:a-truncated-failing-may-be-early": "0c5da2198e62b3ad",
+   "API-10:kind-narrows-changed-to-the": "39e360e407494416",
+   "API-10:fail-fast-answers-at-the-first-failure": "3d040173bdb790a6",
    "API-11:the-condition-is-checked-before-the-ends": "ba0ccf48459caf92",
-   "API-11:closed-and-gone-end-merged-and-checks-done": "d778f02262c976c5",
+   "API-11:closed-and-gone-end-merged-and-checks-done": "2462ab65847131bc",
    "API-11:head-moved": "efb5add28d03de42",
+   "API-11:when-a-pr-has-both": "5a8c2d75e6016d63",
    "API-11:for-checks-done": "a4c765ce0496f0c7",
-   "API-15:untrack-never-reads-through": "e344e6d0a30eddbd",
-   "CLI-1:json": "edddf530925358ad",
+   "API-15:untrack-never-reads-through": "0ab838cfbf446dda",
+   "CLI-1:json": "e5ee1cf78c9143a0",
    "CLI-1:changes-without-pr-covers-every-tracked-pr": "4f15530a93ab901e",
    "CLI-2:owner-repo-12": "0b834d9871977efb",
    "CLI-2:12": "15d41c80de5213c7",
-   "CLI-2:nothing": "2eb07a652c6f2aa2",
+   "CLI-2:nothing": "9e52a10dc9225837",
    "CLI-3:show-adds-one-line-per": "447ab2b20ac2a87e",
    "CLI-3:changes-and-the-end-of": "f3e1543d564eea49",
-   "CLI-3:durations-are-the-largest-unit-and-the-next": "c3b952907d133de5",
+   "CLI-3:durations-are-the-largest-unit-and-the-next": "c7b8db8894c6135f",
    "CLI-3:a-title-is-in-double-quotes": "b3c203f73a069de0",
    "CLI-3:after-the-events": "b377dea7607cb32d",
    "CLI-3:refresh-prints-refresh": "b0768e7dc4f42580",
    "CLI-3:a-new-comment-or-review": "7690b4c053f19f9e",
    "CLI-3:more": "93f98c119224568c",
-   "CLI-3:changes-and-wait-print-at-most-50-events": "0905469e62781e2c",
+   "CLI-3:changes-and-wait-print-at-most-50-events": "7d6a1b73be1ae7ee",
    "CLI-3:a-reset-is-never-silent": "e09e819487807c2d",
    "CLI-3:a-stale-record-is-marked": "3098c60c700be450",
    "CLI-3:a-daemon-problem-is-never-silent": "e3e7fc6a1a906309",
@@ -2074,14 +2360,15 @@
    "CLI-3:list-without-since-prints-at-most-50-prs": "d0197b553f7eeac8",
    "CLI-3:the-exact-text-is-fixed-by-golden-files": "a684fde6027a9ea0",
    "CLI-5:each-api-error": "838f030a7772ec3f",
+   "CLI-5:notify-exits-0-once-it-s": "538a5027ba8d86f7",
    "CLI-5:code-8-exists-so-circitor": "a375750cdea883c9",
    "CLI-5:on-code-9": "03c513bf17f8243f",
    "CLI-5:errors-go-to-stderr-as-one-line": "259661c05f811c5f",
-   "CLI-6:the-outcome-line-says-what-the-wait-found": "cd1ac87df9d9a846",
+   "CLI-6:the-outcome-line-says-what-the-wait-found": "b7ee1b044d83c758",
    "CLI-6:with-sha": "ff1f300875f8a4ec",
    "CLI-6:a-wait-answered-before-its": "722dc94a3b996726",
    "CLI-6:a-truncated-failing-adds": "95c2cc32f80dc7e1",
-   "CLI-6:on-a-timeout-it-prints": "200155fc63dd8455",
+   "CLI-6:on-a-timeout-it-prints": "1e7222238704523e",
    "CLI-6:a-wait-that-ends-without": "ce3f687694e6ed06",
    "CLI-6:without-timeout": "3c8e1d58e1dd5743",
    "CLI-6:one-deadline-for-the-whole-command": "74580be885e69294",
@@ -2091,7 +2378,7 @@
    "CLI-7:before-starting-it": "ac437ed6fe1dd0e7",
    "CLI-7:the-cli-watches-the-process-it-started": "a116bc98998f30b2",
    "CLI-7:every-request-has-a-limit": "f4381d285c79e7ca",
-   "CLI-7:no-spawn": "e0b28e816312f943",
+   "CLI-7:no-spawn": "cd931d7fe9c2ddfe",
    "CLI-8:stop-returns-once-the-daemon-has-exited": "c3d8a2f9476faf22",
    "CLI-8:stop-ends-a-daemon-that-doesn-t-answer": "e1f3db1a05447d4a",
    "CLI-9:versions-are-compared-as-semantic-versions": "f357b3af0e614125",
@@ -2100,7 +2387,7 @@
    "CLI-9:before-replacing": "a96dee60401c6418",
    "CLI-9:at-most-one-replacement-per-command": "f57c5cc5ca08a2b8",
    "CLI-9:a-bad-request-or-unknown-route-from": "1bc550d41716d19a",
-   "CLI-10:any-other-command-whose-connection": "ae6eac37e41ce870",
+   "CLI-10:any-other-command-whose-connection": "cc4f32dbab4a7212",
    "OPS-1:only-a-missing-file-means-the-defaults": "b267e202b5da7642",
    "OPS-1:a-bad-config-never-costs": "0c97a6dcb0664be8",
    "OPS-2:keep-done-stops-at-7-days": "53b21372726e3fbe",
@@ -2110,7 +2397,7 @@
    "OPS-4:macos": "2dfab29b8eec893d",
    "OPS-4:circitor-socket-overrides-the-path": "0911773d90089f52",
    "OPS-4:a-socket-answers-when-get": "a56655dd7df3b712",
-   "OPS-4:the-socket-s-mode-is-0600": "1f8a96862129d57e",
+   "OPS-4:the-socket-s-mode-is-0600": "b07307bdc193750e",
    "OPS-4:a-path-over-103-bytes": "5d4f5d485895408f",
    "OPS-4:the-cli-also-tries-the": "5379e738624a87df",
    "OPS-5:the-token-is-held-in-memory-only": "4a4d2349a89c8397",
@@ -2126,13 +2413,14 @@
    "OPS-7:a-second-sigterm-or-sigint": "e7d0068ff943b686",
    "OPS-7:every-stop-exits-0": "2b3900c115c1d4c6",
    "OPS-9:the-log-file-is-rotated": "c1b56fd1518ece88",
-   "OPS-9:logging-never-stops-the-daemon": "9aeffb339a79e4f8",
-   "OPS-9:logged": "f4a48126893d5cc1",
-   "OPS-9:never-logged": "00545f1c537f9c9e",
+   "OPS-9:logging-never-stops-the-daemon": "0c2f366147dd9509",
+   "OPS-9:logged": "54a004c36110ebbc",
+   "OPS-9:never-logged": "ce97a0565175fc7e",
    "OPS-9:circitor-log-debug-adds-one-line-per-request-to": "33e8be8dcb34daa4",
    "OPS-18:runs-homebrew-s-bin-circitor": "fb2b91f78d284c87",
    "OPS-18:restarts-it-on-failure-only": "ae04e30d52965587",
    "OPS-18:keeps-its-stderr": "9d3880ea8daa4517",
+   "OPS-18:on-macos": "f02220ad5094eaa5",
    "OPS-18:says-that-a-daemon-circitor": "9dc5012d25417399",
    "OPS-17:a-cli-call-answered-from": "9dee184f01d18ff6",
    "OPS-17:from-a-cold-start-to": "253cee7fd5946691",
@@ -2140,83 +2428,132 @@
    "TST-3:it-answers-the-queries-circitor-sends": "9be536c33cfd1340",
    "TST-3:by-default-its-world-behaves": "9dc62ac93ffe2ba8",
    "TST-3:it-can-be-told-to-misbehave": "e10d5d3d4349dd16",
-   "TST-3:it-parses-each-query-and": "bb4578c3239f6cfe",
+   "TST-3:it-parses-each-query-and": "42dafdff1b2023af",
    "TST-3:the-test-sets-remaining-and": "af12c55ce63fcd19",
-   "TST-3:it-fails-the-test-if": "0f8e4f1928aae182",
+   "TST-3:it-fails-the-test-if": "a9bfb989015ba05b",
    "TST-3:it-records-every-request-with-its-time": "9a5b7e7e59d265d9",
    "TST-5:unless-a-test-says-otherwise": "98c6c78a64d38128",
    "TST-5:each-command-takes-its-inputs": "5967dff84b430768",
    "TST-5:the-harness-can-make-a": "8de173ad2db67973",
    "TST-6:an-hour-in-the-active": "0a325baccbdc2a64",
-   "TST-6:one-hot-pr-adds-at": "c10b343a2935a6a5",
+   "TST-6:one-hot-pr-adds-at": "eac0746558e73c7d",
    "TST-6:one-waited-on-pr-is-refreshed": "25bed0b8fd30027a",
    "TST-6:above-80-of-quota-max-per-hour": "94227ac0e9553fd2",
    "TST-6:with-200-tracked-prs": "0ff3faffd559973c",
    "TST-6:each-state-s-daemon-problem": "98e156cb86c3fe9c",
    "TST-6:with-remaining-under-the-reserve": "274fe2c300d7c2bc",
    "TST-6:exhausted": "4ad666e8efc786d2",
-   "TST-9:every-real-process-test-runs-a-test-build": "f2bacf99e607d2bb"
+   "TST-9:every-real-process-test-runs-a-test-build": "f2bacf99e607d2bb",
+   "NTF-2:socket-is-an-absolute-path": "59a210dc371599e1",
+   "NTF-2:registering-evaluates-once": "4d46d39c5435c85a",
+   "NTF-2:in-the-auth-state": "f0a4703ba40a0f34",
+   "NTF-2:if-that-evaluation-s-outcome-is-satisfied-or-end": "64d8868bff5f3a57",
+   "NTF-2:otherwise-the-subscription-is-kept": "fc757191e73c25e2",
+   "NTF-2:the-confirmation-is-posted-before-the-answer": "ab5bfb584f87464e",
+   "NTF-2:a-since-that-is-too-old-when-registering": "c502257ef40e36c5",
+   "NTF-2:a-registration": "02e8678c383ee22c",
+   "NTF-2:the-answer-is-built-from-the-registration-s-view": "6cc6856e31cac950",
+   "NTF-2:a-refresh-applied-while-the": "18a604ad540bc7ae",
+   "NTF-2:registering-again-for-the-same-socket": "9e1dc2d698d91c63",
+   "NTF-2:at-most-64-subscriptions-are-held": "552b3dc7df3ad9d6",
+   "NTF-4:a-pr-with-a-subscription-stays-tracked": "45cf4d368a9d2a42",
+   "NTF-4:expires-at-is-the-wall-time-expected-when-regist": "fecda896989ae2de",
+   "NTF-4:a-subscription-doesn-t-wait-out": "6509d2ba4585e561",
+   "NTF-4:the-10-minutes-run-on": "0c839070fd2d22a9",
+   "NTF-4:expiry-never-beats-a-catch-up": "9f61bf9623d33fbe",
+   "NTF-4:a-subscription-searches-the-event-history-once": "da773cf96231d4f2",
+   "NTF-4:every-subscription-s-socket-is-checked-at-each-t": "932b2bf561571768",
+   "NTF-6:once-its-line-is-written": "c0d53fbefced015b",
+   "NTF-6:a-peer-that-doesn-t-read-isn-t-a-failure": "8d7039860297e337",
+   "NTF-6:a-connect-or-a-write-that-fails": "8b88d2b31832de1d",
+   "NTF-6:before-connecting": "0e1ef0c18a8def92",
+   "NTF-6:circitor-never-states-a-permission": "579cdd8185505a07",
+   "NTF-6:notices-are-sent-apart-from": "663ecc765aef217f",
+   "NTF-8:the-cursor-is-the-subscription-s-since": "f5de90e929150729",
+   "NTF-8:ask-again-repeats-the-parameters-given": "4c9b99f65a7d0b45",
+   "NTF-8:the-problem-notice-names-the-daemon-s-problem-co": "3c79c7e4050c1921",
+   "NTF-8:the-expired-notice-gives-the-record-s-status": "c6967079503b80e7",
+   "NTF-8:a-notice-is-a-hint": "442d2b133a47dc4c",
+   "NTF-8:the-exact-text-is-fixed-by-golden-files": "a684fde6027a9ea0",
+   "NTF-11:the-session-is-the-one-in-the-environment": "c6163445fa58f0e8",
+   "NTF-11:when-the-answer-is-already-known": "0f9e8a39d41fd26d",
+   "NTF-11:otherwise-it-prints": "0b7fad02c32198f5",
+   "NTF-11:the-order-of-the-lines": "48c8ef8543cf47d1",
+   "NTF-11:a-registered-answer-with-reset": "9a8bb24e784bfd94",
+   "NTF-11:when-already": "11c62c6a67e7c833",
+   "NTF-11:cancel-prints-cancelled": "6651824e2bd87559",
+   "NTF-11:its-exit-code-says-only": "05cfa457b6985151",
+   "NTF-12:in-an-unattended-run": "23d3b9bfb093add9",
+   "NTF-12:after-a-session-is-resumed": "e7bb4c4292aeb999"
   },
   "sections": {
-   "specs/00-overview.md#overview": "936946abe349e5dd",
-   "specs/00-overview.md#summary": "7e039bd9d27ecefb",
-   "specs/00-overview.md#user-requirements": "8087e45d85866590",
-   "specs/00-overview.md#non-goals-v1": "4d28ecc0f914b61b",
-   "specs/00-overview.md#components": "a4dfd94254ba0e20",
+   "specs/00-overview.md#overview": "567bef909578ac89",
+   "specs/00-overview.md#summary": "8f433aa1013dd171",
+   "specs/00-overview.md#user-requirements": "5bd11125b2d378e2",
+   "specs/00-overview.md#non-goals-v1": "1f1f9ac7c4ed33ba",
+   "specs/00-overview.md#components": "3a5f2f4c25a3ea4a",
    "specs/00-overview.md#technology": "c9017d3d663f19ac",
-   "specs/00-overview.md#repo-layout-proposal": "a1a1f7b6852ecf55",
-   "specs/00-overview.md#glossary": "f0d15fcbd3c1c63e",
-   "specs/01-model.md#the-pr-record": "01b57ca138b65600",
-   "specs/01-model.md#identity-and-fields": "dd8b2e20f5f3ec1a",
-   "specs/01-model.md#checks": "a3257e5c6ecde3a4",
+   "specs/00-overview.md#repo-layout-proposal": "00e273d53af55ffc",
+   "specs/00-overview.md#glossary": "03b3c1a2fce79e43",
+   "specs/01-model.md#the-pr-record": "8f3c506ff856f8a5",
+   "specs/01-model.md#identity-and-fields": "da479e4cd11656fe",
+   "specs/01-model.md#checks": "7e7d564355e97960",
    "specs/01-model.md#mergeability-and-review": "e415a14d1f25e93f",
-   "specs/01-model.md#status": "501ecc22d53c2b55",
-   "specs/01-model.md#whats-new": "9630bf57eb1df998",
-   "specs/01-model.md#revisions-and-events": "10caa0e1b0d7e665",
-   "specs/02-polling.md#polling-github": "e9237502ec4fec93",
+   "specs/01-model.md#status": "7b5ae43e6dd766ea",
+   "specs/01-model.md#whats-new": "a216e8b39364dea3",
+   "specs/01-model.md#revisions-and-events": "11064f0678452f7f",
+   "specs/02-polling.md#polling-github": "3e2c40a250e7aca9",
    "specs/02-polling.md#requests": "36d021a23773d2de",
-   "specs/02-polling.md#the-poll": "cea20f167f1c7ea6",
-   "specs/02-polling.md#cadence": "9af47cd6e48144db",
-   "specs/02-polling.md#quota": "0f59e5d0698e1758",
-   "specs/02-polling.md#errors": "db720bee4e301b75",
-   "specs/03-state.md#state": "203ad7985e1ef39f",
-   "specs/03-state.md#the-tracked-set": "e170a7536eccab14",
-   "specs/03-state.md#the-state-file": "cafc78f17906b175",
+   "specs/02-polling.md#the-poll": "84ba639aeb8b84a7",
+   "specs/02-polling.md#cadence": "b69f5f27c412555a",
+   "specs/02-polling.md#quota": "e67de86dad2f1d2e",
+   "specs/02-polling.md#errors": "ea9b096c0e6406d9",
+   "specs/03-state.md#state": "760712158e6a1b3e",
+   "specs/03-state.md#the-tracked-set": "2cb9c98538d46cb8",
+   "specs/03-state.md#the-state-file": "2819e8c7ad0f9cc5",
    "specs/03-state.md#cursors": "1e2041ca966af402",
    "specs/03-state.md#one-daemon": "048cd65ee87a85d1",
-   "specs/04-api.md#api": "46407448e3b7cb08",
-   "specs/04-api.md#basics": "2d6b3e90aa606b70",
-   "specs/04-api.md#reading": "500c6d8211fedbed",
-   "specs/04-api.md#waiting": "0293d38b243db27c",
-   "specs/04-api.md#changing-the-set": "a81c6f84f4791f0e",
-   "specs/04-api.md#starting-up": "3704b845d2b40605",
-   "specs/05-cli.md#cli": "f9b4bb885659f3f8",
-   "specs/05-cli.md#commands": "0e7a820b64beb91b",
-   "specs/05-cli.md#output": "7e29b4bf3eaca065",
-   "specs/05-cli.md#waiting": "6c3e7fefa2bd89cc",
-   "specs/05-cli.md#the-daemon": "6cb503119463cf2d",
-   "specs/05-cli.md#for-agents": "92a668ed8fe5c056",
+   "specs/04-api.md#api": "90fe675ce8b1587b",
+   "specs/04-api.md#basics": "f86c9218572743a7",
+   "specs/04-api.md#reading": "3fbdf30eb216b868",
+   "specs/04-api.md#waiting": "7ef6d77f3224d26d",
+   "specs/04-api.md#being-told": "5a68a416926561d0",
+   "specs/04-api.md#changing-the-set": "8f1a3971849b4a0d",
+   "specs/04-api.md#starting-up": "bfa73646476d8d8f",
+   "specs/05-cli.md#cli": "c70e7a4eb44091f4",
+   "specs/05-cli.md#commands": "587d35f9830b2842",
+   "specs/05-cli.md#output": "1102e030ff971951",
+   "specs/05-cli.md#waiting": "32eebb853fbb4fac",
+   "specs/05-cli.md#the-daemon": "03a1d89d74c5e863",
+   "specs/05-cli.md#for-agents": "bc3dc40bcfe41f15",
    "specs/05-cli.md#for-tests": "a25e2197e75ccba0",
-   "specs/06-operations.md#operations": "2279bf570e5f62c5",
+   "specs/06-operations.md#operations": "86eab0c3d2d27b48",
    "specs/06-operations.md#configuration": "cb9ff6e70d0b25e7",
-   "specs/06-operations.md#files": "dddadf91b097b662",
+   "specs/06-operations.md#files": "6f38e87dc12da4d4",
    "specs/06-operations.md#the-token": "91219a60a4648432",
-   "specs/06-operations.md#the-daemons-life": "1b3a5149a65cec5e",
-   "specs/06-operations.md#shipping": "4ee7b99946b2d5db",
+   "specs/06-operations.md#the-daemons-life": "2e42ba721804b3d6",
+   "specs/06-operations.md#shipping": "78662d386a6a45aa",
    "specs/06-operations.md#targets-for-behaviour": "6cd95aa651938c04",
-   "specs/07-testing.md#testing": "e80436fb1232f354",
-   "specs/07-testing.md#rules": "d248758f13307f7d",
-   "specs/07-testing.md#test-doubles": "513dce5ae122f528",
-   "specs/07-testing.md#what-is-tested": "f0c09b9cf16e09f3",
-   "specs/07-testing.md#by-hand": "d4928840f0a8d2fb",
-   "specs/README.md#software-spec": "70618382cfa733c4",
-   "specs/README.md#files": "30e9094eab6fcb60",
-   "specs/README.md#conventions": "17ab9b4a619b8368",
-   "specs/decisions.md#decisions": "fcb336c1b93cb916",
+   "specs/07-testing.md#testing": "b2967ec53d486c0d",
+   "specs/07-testing.md#rules": "f0c9b5982d8ef7ec",
+   "specs/07-testing.md#test-doubles": "8ac39afa447ae5c4",
+   "specs/07-testing.md#what-is-tested": "397a2830b537afe9",
+   "specs/07-testing.md#by-hand": "784d5499e866f532",
+   "specs/08-notify.md#notify": "767cf55a941723f1",
+   "specs/08-notify.md#subscriptions": "d7cdcb330221639c",
+   "specs/08-notify.md#while-one-is-open": "9b4585f27d96f0c7",
+   "specs/08-notify.md#posting": "32f4079ccc1e1664",
+   "specs/08-notify.md#keeping-and-stopping": "f2ee1d697a64aa67",
+   "specs/08-notify.md#the-command": "9f64f5dc08e0b263",
+   "specs/08-notify.md#for-the-user": "bf8f3fb0a7ca16d4",
+   "specs/README.md#software-spec": "cce3ae97415eaf56",
+   "specs/README.md#files": "38786fb0d3324dd6",
+   "specs/README.md#conventions": "6cd7befdef89eb31",
+   "specs/decisions.md#decisions": "cc0b7c917f159275",
    "specs/decisions.md#carried-from-the-log": "ef82d94bb38e406e",
-   "specs/decisions.md#resolved": "9cbfc26ca923f9b6",
-   "specs/decisions.md#open": "c25e80fe72931908",
-   "specs/decisions.md#notes-on-resolved-decisions": "e35c508bf023eb56",
+   "specs/decisions.md#resolved": "0469389b0172ec9d",
+   "specs/decisions.md#open": "16a346f1b9819d4a",
+   "specs/decisions.md#notes-on-resolved-decisions": "a12d740413b8bf08",
    "docs/02-github-api.md#github-api-facts": "2bcde6696d013865",
    "docs/02-github-api.md#1-access": "3ae82b86f26f5595",
    "docs/02-github-api.md#2-rate-limits": "1a4e075bf139165f",
@@ -2245,15 +2582,27 @@
    "docs/04-platform.md#5-rust-libraries": "911f9edd87c5728e",
    "docs/04-platform.md#6-the-menu-bar": "560e3d3d09eb63a1",
    "docs/04-platform.md#7-the-gh-cli": "7816b50d3030d592",
-   "docs/04-platform.md#8-open-items": "2ac151cf27f7b905"
+   "docs/04-platform.md#8-open-items": "2ac151cf27f7b905",
+   "docs/07-notify.md#notify-pushing-a-message-into-a-session": "7286dfc167aad146",
+   "docs/07-notify.md#the-idea": "feebb4c318c16dad",
+   "docs/07-notify.md#what-v1-already-gives": "c5b6bb421aa7c545",
+   "docs/07-notify.md#the-session-socket": "6fe046d457b107c6",
+   "docs/07-notify.md#other-ways-in-and-why-not": "fb42f42a4dfe6291",
+   "docs/07-notify.md#a-first-sketch": "be99c418a4188496",
+   "docs/07-notify.md#what-it-costs": "0b29444254ab91c6",
+   "docs/07-notify.md#to-measure-before-specifying": "b699c04928fc01c5",
+   "docs/07-notify.md#where-it-would-touch-the-specs": "a55de4b74bd7eab8"
   },
   "decisions": {
    "D1": "resolved",
    "D2": "resolved",
    "D3": "resolved",
    "D4": "resolved",
-   "D5": "open",
-   "D6": "open"
+   "D5": "resolved",
+   "D6": "resolved",
+   "D7": "resolved",
+   "D8": "resolved",
+   "D9": "resolved"
   },
   "findings": {
    "01-model:H1-1": "applied: `checks.settled` goes by time, whatever the list holds; MOD-11's `checks_pending` row covers `passing` and not settled, and `ready` needs settled checks; TST-8 gained `first-check-early`",
@@ -2307,6 +2656,15 @@
    "01-model:H3-15": "parked. The MOD-16 half of this finding was settled by the other session (MOD-16 now cites POL-10's period).",
    "01-model:H3-16": "parked. It counts resolved threads too, so an agent may misread it as open ones.",
    "01-model:H3-17": "parked. A test (`held-refresh`) needs the rule first.",
+   "01-model:H4-1": "applied: owner, then repository, without case, then the number as a number",
+   "01-model:H4-2": "applied: `kinds` is a list of objects tagged by `kind`, in the table's order; `draft` carries `draft`; a short SHA is 7 characters. Closes H1-17.",
+   "01-model:H4-3": "applied: that PR's error, with `UNLISTED_STATE`, `UNDECODABLE` or `UNTYPED`; the rest of the response is applied. Closes H2-14.",
+   "01-model:H4-4": "applied: for `status` only, they count as `unknown` and `review_required`",
+   "01-model:H4-5": "applied: not an item until submitted. Closes H1-16.",
+   "01-model:H4-6": "applied: oldest `at` first, comments before reviews, then `id`",
+   "01-model:H4-7": "applied: the new spelling, without a revision",
+   "01-model:H4-8": "applied: until the next settle start",
+   "01-model:H4-9": "applied: matched by `name`",
    "02-polling:H1-1": "applied: POL-9 says a refusal empties the check, the refresh isn't applied, and the PR is read again without the field; POL-21 applies a node only if no error's path points inside it; TST-3 gains \"an error inside a PR's node\"",
    "02-polling:H1-2": "applied: POL-12 makes the count change and its items one change, and keeps the old counts when the ID request fails; MOD-15's `activity` row carries `more`",
    "02-polling:H1-3": "applied: POL-15 rewritten (`fresh` and a wait's arrival refresh one PR, `refresh` runs a whole poll at most once in 10 s, 30 s windows when capped or in reserve); API-16 says what it answers inside the window",
@@ -2361,6 +2719,17 @@
    "02-polling:H3-15": "parked",
    "02-polling:H3-16": "parked",
    "02-polling:H3-17": "parked",
+   "02-polling:H4-1": "applied: every request of a poll counts as sent when the poll's first request was; MOD-2's and MOD-6's send times stay each request's own",
+   "02-polling:H4-2": "applied: all 20 read are new and the count rose by more than 20; for a loaded PR, all 20 new. STA-5 points to POL-12. Closes H3-10.",
+   "02-polling:H4-3": "applied: the PRs of the failed request and of the poll's requests not yet sent",
+   "02-polling:H4-4": "applied: API-3's `auth` message names `gh auth login` when GitHub refuses gh's token twice; `auth` stays the problem until a success",
+   "02-polling:H4-5": "applied: the tier's interval doubled",
+   "02-polling:H4-6": "applied: it counts 1 point. Closes H1-17.",
+   "02-polling:H4-7": "applied: every secondary limit in a row counts; a success ends the row; the wait is on the monotonic clock",
+   "02-polling:H4-8": "applied: 3 s after the answer that read `UNKNOWN`; one follow-up request per answer",
+   "02-polling:H4-9": "applied: the monotonic clock; only the PR's own errors count",
+   "02-polling:H4-10": "applied: its failure doesn't move the backoff; its success ends it. Part of H3-17.",
+   "02-polling:H4-11": "applied: a whole poll is forced only when the last forced one was sent more than 10 s ago",
    "03-state:H1-1": "applied: STA-6 saves every tracked PR but the `asked` ones, with `source`; STA-8 says one that ended meanwhile is seen ending at the first poll; OPS-8 now says a restart loses the event history, the epoch and the `asked` PRs",
    "03-state:H1-2": "applied: STA-6 saves per PR the time of the newest comment and review seen; STA-5 makes IDs newer than those `activity` on loading (POL-12's rule); POL-4 and MOD-15 follow; API-8 gives a cursor from another epoch every event of the current one while the history holds them all",
    "03-state:H1-3": "applied: STA-9 compares revisions only within one epoch, and every route taking a cursor (API-6, API-8, API-9) resets on a too-old one; a too-old `since` makes `changed` hold at once; API-9's answer carries `reset: true` and API-8's events",
@@ -2454,6 +2823,15 @@
    "04-api:H3-14": "parked. Fix: `head_moved` only when the head matched once and then changed; a SHA that never matches ends as `timeout`, whose line names both heads. Settles parked H2-16's 60 s half and 05-cli H2-13.",
    "04-api:H3-15": "parked; a product choice. Removing it drops the `untracked` filtering, a reset path and CLI-3's exception to the 50-line cap; `changes --since` and `show` give the same.",
    "04-api:H3-16": "parked. CLI-3 reads only `problem`, `message` and `until`; `status` carries the tier and the last poll itself. Fix: `daemon` is `{problem, message, until}`.",
+   "04-api:H4-1": "applied: every single `record` carries them; a list of `records` only in `list` with `checks=1`",
+   "04-api:H4-2": "applied: the saved source becomes `manual` first, then a read-through; a failure answers its error and the source stays saved",
+   "04-api:H4-3": "applied: it's dropped (`asked` with a waiter); the next poll finds it again if it's the user's own",
+   "04-api:H4-4": "applied: `state.json`'s path",
+   "04-api:H4-5": "applied: API-16's words without `shared`",
+   "04-api:H4-6": "applied: all the records `state` asks for",
+   "04-api:H4-7": "applied: `unknown_route`, by path or by method",
+   "04-api:H4-8": "applied: every 200 answer to a `wait` carries it",
+   "04-api:H4-9": "applied: the state's reason wins",
    "05-cli:H1-1": "applied: CLI-3 prints a reset line and one `list` line per record before the events",
    "05-cli:H1-2": "applied: an open match first; with none, a poll (API-16) and a second look; then the most recent merged or closed match, said so; two matches of one kind are exit 2; a fork clone needs the full form (forks not measured)",
    "05-cli:H1-3": "applied with change: CLI-6 holds one deadline for the whole command, and each request passes the time left; CLI-10 reconnects with the time left and ends as a timeout with none. The lost change is covered by the other session's `Circitor-Cursor` (API-9), so the proposed \"read the cursor first\" bullet was dropped.",
@@ -2550,6 +2928,14 @@
    "06-operations:H3-12": "applied: pointers to CLI-7 and CLI-9 in their place (the other session had already done OPS-4 and OPS-7)",
    "06-operations:H3-13": "parked",
    "06-operations:H3-14": "parked",
+   "06-operations:H4-1": "applied: OPS-4 binds under a umask of 0177, and says a umask of 077 gives 0700 on Linux (a local bind, 2026-11-25; macOS not checked)",
+   "06-operations:H4-2": "applied: API-5 gains `log_unwritable`; OPS-9 names it",
+   "06-operations:H4-3": "applied: API-5 gains `gh_path`",
+   "06-operations:H4-4": "applied: OPS-8 runs on the monotonic clock and doesn't count `status`. Also settles part of H1-14.",
+   "06-operations:H4-5": "applied: \"replaced\" and `stop` both log as a shutdown request",
+   "06-operations:H4-6": "applied: pi is named; also closes H1-15",
+   "06-operations:H4-7": "applied: label `dev.circitor.daemon`, stderr at `~/Library/Logs/circitor.log` (proposal)",
+   "06-operations:H4-8": "applied: both resolved on 2026-11-25; OPS-10 names a formula written by `dist`",
    "07-testing:H1-1": "applied: TST-1 defines a test build as the `test-endpoint` feature (address from `CIRCITOR_TEST_GITHUB`, loopback only, `exit_after` down to 1 s; the release build has neither); TST-9 runs every real-process test on a test build with temporary XDG directories and `GH_CONFIG_DIR`, a fake `gh` through `gh_path`, and stops every daemon it started",
    "07-testing:H1-2": "applied: a corrupt file is set aside with `state_file_set_aside`; a newer one is left unchanged and never written, with `state_file_newer`",
    "07-testing:H1-3": "applied: `merged` and unfinished `checks-done` waits end with `closed`, exit 4; `changed` is satisfied, exit 0",
@@ -2599,7 +2985,62 @@
    "07-testing:H3-13": "parked. Idea: a `wait-deadline` row: a hung read-through answers `timeout` with `record: null` at the deadline; a spawn that took 7 s of 30 sends `timeout=23`; under 1 s left sends nothing and exits 3; an arrival inside POL-15's window or the backoff is evaluated at once.",
    "07-testing:H3-14": "parked. Idea: the harness's repository can have an upstream of another name, a detached HEAD, or an `origin` not on github.com; `bare-pr` adds another author's PR on the same branch (never matches), the upstream's name matching, and a `rate_limited` poll with no match exiting 9.",
    "07-testing:H3-15": "parked. Idea: `checks-done` doesn't hold before a refresh sent 20 s after the head was first read, then only once the workflow's checks finish; step 4 agrees within 10 points.",
-   "07-testing:H3-16": "parked. Idea: the fake file system records calls; a test checks write, sync, rename in that order, and that stopping after any step leaves the old or the new file."
+   "07-testing:H3-16": "parked. Idea: the fake file system records calls; a test checks write, sync, rename in that order, and that stopping after any step leaves the old or the new file.",
+   "07-testing:H4-1": "applied: a `show` of an untracked PR at 200 gets `limit`, and nothing is sent",
+   "07-testing:H4-2": "applied: `list` exits 9 with `github_unavailable`, and `status` counts the loaded PRs",
+   "07-testing:H4-3": "applied: the idle figure is a rate over the idle part of one 3 600 s wait",
+   "07-testing:H4-4": "applied: TST-14 is not set up for now; TST-9 runs on Linux locally and on the owner's Mac until there's CI",
+   "07-testing:H4-5": "applied: where the monotonic clock counts the suspend, no sleep is noticed and the outcomes follow from the clocks alone",
+   "07-testing:H4-6": "applied: \"a sleep longer than 60 s\"",
+   "07-testing:H4-7": "applied: one JSON object per response (`request`, `status`, `headers`, `body`); synthetic ones beside them until real ones exist. Closes H1-14's format part and part of H2-15.",
+   "07-testing:H4-8": "applied: on a release published to the tap, before it's announced",
+   "07-testing:H4-9": "applied: a test build sends `x-circitor-test-pid`; the fake keeps its rules per value",
+   "07-testing:H4-10": "applied: cites POL-20; the `list` causes the token read",
+   "07-testing:H4-11": "applied: `track-untrack` cites API-9, not CLI-10; `conflict` cites MOD-11 and docs/02 §4",
+   "07-testing:H4-12": "applied: names `https://docs.github.com/public/fpt/schema.docs.graphql`, fetched without a token",
+   "08-notify:H1-1": "applied: each subscription's socket is checked at every tick, by path, device and inode (NTF-4, a proposal for a killed session); NTF-5 names the active tier's cost; POL-26's lists take the socket check and `for`",
+   "08-notify:H1-2": "applied: a subscription remembers matching events from registration and doesn't search the history; a cursor that goes too old while held neither satisfies it nor drops a part; a notice whose cursor is too old names `show`",
+   "08-notify:H1-3": "applied: the notify routes name their PR for STA-1's 60 minutes only; POL-14 excepts them; POL-10 gives an open PR with a subscription its tier's rate whatever its source",
+   "08-notify:H1-4": "applied: `Ask again` carries `--since` with the subscription's cursor, `--for` included; both examples changed",
+   "08-notify:H1-5": "applied: once its line is written a notice is never sent again; a peer that doesn't read counts as posted; a second try only before the line is written in full; a failed confirmation isn't retried; `stopped` notices go together with 1 s for all; the test double gains a connection that never completes",
+   "08-notify:H1-6": "applied: the `stopped` notice's command has `--no-spawn`; the guide says exit code 6 then means a stop on purpose",
+   "08-notify:H1-7": "applied: a new error `no_session` (409), mapped to exit code 11 with the `wait` named; `bad_request` stays for a path that isn't absolute",
+   "08-notify:H1-8": "applied: required and typed body keys, `limit`; the answer kept or not by API-11's outcome; `outcome` and `reason` `null` when registered; a loaded PR is read through; cancel never reads through or starts a daemon; NTF-4's `ended` row cites API-11; API-15 and API-18 name subscriptions and the cancel route",
+   "08-notify:H1-9": "applied: only a request with the same `socket`, PR, `until`, `sha`, `fail_fast` and `kind` replaces; the answer has `replaced: true` and the CLI says so; a replacement takes no new place; the limit is checked after the evaluation",
+   "08-notify:H1-10": "applied: the confirmation arrives with the command's result; the README and the guide cover unattended runs, a resumed session and a daemon crash",
+   "08-notify:H1-11": "applied: each case is listed with what is verified and what is only documented; TST-13's step 7 records what a session that bypasses prompts does instead of expecting an outcome",
+   "08-notify:H1-12": "applied: no length rule on the session's socket path; the examples print `1d`, as CLI-3's durations do; NTF-1 cites docs/07 and says the other clients weren't checked",
+   "08-notify:H1-13": "applied with change: taken up by H2-1 in pass 2, which gives the notice CLI-3's stale mark; a subscription always has a record, since registering reads through (NTF-2)",
+   "08-notify:H2-1": "applied: `for` runs as a waiter's timeout does, and a clock step doesn't move the expiry; an expiry due at a wake or on a stale record waits for the next applied refresh, 60 s at most; the `expired` notice takes the stale mark; POL-22's wake poll counts subscriptions; `sleep` and `clock-back` gain a subscription",
+   "08-notify:H2-2": "applied: the output line and the guide say to cancel the notify first, then use `wait`",
+   "08-notify:H2-3": "applied: `notify --no-spawn` waits up to 8 s for a daemon before exiting 6; a stop the daemon chose itself posts the command without `--no-spawn`",
+   "08-notify:H2-4": "applied: a new end `problem` with its notice, after 10 minutes in `auth` or on `pr_failing` (proposal: the 10 minutes); registering in `auth` answers `auth` unless the answer is already known; the registered output carries the `problem:` line",
+   "08-notify:H2-5": "applied: the order is stated, with the evaluation, the limit and the entry in one step; the history is searched once, when registering; an outcome that lands while the confirmation is posted follows it; a failed confirmation takes out the subscription and the one it replaced",
+   "08-notify:H2-6": "applied: a `since` too old when registering is answered with the reset and let go; the registered output prints a reset and events first; `already:` with a reset ends with the command to register afresh",
+   "08-notify:H2-7": "applied: the registered output shows the PR's one line; only a subscription on an open PR holds the active tier",
+   "08-notify:H2-8": "applied: a subscription's end counts as the end of a request that named its PR, for 60 minutes",
+   "08-notify:H2-9": "applied: the daemon is started without both variables, and TST-9 checks it",
+   "08-notify:H2-10": "applied: a subscription is open until its second try, which a cancel calls off and a stop makes at once; a `stat` that fails otherwise changes nothing; the path is checked again before connecting",
+   "08-notify:H2-11": "applied: at most 32 subscriptions for one socket (proposal)",
+   "08-notify:H2-12": "applied: a subscription holds its PR by node ID and remembers the name it was registered under; cancel matches that name too (proposal: a rename isn't measured)",
+   "08-notify:H3-1": "applied: checked at each tick; the 10 minutes run on the monotonic clock from when `auth` began, and a failed try doesn't restart them; a subscription registered while `pr_failing` is raised posts `problem` at the first tick; POL-26's tick lists it; new row `notify-problem`",
+   "08-notify:H3-2": "applied: the rule is stated once, in STA-1, and POL-11, POL-14 and NTF-2 cite it; the tier is active while a subscription on an open PR is held, and then follows the last client request",
+   "08-notify:H3-3": "applied: split into `notify-keeps-active` (open PR: the tier and the idle exit) and `notify-keeps-ended` (an ended PR kept past `keep_done`, dropped 60 minutes after the end)",
+   "08-notify:H3-4": "applied: that answer has `registered: false` and `replaced: true`, and nothing is posted; `replaced an earlier notify` is printed in both cases; one order for the lines",
+   "08-notify:H3-5": "applied: notices being posted are work in flight, and the fake session must have read every connection to its end",
+   "08-notify:H3-6": "applied: the `stat` comes straight after the parameters, so a bad socket never reaches GitHub and gets `no_session` even with a known answer; `auth` before the limit",
+   "08-notify:H3-7": "applied: one rule for the condition's words, with an example for `changed` with `kind`",
+   "08-notify:H3-8": "applied with change: the second try is dropped, and a failed or unfinished post ends the subscription, logged; TST-16 keeps its full-queue mode, now \"so a connect fails at once\", and `notify-session-gone` expects `EAGAIN` to drop it. The `EAGAIN` measurement is cited as not yet in docs/05.",
+   "08-notify:H3-9": "applied: the registration's view (MOD-13); its cursor is the subscription's, and a refresh during the confirmation goes into the notice",
+   "08-notify:H3-10": "applied: `notify-no-session` covers a refused confirmation; new row `notify-register`",
+   "08-notify:H3-11": "applied: the condition's parameters as given, never `--timeout`",
+   "08-notify:H3-12": "applied: the PR by node ID, `sha` lower-cased, `kind` as a set, a missing `fail_fast` as `false`",
+   "08-notify:H3-13": "parked",
+   "08-notify:H3-14": "parked",
+   "08-notify:H3-15": "parked",
+   "08-notify:H3-16": "parked",
+   "08-notify:H3-17": "parked",
+   "08-notify:H3-18": "parked"
   }
  }
 }

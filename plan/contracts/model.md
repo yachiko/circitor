@@ -9,7 +9,7 @@
 ```rust
 /// `owner/repo#number` (MOD-1). `Eq`, `Hash` and `Ord` ignore case; `Display` keeps GitHub's spelling.
 /// `Ord` is the order "of `pr`" (MOD-15, STA-2, API-6): owner, then repo, both lower-cased, then the
-/// number as a number (plan decision P10). Serialises as the string.
+/// number as a number (MOD-1). Serialises as the string.
 #[derive(Clone, Debug)]
 pub struct PrName { pub owner: String, pub repo: String, pub number: u64 }
 impl PrName {
@@ -115,7 +115,7 @@ pub struct Item {
     #[serde(default, skip_serializing_if = "Option::is_none")] pub fetch_inline: Option<String>,
 }
 
-/// MOD-15. `kinds` is a list of objects tagged by `kind` (plan decision P10).
+/// MOD-15. `kinds` is a list of objects tagged by `kind`.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Event {
     pub rev: u64,
@@ -139,6 +139,8 @@ pub enum EventKind {
     Tracked { source: Source },
     Untracked { source: Source },
 }
+impl EventKind { /// The `kind` tag: `status`, `head`, … (MOD-15). Built by T02; `api::condition` matches `kind` on it (API-10).
+                 pub fn word(&self) -> &'static str; }
 
 // ---- what the GitHub client hands over (T07 builds these; nothing derived) ----
 
@@ -232,7 +234,7 @@ pub fn short_sha(sha: &str) -> &str;                              // the first 7
 - **`Before::New`** makes exactly `[Tracked]`. **`Before::Loaded`** makes `[Tracked]`, plus `Merged` or `Closed` when `saved_open` and it has ended, plus `Activity` for the items newer than `carry.seen` (MOD-15). **`Before::Known`** makes whatever changed; a `state` going from `closed` or `gone` to `open` makes `Reopened`, and starts settling again (MOD-6).
 - **`record.source`** is copied from `before`. Changing it is the store's (`track`, `untrack`, POL-5), and takes no revision (MOD-14).
 - **`record.fetched_at`** is `meta.sent_wall`. **`record.error`** is `None` after an applied read; **`record.stale`** is always `false` here.
-- **An item with no time** (a review not yet submitted) is ignored: not seen, not new. (plan decision P10; MOD-12 doesn't say)
+- **An item with no time** (a review not yet submitted) is ignored: not seen, not new (MOD-12).
 - **Event order inside `kinds`** is the order of `EventKind`'s variants above, so output is stable.
 - **Serde names are the API's.** `testdata/api/` holds the golden JSON (see `api.md`); T41's tests keep the types and the files equal.
 

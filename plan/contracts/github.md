@@ -139,12 +139,13 @@ impl GhTokenSource {
 ## Semantics
 
 - **`Client::for_tests` panics on any host but the loopback** (TST-1).
+- **A test build's client sends `x-circitor-test-pid: <its process ID>` with every request** (TST-1), behind `cfg(feature = "test-endpoint")`: the fake GitHub tells real processes apart by it (TST-3, T20). A release build sends no such header.
 - **A fixture file** (`testdata/github/responses/`, `testdata/github/recorded/`) is one JSON object: `{"request": {"find": …, "nodes": […], "lookup": …}, "status": 200, "headers": {…}, "body": …}`, the request part saying which `Query` the response answers, so the decode test can decode it as that query's answer. `headers` holds only `date`, `retry-after` and the `x-ratelimit-*` ones.
 - **Who calls `send`:** only the engine's gate (T21), one request at a time, with POL-2's 1 s gap and 20 s timeout around it. The client itself is stateless between calls.
 - **Partial errors (POL-21).** A response with `data` and `errors` is an `Ok(Answer)`. A node an error's path points at or inside is `NotFound` or `Error`; the other nodes are returned. An error on `viewer` makes `found: None`. An error on the `rateLimit` block alone makes `rate: None`.
 - **`Rate.reset_at`** is `rateLimit.resetAt`, or else the `x-ratelimit-reset` header. An `Ok` answer with `remaining == 0` is applied; the engine then treats the daemon as exhausted (POL-25).
 - **`Failure::Unavailable`** covers a refused or dropped connection and TLS or DNS failure (`Network`), any status but 200, 401 and the rate-limit cases (`Http`, with the status; a redirect is one, never followed), a 200 without `data` and without a rate-limit error (`NoData`), and a body that isn't JSON or is cut short (`BadBody`).
-- **Mapping and lowering are the client's** (MOD-2, MOD-3): `PrRead` already holds `yes`, `in_progress`, `skipped`. An unlisted enum value passes through lowered; an unlisted PR `state` makes that node `Error { type_: "UNLISTED_STATE" }`; a node that can't be decoded (a field missing, `null` with no error) `UNDECODABLE`; an error with no `type` `UNTYPED` (plan decision P10). None of them fails the whole answer.
+- **Mapping and lowering are the client's** (MOD-2, MOD-3): `PrRead` already holds `yes`, `in_progress`, `skipped`. An unlisted enum value passes through lowered; an unlisted PR `state` makes that node `Error { type_: "UNLISTED_STATE" }`; a node that can't be decoded (a field missing, `null` with no error) `UNDECODABLE`; an error with no `type` `UNTYPED` (MOD-2). None of them fails the whole answer.
 - **`TokenRead::Token`** means exit 0 and one non-empty line. Exit 0 with nothing on stdout is `Failed(NoOutput)`.
 - **The token crosses this seam only inside `Token`.** `send` puts it in the `Authorization` header and nowhere else.
 
