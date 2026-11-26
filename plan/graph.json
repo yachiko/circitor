@@ -1003,11 +1003,11 @@
    "id": "T30",
    "title": "Scenarios: checks and settling",
    "kind": "test",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M5",
    "size": "L",
    "wave": 8,
-   "remaining": 3,
+   "remaining": 0,
    "depends_on": [
     "T29"
    ],

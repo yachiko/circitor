@@ -4,7 +4,7 @@ title: "Scenarios: checks and settling"
 kind: test
 milestone: M5
 size: L
-status: in-progress
+status: done
 depends_on: [T29]
 requirements: [TST-8]
 owns: [tests/scn_checks.rs]
@@ -95,3 +95,8 @@ The scenarios:
 - **`no-ci` part one needs a sample between the clock passing 60 s and the next refresh.** With OPS-2's defaults there is one. If the engine's cadence leaves none, report it; don't change the intervals to make one.
 - **`--fail-fast` and code 8's second meaning are (proposal)** (API-10, CLI-5).
 - D5 and D6 don't touch this task.
+
+## Evidence
+- **2026-11-26**, branch `t30-scenarios-checks`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `tests/scn_checks.rs` only (no sleep, no `tokio::time`, no thread): 30 tests covering the thirteen rows (in parts), each ending in `h.finish()`. **None ignored; no bug found in `src/`.** `cargo test --features test-endpoint --test scn_checks`: 30 passed, 4 runs. `make verify` passes on main after the merge.
+- Timings adjusted where a row's own can't meet the cadence, asserting the requirement (TST-8's rule): `head-back`'s first `show --fresh` at P+5, not P+4 (at P+4 the hot refresh falls while GitHub still serves B, and P+16 lands in POL-15's 5 s window); `one-fails-others-run` asserts its window from the first refresh sent at or after C+11 (at least 4 looks). Each wait runs as text and as `--json`; 301 and 400 checks read in three requests, truncated-failing counts read items only.

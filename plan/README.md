@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **56 tasks:** 7 todo, 3 in-progress, 44 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **56 tasks:** 7 todo, 2 in-progress, 45 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -116,7 +116,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 7 | [T42](tasks/T42-engine-pr-errors.md) | Poller engine: a PR's errors: gone, pr_failing, and its one log line | code | M | done | T25 |
 | 7 | [T48](tasks/T48-cli-notify.md) | CLI: the notify command | code | M | done | T27, T46 |
 | 7 | [T51](tasks/T51-second-shutdown.md) | Follow-up to T28: a second shutdown request during a stop ends it at once | code | S | done | T28 |
-| 8 | [T30](tasks/T30-scenarios-checks.md) | Scenarios: checks and settling | test | L | in-progress | T29 |
+| 8 | [T30](tasks/T30-scenarios-checks.md) | Scenarios: checks and settling | test | L | done | T29 |
 | 8 | [T31](tasks/T31-scenarios-waits.md) | Scenarios: a PR's life and waits | test | L | done | T29, T42 |
 | 8 | [T32](tasks/T32-scenarios-tracking.md) | Scenarios: tracking and polling | test | L | done | T29, T42 |
 | 8 | [T33](tasks/T33-scenarios-daemon.md) | Scenarios: the daemon's life and failures | test | L | in-progress | T29 |
@@ -172,7 +172,7 @@ flowchart LR
   T27["T27 CLI commands: run, each command,…"]:::done
   T28["T28 M2: the daemon runs: start order,…"]:::done
   T29["T29 M3: the harness, and the CLI agai…"]:::done
-  T30["T30 Scenarios: checks and settling"]:::active
+  T30["T30 Scenarios: checks and settling"]:::done
   T31["T31 Scenarios: a PR's life and waits"]:::done
   T32["T32 Scenarios: tracking and polling"]:::done
   T33["T33 Scenarios: the daemon's life and…"]:::active
