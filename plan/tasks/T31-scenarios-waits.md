@@ -4,7 +4,7 @@ title: "Scenarios: a PR's life and waits"
 kind: test
 milestone: M5
 size: L
-status: in-progress
+status: done
 depends_on: [T29, T42]
 requirements: [TST-8]
 owns: [tests/scn_waits.rs]
@@ -107,3 +107,9 @@ The scenarios:
 - **`--kind` is a (proposal)** (API-10). A waiter's condition is evaluated by `api::condition` (T44): a `changed-kind` failure names T44 or T23.
 - **Capped is reached by lowering `quota.max_per_hour` to 60**, its smallest value, and polling until the count is there. That's this task's choice; T34 owns the quota states themselves.
 - **D6** (required checks and reviews unmeasured) touches `blocked` and `behind` only: no scenario here reads them.
+
+## Evidence
+- **2026-11-26**, branch `t31-scenarios-waits`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `tests/scn_waits.rs` only (the feature's `cfg` first; no `tokio::time`, no thread): 24 tests covering the thirteen rows (some in parts), each ending in `h.finish()`. **None ignored; no bug found in `src/`.** `cargo test --features test-endpoint --test scn_waits`: 24 passed. `make verify` passes on main after the merge.
+- Choices: each wait runs as text and as `--json`; `mergeable-unknown` (kept) uses `interval` 25 s to keep clear of the 60 s boundary; `baseline` waits 75 s after the sixth comment; `waiter-limit` starts its 64 waits 10 ms apart (`Bg::cancel` counts connections open at the command's start).
+- **Found:** after `sleep_wall_only`, the wake poll sent only the finding and the records stayed stale a period more: decided **D14** by the orchestrator, follow-up **T55**. The sleep part asserts "the first refresh after waking", which holds either way.

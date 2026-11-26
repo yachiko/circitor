@@ -24,6 +24,7 @@ Decided before the spec and binding on it: one local poller (log D1), polling wi
 | D10 | Setting the socket's mode | **Bind at a temporary name, set 0600, rename into place** (OPS-4, STA-12), in place of binding under a umask of 0177: the umask is the whole process's, so a directory another thread made meanwhile came out 0600 (found by T18, 2026-11-26). Decided 2026-11-26. |
 | D11 | What `refresh` refreshes | **Every tracked PR**, whatever its period, besides finding (POL-15, API-16): an ordinary poll made now would refresh only what's due, so in the idle tier a `refresh` a minute after a poll would refresh no record (found by T21, 2026-11-26). Decided 2026-11-26. |
 | D12 | Refreshing after a failure | **A PR whose last refresh failed is due at the next poll**, whatever its period (POL-19, MOD-16): by POL-13's send times alone the try that recovers left those PRs stale for one more period (found by T26, 2026-11-26). Decided by the orchestrator under the owner's rule of 2026-11-26. |
+| D14 | Refreshing after a sleep | **A record marked slept is due at the next poll**, whatever its period (POL-22): the poll that starts on waking otherwise sent only the finding, the monotonic clock having hardly moved, and left every record stale for one more period (found by T31, 2026-11-26). Decided by the orchestrator under the owner's rule of 2026-11-26. |
 
 ## Open
 

@@ -1025,11 +1025,11 @@
    "id": "T31",
    "title": "Scenarios: a PR's life and waits",
    "kind": "test",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M5",
    "size": "L",
    "wave": 8,
-   "remaining": 3,
+   "remaining": 0,
    "depends_on": [
     "T29",
     "T42"
@@ -1071,7 +1071,7 @@
    "id": "T33",
    "title": "Scenarios: the daemon's life and failures",
    "kind": "test",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M5",
    "size": "L",
    "wave": 8,
@@ -1589,11 +1589,13 @@
    "milestone": "M1",
    "size": "S",
    "wave": 4,
-   "remaining": 0,
+   "remaining": 1,
    "depends_on": [
     "T09"
    ],
-   "dependents": [],
+   "dependents": [
+    "T55"
+   ],
    "requirements": [
     "POL-19"
    ],
@@ -1648,6 +1650,28 @@
    ],
    "shares": [],
    "file": "plan/tasks/T54-saver-spin.md"
+  },
+  {
+   "id": "T55",
+   "title": "Follow-up to T09: a record marked slept is due at the next poll (D14)",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M1",
+   "size": "S",
+   "wave": 5,
+   "remaining": 1,
+   "depends_on": [
+    "T52"
+   ],
+   "dependents": [],
+   "requirements": [
+    "POL-22"
+   ],
+   "owns": [
+    "src/poller/cadence/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T55-due-after-sleep.md"
   }
  ],
  "dropped_tasks": [],
@@ -1695,7 +1719,8 @@
    "T24",
    "T37",
    "T46",
-   "T54"
+   "T54",
+   "T55"
   ],
   [
    "T25",

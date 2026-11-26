@@ -69,7 +69,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | POL-19 |  | T08, T21, T52 |
 | POL-20 | proposal | T13, T21 |
 | POL-21 | proposal | T21, T42 |
-| POL-22 | proposal | T04, T21 |
+| POL-22 | proposal | T04, T21, T55 |
 | POL-23 | proposal | T08, T21 |
 | POL-24 | proposal | T07, T21, T42 |
 | POL-25 | proposal | T07, T08, T21 |
