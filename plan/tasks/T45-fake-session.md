@@ -4,7 +4,7 @@ title: "Fake session socket: what a Claude Code session's inbox looks like from 
 kind: test
 milestone: M3
 size: S
-status: todo
+status: in-progress
 depends_on: [T04]
 requirements: [TST-16]
 owns: [src/testkit/session/]

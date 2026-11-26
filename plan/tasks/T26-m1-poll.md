@@ -4,7 +4,7 @@ title: "M1: the real client against the fake GitHub, polling end to end"
 kind: integration
 milestone: M1
 size: M
-status: in-progress
+status: done
 depends_on: [T07, T20, T21]
 requirements: [POL-4, POL-6, POL-13, TST-12]
 owns: [tests/m1_poll.rs]
@@ -74,3 +74,10 @@ Milestone M1's checkpoint. Until now the client (T07) was tested on hand-written
 - **The cost formula is `documented`, its fit `observed`** (docs/02 §2): the budget figures rest on the fake's costing (T14).
 - **This is the first test of the settle seam with real I/O** (the engine's `Busy` across a request, the fake's probe and its excuse). Report what you see, flaky or not: run the file ten times before you report.
 - If the fake's world can't script one of these timelines without touching JSON, that's a gap in T14's builders: report it, and don't post-process answers in the test.
+
+## Evidence
+- **2026-11-26**, branch `t26-m1-poll`, executor on **Opus, medium**; reviewed and merged by the orchestrator. **M1's checkpoint.**
+- `tests/m1_poll.rs` only (starts with the feature's `cfg`; loopback only). `cargo test --features test-endpoint --test m1_poll`: 8 passed, 0 ignored, 10 runs by the executor without a failure; `advance` never panicked: the settle seam (T04, T20, T21) held with real loopback I/O. `make verify` passes on main after the merge, the macOS check included.
+- Every answer decoded: no field or path disagrees between T07's queries and T14's fake. P10 holds end to end: each poll after the first is one request; an idle hour costs at most 15 points over at least 11 polls, an active hour at most 130 over at least 110.
+- Readings: in `m1_one_bad_answer` the try 5 s after the 500 asks for no node and the records clear at the next poll; `m1_push` places the push 1.5 s before a poll (the `UNKNOWN` window is scripted but no poll reads it); `m1_merge` relies on `World::merge`'s documented open-list behaviour.
+- **The executor's question, decided by the orchestrator as D12** (a PR whose last refresh failed is due at the next poll; POL-19), follow-up **T52**.

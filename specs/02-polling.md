@@ -85,7 +85,7 @@ When circitor asks GitHub, for what, and what it does when GitHub doesn't answer
 
 ## Errors
 
-- **POL-19** **Network errors, timeouts and 5xx:** the poll is abandoned: the PRs of the failed request, and of the poll's requests not yet sent, become `stale` (MOD-16); other records keep their state. The next try comes after 5 s, doubling to at most 5 min. The first failure and the recovery are logged, not each retry (OPS-9). Waiters stay registered. (GitHub's 5xx isn't measured, docs/02 §5)
+- **POL-19** **Network errors, timeouts and 5xx:** the poll is abandoned: the PRs of the failed request, and of the poll's requests not yet sent, become `stale` (MOD-16); other records keep their state. The next try comes after 5 s, doubling to at most 5 min. The first failure and the recovery are logged, not each retry (OPS-9). Waiters stay registered. **A PR whose last refresh failed is due at the next poll, whatever its period** (D12), so the try that recovers refreshes what the failure left stale. (GitHub's 5xx isn't measured, docs/02 §5)
   - **The backoff holds every request**: polls, hot and forced refreshes, POL-11's and POL-12's. A read-through is the one exception, at most one per step (POL-16). Its failure doesn't move the backoff; its success ends it, as any does.
   - **Any request that succeeds ends it**, and a poll follows at once. A wake (POL-22) starts it again at 5 s. Of a poll split into several requests (POL-7), those that answered are applied.
   - **A first poll that fails or can't be sent has finished too** (API-18): one abandoned here or under POL-24, one not sent in the `auth` state (POL-20), and one not sent while `exhausted` (POL-23).
