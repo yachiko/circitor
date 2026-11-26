@@ -27,6 +27,7 @@ The test build (TST-16's fake session socket, with `test-endpoint`) compiles and
 - `socket()` takes no flags. Close-on-exec and non-blocking are then set with `fcntl`, on every platform, with no `cfg`.
 
 - **A full queue on macOS is refused, not `EAGAIN`.** The second dry run compiled and failed three unit tests (`tst16_queue_full`, `tst16_restore`, `tst16_settles`): filling the backlog got `ECONNREFUSED` (os error 61), as NTF-6 says macOS does ("from source"). `FULL_QUEUE` names the platform's kind; `queue_full` fills until it, and `tst16_queue_full` expects it.
+- **macOS keeps the first backlog.** The third dry run (`macos-26`) passed those tests but failed `tst16_queue_full`'s bound: filling took 128 connections, not under 10, because a second `listen` with 0 doesn't shrink the queue on macOS. `FILL_LIMIT` is 130 on macOS and 10 on Linux.
 - **`scn_notify_session_gone_full_queue` expects the platform's log reason:** `session_gone` on macOS (a refused connection, NTF-6), `failed` on Linux. TST-8's row only says it's dropped the same way.
 
 ## Out of scope
@@ -41,5 +42,5 @@ The test build (TST-16's fake session socket, with `test-endpoint`) compiles and
 - **The flags are no longer set atomically on Linux.** A child forked between `socket()` and `fcntl` could inherit the listener. Only the tests' fake socket is affected, and nothing forks in that window today.
 
 ## Evidence
-- **2026-11-26**, by the orchestrator, on the owner's OK. Failing dry runs: https://github.com/yachiko/circitor/actions/runs/45793244625 (compile), https://github.com/yachiko/circitor/actions/runs/45794230505 (the full queue).
-- **For docs/07:** a non-blocking connect to a full Unix-socket queue on macOS 15 gets `ECONNREFUSED`, seen on GitHub's runner. docs/07 says it from source; a dated entry in docs/05 can make it verified.
+- **2026-11-26**, by the orchestrator, on the owner's OK. Failing dry runs: https://github.com/yachiko/circitor/actions/runs/45793244625 (compile), https://github.com/yachiko/circitor/actions/runs/45794230505 (the full queue), https://github.com/yachiko/circitor/actions/runs/45795604691 (the fill bound).
+- **docs/05, 2026-11-26, "a full listen queue on macOS"** (the owner's OK): `ECONNREFUSED` at once, after 128 queued connections. docs/07 and NTF-6 now say verified.
