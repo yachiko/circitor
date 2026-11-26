@@ -116,7 +116,7 @@ Unit tests in `src/daemon/run/`, on the inner function and `deps_from`, which ne
 - **No holder line after the patience** (STA-11: "counts as no path"). Build: an error, `code()` 1, for both modes.
 - OPS-8 doesn't count a `status` request (API-5). `exit_after`'s default is (proposal). How tokio's timers behave across a suspend isn't checked (docs/04 §8 item 6).
 
-Follow-ups: T51
+Follow-ups: T51, T62
 
 ## Evidence
 - **2026-11-26**, branch `t28-daemon-run`, executor on **Opus, medium**; reviewed and merged by the orchestrator. **M2's checkpoint.**
