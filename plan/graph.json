@@ -1480,11 +1480,11 @@
    "id": "T48",
    "title": "CLI: the notify command",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M3",
    "size": "M",
    "wave": 7,
-   "remaining": 5,
+   "remaining": 3,
    "depends_on": [
     "T27",
     "T46"

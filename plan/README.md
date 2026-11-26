@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **53 tasks:** 14 todo, 4 in-progress, 33 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **53 tasks:** 14 todo, 3 in-progress, 34 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -112,7 +112,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 7 | [T29](tasks/T29-harness.md) | M3: the harness, and the CLI against a running daemon | integration | L | todo | T07, T20, T25, T26, T27, T28, T45 |
 | 7 | [T36](tasks/T36-real-processes.md) | M4: real processes: spawning, two CLIs, upgrades, signals, files and permissions | integration | L | todo | T20, T27, T28 |
 | 7 | [T42](tasks/T42-engine-pr-errors.md) | Poller engine: a PR's errors: gone, pr_failing, and its one log line | code | M | done | T25 |
-| 7 | [T48](tasks/T48-cli-notify.md) | CLI: the notify command | code | M | in-progress | T27, T46 |
+| 7 | [T48](tasks/T48-cli-notify.md) | CLI: the notify command | code | M | done | T27, T46 |
 | 7 | [T51](tasks/T51-second-shutdown.md) | Follow-up to T28: a second shutdown request during a stop ends it at once | code | S | todo | T28 |
 | 8 | [T30](tasks/T30-scenarios-checks.md) | Scenarios: checks and settling | test | L | todo | T29 |
 | 8 | [T31](tasks/T31-scenarios-waits.md) | Scenarios: a PR's life and waits | test | L | todo | T29, T42 |
@@ -187,7 +187,7 @@ flowchart LR
   T45["T45 Fake session socket: what a Claud…"]:::active
   T46["T46 Notify: subscriptions, the loop t…"]:::done
   T47["T47 Notify routes: registering a subs…"]:::active
-  T48["T48 CLI: the notify command"]:::active
+  T48["T48 CLI: the notify command"]:::done
   T49["T49 Scenarios: notify"]
   T50["T50 Follow-up to T01: check-macos fro…"]:::done
   T51["T51 Follow-up to T28: a second shutdo…"]

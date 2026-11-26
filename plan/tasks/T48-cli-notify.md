@@ -4,7 +4,7 @@ title: "CLI: the notify command"
 kind: code
 milestone: M3
 size: M
-status: in-progress
+status: done
 depends_on: [T27, T46]
 requirements: [NTF-11, U14, CLI-5:notify-exits-0-once-it-s, TST-7]
 owns: [src/cli/notify/, tests/golden/notify_cmd/]
@@ -83,3 +83,8 @@ Unit tests in `src/cli/notify/`, on `TestClock`, a `ShortDir`, `FakeSpawner` and
 - **NTF-11 fixes the registering line** (D9): the PR as typed without the variable, in full after `no_session`, and nothing else printed. `--cancel`'s exit-11 line is this task's, fixed by its golden files: list it in your report.
 - **A subagent's shell has its parent's socket** (docs/07): nothing to build; the notice goes to the main conversation.
 - **macOS isn't measured** (docs/07): the two variables' names are what Linux showed.
+
+## Evidence
+- **2026-11-26**, branch `t48-cli-notify`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `src/cli/notify/` (`mod.rs`, new `stub.rs` and `tests.rs`, test-only) and 13 golden files in `tests/golden/notify_cmd/`, read by the executor against NTF-11. **Checked by the orchestrator:** no `CliEnv::real`, `Env::from_process` or `std::env::var` in the module; the exit-11 lines carry the condition's flags and `--since`, never `--for` or `--timeout`, and the PR as typed; `registered.txt` is NTF-11's block. `cargo test --features test-endpoint --lib cli::notify::`: 15 passed. `make verify` passes on main after the merge, the macOS check included.
+- Choices: its own stub daemon (records request bodies and routes `notify`); `--cancel --json` with no daemon prints `{"cancelled":0}`; `--cancel`'s no-socket line is `no session here: there is no session's notify to cancel`; `name_offline` runs before `conn::existing`, so a bad PR argument is exit 2 even with no daemon.
