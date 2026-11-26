@@ -1,0 +1,3 @@
+# docs/02 §2, "Measured cost": viewer.pullRequests, `id` and `updatedAt` only, page 100.
+# It stands alone: no frag.graphql.
+query { viewer { pullRequests(first: 100, states: OPEN) { nodes { id updatedAt } } } rateLimit { cost nodeCount } }

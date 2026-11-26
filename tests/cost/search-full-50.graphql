@@ -1,0 +1,2 @@
+# docs/02 §2, "Measured cost": search, full record, page 50.
+query { search(type: ISSUE, query: "is:pr is:open author:@me", first: 50) { nodes { ... on PullRequest { ...PR } } } rateLimit { cost nodeCount } }

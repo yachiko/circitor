@@ -1,0 +1,2 @@
+# docs/02 §2, "Measured cost": viewer.pullRequests, full record, page 50.
+query { viewer { pullRequests(first: 50, states: OPEN) { nodes { ...PR } } } rateLimit { cost nodeCount } }

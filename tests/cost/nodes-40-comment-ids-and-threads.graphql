@@ -1,0 +1,3 @@
+# docs/02 §2, "Measured cost": the same plus the last 10 review threads, 3 comments each, 40 PRs
+# (the record, the comments' IDs and the threads, without the second reviews: 4 480 nodes).
+query { nodes(ids: ["PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b"]) { ...PR ... on PullRequest { commentIds: comments(last: 10) { nodes { databaseId } } threads: reviewThreads(last: 10) { nodes { comments(first: 3) { nodes { databaseId } } } } } } rateLimit { cost nodeCount } }

@@ -1,0 +1,2 @@
+# docs/02 §2, "Measured cost": full record plus timelineItems(last: 20), 40 PRs.
+query { nodes(ids: ["PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b"]) { ...PR ... on PullRequest { timelineItems(last: 20) { totalCount nodes { __typename } } } } rateLimit { cost nodeCount } }

@@ -1,0 +1,13 @@
+fragment PR on PullRequest {
+  id number title url state isDraft createdAt updatedAt closedAt mergedAt
+  repository { nameWithOwner }
+  author { login }
+  baseRefName headRefName headRefOid
+  mergeable mergeStateStatus reviewDecision
+  autoMergeRequest { enabledAt }
+  mergeQueueEntry { position state }
+  comments { totalCount }
+  reviewThreads { totalCount }
+  reviews(last: 10) { totalCount nodes { state author { login } submittedAt } }
+  commits(last: 1) { totalCount nodes { commit { oid committedDate statusCheckRollup { state contexts(first: 50) { totalCount nodes { __typename ... on CheckRun { name status conclusion detailsUrl startedAt completedAt } ... on StatusContext { context state targetUrl createdAt } } } } } } }
+}

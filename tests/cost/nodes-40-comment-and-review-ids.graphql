@@ -1,0 +1,3 @@
+# docs/02 §2, "Measured cost": the same plus the last 10 reviews' IDs, 40 PRs
+# (a second, aliased reviews(last: 10): 3 280 nodes).
+query { nodes(ids: ["PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b"]) { ...PR ... on PullRequest { commentIds: comments(last: 10) { nodes { databaseId } } reviewIds: reviews(last: 10) { nodes { databaseId } } } } rateLimit { cost nodeCount } }

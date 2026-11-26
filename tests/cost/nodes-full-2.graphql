@@ -1,0 +1,2 @@
+# docs/02 §2, "Measured cost": nodes(ids:), full record, 2 PRs.
+query { nodes(ids: ["PR_a", "PR_b"]) { ...PR } rateLimit { cost nodeCount } }

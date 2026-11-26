@@ -1,0 +1,2 @@
+# docs/02 §2, "Measured cost": the IDs-only list (100) and nodes(ids:) for 2 PRs, one request.
+query { viewer { pullRequests(first: 100, states: OPEN) { nodes { id updatedAt } } } nodes(ids: ["PR_a", "PR_b"]) { ...PR } rateLimit { cost nodeCount } }

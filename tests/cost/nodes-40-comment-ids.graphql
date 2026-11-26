@@ -1,0 +1,2 @@
+# docs/02 §2, "Measured cost": nodes(ids:), full record plus the last 10 issue comments' IDs, 40 PRs.
+query { nodes(ids: ["PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b", "PR_a", "PR_b"]) { ...PR ... on PullRequest { commentIds: comments(last: 10) { nodes { databaseId } } } } rateLimit { cost nodeCount } }
