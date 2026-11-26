@@ -36,7 +36,7 @@ One package, `circitor`: a library (`src/lib.rs`) and one binary (`src/main.rs`)
 ## Toolchain and commands
 
 - Rust **1.98.1**, pinned in `rust-toolchain.toml`; edition 2024.
-- **`make verify`** must pass before you report. It runs, in order: `cargo fmt --all --check`; `cargo clippy --all-targets --features test-endpoint -- -D warnings`; `cargo clippy --lib --bins -- -D warnings` (the release configuration, without the feature); `cargo test --features test-endpoint`; and `make check-macos`, the macOS build. **From Linux it needs `zig` and `cargo-zigbuild`** (README, "Building"; T50).
+- **`make verify`** must pass before you report. It runs, in order: `cargo fmt --all --check`; `cargo clippy --all-targets --features test-endpoint -- -D warnings`; `cargo clippy --lib --bins -- -D warnings` (the release configuration, without the feature); and `cargo test --features test-endpoint`. **It checks only the machine it runs on:** macOS is verified by `release.yml` at a release tag (P9).
 - One module's unit tests: `cargo test --features test-endpoint --lib model::`. One integration file: `cargo test --features test-endpoint --test scn_checks`.
 - **A test build** is one with the `test-endpoint` feature (TST-1). Every file under `tests/` starts with `#![cfg(feature = "test-endpoint")]`; `tests/real/` is also declared with `required-features` in `Cargo.toml`.
 - Each worktree has its own `target/`. Don't set `CARGO_TARGET_DIR`.

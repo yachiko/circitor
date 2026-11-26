@@ -34,16 +34,6 @@ jobs:
 
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6  # v2.9.2
 
-      # check-macos from Linux needs zig and cargo-zigbuild; on macOS it's plain cargo.
-      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29  # v2.2.1
-        if: runner.os == 'Linux'
-        with:
-          version: 0.17.1
-
-      - name: Install cargo-zigbuild
-        if: runner.os == 'Linux'
-        run: cargo install cargo-zigbuild --locked
-
       - name: Verify
         run: make verify
 
