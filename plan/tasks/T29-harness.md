@@ -4,7 +4,7 @@ title: "M3: the harness, and the CLI against a running daemon"
 kind: integration
 milestone: M3
 size: L
-status: todo
+status: in-progress
 depends_on: [T07, T20, T25, T26, T27, T28, T45]
 requirements: [TST-5, TST-11, TST-16]
 owns: [src/testkit/harness/, tests/m3_cli.rs]

@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **53 tasks:** 14 todo, 37 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **53 tasks:** 11 todo, 2 in-progress, 38 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -94,7 +94,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 4 | [T16](tasks/T16-state-file.md) | State file: the format, atomic writes through a fakeable file system, loading, the saver | code | M | done | T04 |
 | 4 | [T17](tasks/T17-transport.md) | Transport: the HTTP client over the Unix socket, and the socket probe | code | S | done | T04, T43 |
 | 4 | [T18](tasks/T18-daemon-instance.md) | Daemon instance: the lock, the lock file, the stale socket, binding | code | M | done | T04 |
-| 4 | [T19](tasks/T19-readme-service-files.md) | README, service files and sandbox settings | infra | S | todo | T11 |
+| 4 | [T19](tasks/T19-readme-service-files.md) | README, service files and sandbox settings | infra | S | done | T11 |
 | 4 | [T45](tasks/T45-fake-session.md) | Fake session socket: what a Claude Code session's inbox looks like from outside | test | S | done | T04 |
 | 4 | [T52](tasks/T52-due-after-failure.md) | Follow-up to T09: a PR whose last refresh failed is due at the next poll (D12) | code | S | done | T09 |
 | 5 | [T20](tasks/T20-fake-github-server.md) | Fake GitHub: the HTTP server, faults, rate-limit controls, the rules that fail a test | test | L | done | T04, T14 |
@@ -109,11 +109,11 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 6 | [T27](tasks/T27-cli-commands.md) | CLI commands: run, each command, the wait's deadline and reconnect, exit codes | code | L | done | T10, T11, T24 |
 | 6 | [T28](tasks/T28-daemon-run.md) | M2: the daemon runs: start order, serving the socket, modes, signals, stop, idle exit | integration | L | done | T06, T07, T12, T16, T17, T18, T21, T22, T23, T46 |
 | 6 | [T47](tasks/T47-api-notify.md) | Notify routes: registering a subscription and cancelling it | code | M | done | T09, T41, T46 |
-| 7 | [T29](tasks/T29-harness.md) | M3: the harness, and the CLI against a running daemon | integration | L | todo | T07, T20, T25, T26, T27, T28, T45 |
+| 7 | [T29](tasks/T29-harness.md) | M3: the harness, and the CLI against a running daemon | integration | L | in-progress | T07, T20, T25, T26, T27, T28, T45 |
 | 7 | [T36](tasks/T36-real-processes.md) | M4: real processes: spawning, two CLIs, upgrades, signals, files and permissions | integration | L | todo | T20, T27, T28 |
 | 7 | [T42](tasks/T42-engine-pr-errors.md) | Poller engine: a PR's errors: gone, pr_failing, and its one log line | code | M | done | T25 |
 | 7 | [T48](tasks/T48-cli-notify.md) | CLI: the notify command | code | M | done | T27, T46 |
-| 7 | [T51](tasks/T51-second-shutdown.md) | Follow-up to T28: a second shutdown request during a stop ends it at once | code | S | todo | T28 |
+| 7 | [T51](tasks/T51-second-shutdown.md) | Follow-up to T28: a second shutdown request during a stop ends it at once | code | S | in-progress | T28 |
 | 8 | [T30](tasks/T30-scenarios-checks.md) | Scenarios: checks and settling | test | L | todo | T29 |
 | 8 | [T31](tasks/T31-scenarios-waits.md) | Scenarios: a PR's life and waits | test | L | todo | T29, T42 |
 | 8 | [T32](tasks/T32-scenarios-tracking.md) | Scenarios: tracking and polling | test | L | todo | T29, T42 |
@@ -158,7 +158,7 @@ flowchart LR
   T16["T16 State file: the format, atomic wr…"]:::done
   T17["T17 Transport: the HTTP client over t…"]:::done
   T18["T18 Daemon instance: the lock, the lo…"]:::done
-  T19["T19 README, service files and sandbox…"]
+  T19["T19 README, service files and sandbox…"]:::done
   T20["T20 Fake GitHub: the HTTP server, fau…"]:::done
   T21["T21 Poller engine: the loop, the gate…"]:::done
   T22["T22 API routes: list, show, changes,…"]:::done
@@ -168,7 +168,7 @@ flowchart LR
   T26["T26 M1: the real client against the f…"]:::done
   T27["T27 CLI commands: run, each command,…"]:::done
   T28["T28 M2: the daemon runs: start order,…"]:::done
-  T29["T29 M3: the harness, and the CLI agai…"]
+  T29["T29 M3: the harness, and the CLI agai…"]:::active
   T30["T30 Scenarios: checks and settling"]
   T31["T31 Scenarios: a PR's life and waits"]
   T32["T32 Scenarios: tracking and polling"]
@@ -190,7 +190,7 @@ flowchart LR
   T48["T48 CLI: the notify command"]:::done
   T49["T49 Scenarios: notify"]
   T50["T50 Follow-up to T01: check-macos fro…"]:::done
-  T51["T51 Follow-up to T28: a second shutdo…"]
+  T51["T51 Follow-up to T28: a second shutdo…"]:::active
   T52["T52 Follow-up to T09: a PR whose last…"]:::done
   T53["T53 Follow-up to T01: nix's socket fe…"]:::done
   T01 --> T02

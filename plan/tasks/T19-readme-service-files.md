@@ -4,7 +4,7 @@ title: "README, service files and sandbox settings"
 kind: infra
 milestone: M4
 size: S
-status: todo
+status: done
 depends_on: [T11]
 requirements: [OPS-12, OPS-14, OPS-15, OPS-18, OPS-10, NTF-12]
 owns: [README.md, packaging/]
@@ -87,3 +87,8 @@ No Rust changes, so no new tests. Run these and paste the results in the report:
 - **The label `dev.circitor.daemon` and the log path `~/Library/Logs/circitor.log` are OPS-18's** (proposal). Homebrew's own label (`homebrew.mxcl.circitor`) is for `brew services`, which v1 doesn't use.
 - **NTF-12 is a (proposal)**, and rests on Linux measurements only (docs/07). What a held notice looks like in an interactive session, and anything on macOS, isn't measured: T40's seventh check does it. Write "expected" where the spec says documented.
 - OPS-14 and OPS-18 are (proposal) and unchecked: docs/03 §6 item 1; docs/04 §8 items 2 and 4. T40's steps 5 and 6 check them. Build them as written.
+
+## Evidence
+- **2026-11-26**, branch `t19-readme-service-files`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `README.md` (first paragraph, folder table and "Building" kept; rows added for `src/`, `skills/`, `packaging/`; sections Install, First use, For agents, Notices in Claude Code, Under Claude Code's sandbox, As a service, Upgrades, Files and environment), `packaging/launchd/dev.circitor.daemon.plist` (`KeepAlive` with `SuccessfulExit` false), `packaging/systemd/circitor.service` (`Restart=on-failure`, Homebrew's `bin`, no versioned path).
+- The executor checked the plist with `plistlib`, the unit with `configparser` and `systemd-analyze verify --user` (only complaint: the binary path doesn't exist here), and that the README's two blocks equal the files. `make verify` passes on main after the merge. Unrun here: the service files, the sandbox settings and macOS (T40).

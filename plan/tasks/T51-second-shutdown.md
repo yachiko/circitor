@@ -4,7 +4,7 @@ title: "Follow-up to T28: a second shutdown request during a stop ends it at onc
 kind: code
 milestone: M2
 size: S
-status: todo
+status: in-progress
 depends_on: [T28]
 requirements: [OPS-7]
 owns: [src/daemon/run/]
