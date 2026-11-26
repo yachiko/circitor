@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **50 tasks:** 37 todo, 4 in-progress, 7 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **50 tasks:** 37 todo, 2 in-progress, 9 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -77,8 +77,8 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 3 | [T04](tasks/T04-clock-log.md) | Clock, test clock, work in flight, sleep detection, logger and warnings | code | M | in-progress | T02 |
 | 3 | [T05](tasks/T05-model.md) | Model: checks summary, status, settling, kept mergeability, new items, and the merge that says what changed | code | L | done | T02 |
 | 3 | [T06](tasks/T06-config-paths.md) | Config file, environment and paths | code | M | todo | T02 |
-| 3 | [T08](tasks/T08-poller-limits.md) | Poller limits: the quota count, the quota states and the backoff | code | M | in-progress | T02 |
-| 3 | [T09](tasks/T09-poller-cadence.md) | Poller cadence: tiers, periods, hot PRs, the forced-refresh windows and staleness | code | M | in-progress | T02 |
+| 3 | [T08](tasks/T08-poller-limits.md) | Poller limits: the quota count, the quota states and the backoff | code | M | done | T02 |
+| 3 | [T09](tasks/T09-poller-cadence.md) | Poller cadence: tiers, periods, hot PRs, the forced-refresh windows and staleness | code | M | done | T02 |
 | 3 | [T11](tasks/T11-cli-args-naming-guide.md) | CLI arguments, naming a PR, and the guide for agents | code | M | todo | T02 |
 | 3 | [T38](tasks/T38-first-ci-run.md) | Owner: the first CI run, on Linux and macOS | manual | S | blocked | T03 |
 | 3 | [T41](tasks/T41-golden-files.md) | Golden files: the API's and the model's JSON, and GitHub's public schema | infra | M | done | T02 |
@@ -144,8 +144,8 @@ flowchart LR
   T05["T05 Model: checks summary, status, se…"]:::done
   T06["T06 Config file, environment and paths"]
   T07["T07 GitHub client: queries, the HTTP…"]
-  T08["T08 Poller limits: the quota count, t…"]:::active
-  T09["T09 Poller cadence: tiers, periods, h…"]:::active
+  T08["T08 Poller limits: the quota count, t…"]:::done
+  T09["T09 Poller cadence: tiers, periods, h…"]:::done
   T10["T10 CLI text output: every line of li…"]:::active
   T11["T11 CLI arguments, naming a PR, and t…"]
   T12["T12 Token source: running gh auth tok…"]

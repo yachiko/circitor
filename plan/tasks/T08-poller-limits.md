@@ -4,7 +4,7 @@ title: "Poller limits: the quota count, the quota states and the backoff"
 kind: code
 milestone: M1
 size: M
-status: in-progress
+status: done
 depends_on: [T02]
 requirements: [POL-17, POL-18, POL-23, POL-19, POL-25, POL-26]
 owns: [src/poller/limits/]
@@ -86,3 +86,8 @@ Unit tests in `src/poller/limits/`, as tables over plain `Time` and `Mono` value
 - **Every rule here is a (proposal)** (POL-17, POL-18, POL-23, POL-25, POL-26): built as written.
 - **The exhausted and secondary answers are `assumed`** (docs/02 §2, §6 item 6): nothing here depends on their shape, only on T07's classification.
 - **Readings this brief makes, to report if they don't fit:** a low `remaining` stands until the next answer, so the daemon is in reserve after a reset until one arrives; slowed doubles the idle tier's interval too; every secondary answer in a row doubles.
+
+## Evidence
+- **2026-11-26**, branch `t08-poller-limits` (commit 26d1a87), executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- One file changed, no public signature changed; every test the Acceptance names exists, with the brief's values. `cargo test --features test-endpoint --lib poller::limits::`: 12 passed. `make verify` passes in the worktree and on main after the merge (108 lib tests), the macOS check included.
+- Choices: `spent` drops only entries an hour old by the new entry's time (`Time::since`, so entries ahead after a step back are kept); a `Retry-After` is used as given, uncapped. The brief's three readings are built as written.

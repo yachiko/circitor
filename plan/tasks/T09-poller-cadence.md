@@ -4,7 +4,7 @@ title: "Poller cadence: tiers, periods, hot PRs, the forced-refresh windows and 
 kind: code
 milestone: M1
 size: M
-status: in-progress
+status: done
 depends_on: [T02]
 requirements: [POL-10, POL-13, POL-14, POL-15, POL-11, MOD-16, NTF-5]
 owns: [src/poller/cadence/]
@@ -81,3 +81,8 @@ Unit tests in `src/poller/cadence/`, as tables, with OPS-2's defaults and a norm
 - **"For `idle_after` after the last subscription ended"** is how this brief reads NTF-5's "as if a client had just asked" at the end of a subscription. Report it if it doesn't fit.
 - **Readings this brief makes, to report if they don't fit:** a hot PR in a poll is due by the configured `hot_interval`, also when hot refreshes are slowed; both window edges are inside the window.
 - **"At least its period ago" is exact.** The engine marks every request of a poll as sent at the poll's own send time (POL-13, T21), so a PR carried in a poll's second request is due one period after that poll, and `in_poll` needs no tolerance. Whether real latency needs one isn't in the spec.
+
+## Evidence
+- **2026-11-26**, branch `t09-poller-cadence` (commit 2cc1ba1), executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `src/poller/cadence/mod.rs` and a new `tests.rs`; no public signature changed; every test the Acceptance names exists. `cargo test --features test-endpoint --lib poller::cadence::`: 13 passed. `make verify` passes in the worktree and on main after the merge (121 lib tests), the macOS check included.
+- Choices: `stale` is false for a record with no `timing.fetched` and neither flag; a PR in `listed` takes the period of `Class::Open` with `Source::Authored` (hot still first).

@@ -252,11 +252,11 @@
    "id": "T08",
    "title": "Poller limits: the quota count, the quota states and the backoff",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 15,
+   "remaining": 13,
    "depends_on": [
     "T02"
    ],
@@ -281,11 +281,11 @@
    "id": "T09",
    "title": "Poller cadence: tiers, periods, hot PRs, the forced-refresh windows and staleness",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 15,
+   "remaining": 13,
    "depends_on": [
     "T02"
    ],
