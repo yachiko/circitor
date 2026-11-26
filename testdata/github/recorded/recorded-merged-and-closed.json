@@ -1,0 +1,143 @@
+{
+  "request": {
+    "find": false,
+    "nodes": [
+      "record",
+      "record"
+    ],
+    "lookup": false
+  },
+  "status": 200,
+  "headers": {
+    "date": "Thu, 26 Nov 2026 08:27:10 GMT",
+    "x-ratelimit-limit": "5000",
+    "x-ratelimit-remaining": "4996",
+    "x-ratelimit-reset": "1795685205",
+    "x-ratelimit-resource": "graphql",
+    "x-ratelimit-used": "4"
+  },
+  "body": {
+    "data": {
+      "rateLimit": {
+        "cost": 1,
+        "remaining": 4996,
+        "resetAt": "2026-11-26T09:26:45Z"
+      },
+      "record": [
+        {
+          "__typename": "PullRequest",
+          "id": "PR_scrubbed0003",
+          "number": 12,
+          "url": "https://github.com/user1/repo1/pull/12",
+          "title": "Title 2",
+          "state": "MERGED",
+          "isDraft": false,
+          "createdAt": "2026-11-24T22:16:37Z",
+          "updatedAt": "2026-11-24T22:17:29Z",
+          "mergedAt": "2026-11-24T22:16:53Z",
+          "closedAt": "2026-11-24T22:16:53Z",
+          "repository": {
+            "nameWithOwner": "user1/repo1"
+          },
+          "author": {
+            "login": "user1"
+          },
+          "baseRefName": "branch-1",
+          "headRefName": "branch-3",
+          "headRefOid": "0000000000000000000000000000000000000002",
+          "mergeable": "UNKNOWN",
+          "mergeStateStatus": "UNKNOWN",
+          "reviewDecision": null,
+          "commentCount": {
+            "totalCount": 0
+          },
+          "reviewCount": {
+            "totalCount": 0
+          },
+          "reviewThreads": {
+            "totalCount": 0
+          },
+          "commits": {
+            "nodes": [
+              {
+                "commit": {
+                  "statusCheckRollup": null
+                }
+              }
+            ]
+          }
+        },
+        {
+          "__typename": "PullRequest",
+          "id": "PR_scrubbed0006",
+          "number": 11,
+          "url": "https://github.com/user1/repo1/pull/11",
+          "title": "Title 5",
+          "state": "CLOSED",
+          "isDraft": false,
+          "createdAt": "2026-11-24T22:09:23Z",
+          "updatedAt": "2026-11-24T22:17:27Z",
+          "mergedAt": null,
+          "closedAt": "2026-11-24T22:15:58Z",
+          "repository": {
+            "nameWithOwner": "user1/repo1"
+          },
+          "author": {
+            "login": "user1"
+          },
+          "baseRefName": "branch-1",
+          "headRefName": "branch-6",
+          "headRefOid": "0000000000000000000000000000000000000005",
+          "mergeable": "MERGEABLE",
+          "mergeStateStatus": "CLEAN",
+          "reviewDecision": null,
+          "commentCount": {
+            "totalCount": 1
+          },
+          "reviewCount": {
+            "totalCount": 0
+          },
+          "reviewThreads": {
+            "totalCount": 0
+          },
+          "commits": {
+            "nodes": [
+              {
+                "commit": {
+                  "statusCheckRollup": {
+                    "state": "SUCCESS",
+                    "contexts": {
+                      "totalCount": 2,
+                      "pageInfo": {
+                        "hasNextPage": false,
+                        "endCursor": "cursor3"
+                      },
+                      "nodes": [
+                        {
+                          "__typename": "CheckRun",
+                          "databaseId": 1010,
+                          "name": "fast",
+                          "status": "COMPLETED",
+                          "conclusion": "SUCCESS",
+                          "detailsUrl": "https://github.com/user1/repo1/actions/runs/1011/job/1010"
+                        },
+                        {
+                          "__typename": "CheckRun",
+                          "databaseId": 1012,
+                          "name": "slow",
+                          "status": "COMPLETED",
+                          "conclusion": "SUCCESS",
+                          "detailsUrl": "https://github.com/user1/repo1/actions/runs/1011/job/1012"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

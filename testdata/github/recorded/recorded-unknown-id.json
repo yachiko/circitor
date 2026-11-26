@@ -1,0 +1,90 @@
+{
+  "request": {
+    "find": false,
+    "nodes": [
+      "record",
+      "record"
+    ],
+    "lookup": false
+  },
+  "status": 200,
+  "headers": {
+    "date": "Thu, 26 Nov 2026 08:27:13 GMT",
+    "x-ratelimit-limit": "5000",
+    "x-ratelimit-remaining": "4998",
+    "x-ratelimit-reset": "1795685226",
+    "x-ratelimit-resource": "graphql",
+    "x-ratelimit-used": "2"
+  },
+  "body": {
+    "data": {
+      "rateLimit": {
+        "cost": 1,
+        "remaining": 4998,
+        "resetAt": "2026-11-26T09:27:06Z"
+      },
+      "record": [
+        {
+          "__typename": "PullRequest",
+          "id": "PR_scrubbed0003",
+          "number": 12,
+          "url": "https://github.com/user1/repo1/pull/12",
+          "title": "Title 2",
+          "state": "MERGED",
+          "isDraft": false,
+          "createdAt": "2026-11-24T22:16:37Z",
+          "updatedAt": "2026-11-24T22:17:29Z",
+          "mergedAt": "2026-11-24T22:16:53Z",
+          "closedAt": "2026-11-24T22:16:53Z",
+          "repository": {
+            "nameWithOwner": "user1/repo1"
+          },
+          "author": {
+            "login": "user1"
+          },
+          "baseRefName": "branch-1",
+          "headRefName": "branch-3",
+          "headRefOid": "0000000000000000000000000000000000000002",
+          "mergeable": "UNKNOWN",
+          "mergeStateStatus": "UNKNOWN",
+          "reviewDecision": null,
+          "commentCount": {
+            "totalCount": 0
+          },
+          "reviewCount": {
+            "totalCount": 0
+          },
+          "reviewThreads": {
+            "totalCount": 0
+          },
+          "commits": {
+            "nodes": [
+              {
+                "commit": {
+                  "statusCheckRollup": null
+                }
+              }
+            ]
+          }
+        },
+        null
+      ]
+    },
+    "errors": [
+      {
+        "type": "NOT_FOUND",
+        "path": [
+          "record",
+          1
+        ],
+        "locations": [
+          {
+            "line": 3,
+            "column": 3
+          }
+        ],
+        "message": "Could not resolve to a node with the global id of 'PR_scrubbed0008'."
+      }
+    ]
+  }
+}

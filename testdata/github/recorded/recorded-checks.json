@@ -1,0 +1,121 @@
+{
+  "request": {
+    "find": false,
+    "nodes": [
+      "record"
+    ],
+    "lookup": false
+  },
+  "status": 200,
+  "headers": {
+    "date": "Thu, 26 Nov 2026 08:27:08 GMT",
+    "x-ratelimit-limit": "5000",
+    "x-ratelimit-remaining": "4997",
+    "x-ratelimit-reset": "1795685205",
+    "x-ratelimit-resource": "graphql",
+    "x-ratelimit-used": "3"
+  },
+  "body": {
+    "data": {
+      "rateLimit": {
+        "cost": 1,
+        "remaining": 4997,
+        "resetAt": "2026-11-26T09:26:45Z"
+      },
+      "record": [
+        {
+          "__typename": "PullRequest",
+          "id": "PR_scrubbed0005",
+          "number": 13,
+          "url": "https://github.com/user1/repo1/pull/13",
+          "title": "Title 4",
+          "state": "CLOSED",
+          "isDraft": false,
+          "createdAt": "2026-11-24T22:25:51Z",
+          "updatedAt": "2026-11-24T22:28:37Z",
+          "mergedAt": null,
+          "closedAt": "2026-11-24T22:28:34Z",
+          "repository": {
+            "nameWithOwner": "user1/repo1"
+          },
+          "author": {
+            "login": "user1"
+          },
+          "baseRefName": "branch-1",
+          "headRefName": "branch-5",
+          "headRefOid": "0000000000000000000000000000000000000004",
+          "mergeable": "MERGEABLE",
+          "mergeStateStatus": "UNSTABLE",
+          "reviewDecision": null,
+          "commentCount": {
+            "totalCount": 0
+          },
+          "reviewCount": {
+            "totalCount": 0
+          },
+          "reviewThreads": {
+            "totalCount": 0
+          },
+          "commits": {
+            "nodes": [
+              {
+                "commit": {
+                  "statusCheckRollup": {
+                    "state": "FAILURE",
+                    "contexts": {
+                      "totalCount": 5,
+                      "pageInfo": {
+                        "hasNextPage": false,
+                        "endCursor": "cursor2"
+                      },
+                      "nodes": [
+                        {
+                          "__typename": "CheckRun",
+                          "databaseId": 1005,
+                          "name": "pass",
+                          "status": "COMPLETED",
+                          "conclusion": "SUCCESS",
+                          "detailsUrl": "https://github.com/user1/repo1/actions/runs/1006/job/1005"
+                        },
+                        {
+                          "__typename": "CheckRun",
+                          "databaseId": 1007,
+                          "name": "fail",
+                          "status": "COMPLETED",
+                          "conclusion": "FAILURE",
+                          "detailsUrl": "https://github.com/user1/repo1/actions/runs/1006/job/1007"
+                        },
+                        {
+                          "__typename": "CheckRun",
+                          "databaseId": 1008,
+                          "name": "skipped",
+                          "status": "COMPLETED",
+                          "conclusion": "SKIPPED",
+                          "detailsUrl": "https://github.com/user1/repo1/actions/runs/1006/job/1008"
+                        },
+                        {
+                          "__typename": "CheckRun",
+                          "databaseId": 1009,
+                          "name": "slow",
+                          "status": "COMPLETED",
+                          "conclusion": "CANCELLED",
+                          "detailsUrl": "https://github.com/user1/repo1/actions/runs/1006/job/1009"
+                        },
+                        {
+                          "__typename": "StatusContext",
+                          "context": "circitor/manual",
+                          "state": "FAILURE",
+                          "targetUrl": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

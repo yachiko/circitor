@@ -1,0 +1,120 @@
+{
+  "request": {
+    "find": false,
+    "nodes": [
+      "record_and_items"
+    ],
+    "lookup": false
+  },
+  "status": 200,
+  "headers": {
+    "date": "Thu, 26 Nov 2026 08:27:06 GMT",
+    "x-ratelimit-limit": "5000",
+    "x-ratelimit-remaining": "4999",
+    "x-ratelimit-reset": "1795685226",
+    "x-ratelimit-resource": "graphql",
+    "x-ratelimit-used": "1"
+  },
+  "body": {
+    "data": {
+      "rateLimit": {
+        "cost": 1,
+        "remaining": 4999,
+        "resetAt": "2026-11-26T09:27:06Z"
+      },
+      "recordAndItems": [
+        {
+          "__typename": "PullRequest",
+          "id": "PR_scrubbed0004",
+          "number": 15,
+          "url": "https://github.com/user1/repo1/pull/15",
+          "title": "Title 3",
+          "state": "CLOSED",
+          "isDraft": false,
+          "createdAt": "2026-11-24T22:34:20Z",
+          "updatedAt": "2026-11-24T22:35:47Z",
+          "mergedAt": null,
+          "closedAt": "2026-11-24T22:35:45Z",
+          "repository": {
+            "nameWithOwner": "user1/repo1"
+          },
+          "author": {
+            "login": "user1"
+          },
+          "baseRefName": "branch-1",
+          "headRefName": "branch-4",
+          "headRefOid": "0000000000000000000000000000000000000003",
+          "mergeable": "MERGEABLE",
+          "mergeStateStatus": "CLEAN",
+          "reviewDecision": null,
+          "commentCount": {
+            "totalCount": 1
+          },
+          "reviewCount": {
+            "totalCount": 3
+          },
+          "reviewThreads": {
+            "totalCount": 1
+          },
+          "commits": {
+            "nodes": [
+              {
+                "commit": {
+                  "statusCheckRollup": null
+                }
+              }
+            ]
+          },
+          "lastComments": {
+            "nodes": [
+              {
+                "databaseId": 1001,
+                "author": {
+                  "login": "user1"
+                },
+                "createdAt": "2026-11-24T22:34:42Z"
+              }
+            ]
+          },
+          "lastReviews": {
+            "nodes": [
+              {
+                "databaseId": 1002,
+                "author": {
+                  "login": "user1"
+                },
+                "state": "COMMENTED",
+                "submittedAt": "2026-11-24T22:34:29Z",
+                "comments": {
+                  "totalCount": 1
+                }
+              },
+              {
+                "databaseId": 1003,
+                "author": {
+                  "login": "user1"
+                },
+                "state": "COMMENTED",
+                "submittedAt": "2026-11-24T22:34:36Z",
+                "comments": {
+                  "totalCount": 1
+                }
+              },
+              {
+                "databaseId": 1004,
+                "author": {
+                  "login": "user1"
+                },
+                "state": "COMMENTED",
+                "submittedAt": "2026-11-24T22:35:18Z",
+                "comments": {
+                  "totalCount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

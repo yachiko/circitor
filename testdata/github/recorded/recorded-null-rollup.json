@@ -1,0 +1,72 @@
+{
+  "request": {
+    "find": false,
+    "nodes": [
+      "record"
+    ],
+    "lookup": false
+  },
+  "status": 200,
+  "headers": {
+    "date": "Thu, 26 Nov 2026 08:27:11 GMT",
+    "x-ratelimit-limit": "5000",
+    "x-ratelimit-remaining": "4995",
+    "x-ratelimit-reset": "1795685205",
+    "x-ratelimit-resource": "graphql",
+    "x-ratelimit-used": "5"
+  },
+  "body": {
+    "data": {
+      "rateLimit": {
+        "cost": 1,
+        "remaining": 4995,
+        "resetAt": "2026-11-26T09:26:45Z"
+      },
+      "record": [
+        {
+          "__typename": "PullRequest",
+          "id": "PR_scrubbed0007",
+          "number": 14,
+          "url": "https://github.com/user1/repo1/pull/14",
+          "title": "Title 6",
+          "state": "CLOSED",
+          "isDraft": false,
+          "createdAt": "2026-11-24T22:28:05Z",
+          "updatedAt": "2026-11-24T22:28:38Z",
+          "mergedAt": null,
+          "closedAt": "2026-11-24T22:28:33Z",
+          "repository": {
+            "nameWithOwner": "user1/repo1"
+          },
+          "author": {
+            "login": "user1"
+          },
+          "baseRefName": "branch-1",
+          "headRefName": "branch-7",
+          "headRefOid": "0000000000000000000000000000000000000006",
+          "mergeable": "CONFLICTING",
+          "mergeStateStatus": "DIRTY",
+          "reviewDecision": null,
+          "commentCount": {
+            "totalCount": 0
+          },
+          "reviewCount": {
+            "totalCount": 0
+          },
+          "reviewThreads": {
+            "totalCount": 0
+          },
+          "commits": {
+            "nodes": [
+              {
+                "commit": {
+                  "statusCheckRollup": null
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

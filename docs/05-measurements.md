@@ -6,7 +6,7 @@ A dated log of what was measured on the live GitHub API, newest last. [GitHub AP
 - Read-only queries, plus throwaway PRs in `yachiko/experiment` only. Never the owner's other repositories.
 - A workflow file goes only on a PR branch that is closed unmerged, so it never reaches `main`.
 - Raw logs go in `measurements/<date>/`. Nothing with a token, a title or a body from a private repository is committed.
-- Recorded response fixtures for tests don't exist yet. When they're made they go in `testdata/github/`, scrubbed; the testing spec decides their format.
+- Recorded response fixtures for tests go in `testdata/github/recorded/`, scrubbed, in the format of `plan/contracts/github.md`. The first were made on 2026-11-26.
 
 ## 2026-11-24: first measurements
 
@@ -178,3 +178,41 @@ Reported by the owner: `$TMPDIR` is `/var/folders/26/<id>`, the usual per-user t
 - **macOS wasn't measured.** Its kernel source refuses such a connect with `ECONNREFUSED`; that's read, not measured.
 
 Used by NTF-6 (a post that fails ends its subscription) and TST-16 (the fake session socket's fourth mode). Summarised in [docs/07](07-notify.md#the-session-socket).
+
+## 2026-11-26: recorded responses to circitor's own queries (T37)
+
+**Setup:** `gh` 2.101.0 on Linux, logged in as before. The owner gave the OK on the day. No circitor daemon ran, and nothing else used the token. Budget before: **5 000 of 5 000** GraphQL points. Each request body came from the code (`dump_queries`, T07), with real node IDs filled in. Bodies were sent with `gh api graphql --input … -i`, 1 s apart, between 08:27:04 and 08:27:19 UTC. The 401 was sent with `curl` and a made-up `gho_` token. Nothing was opened, changed or closed: no case needed a new PR, since #1 and #10 were already open.
+
+**Files:** the ten scrubbed answers in `testdata/github/recorded/`, and the script that assembled and scrubbed them, [`measurements/2026-11-26/assemble.py`](measurements/2026-11-26/assemble.py). The raw answers weren't kept: they hold real titles and IDs.
+
+| # | Case | Sent | Answer | File |
+|---|---|---|---|---|
+| 1 | A poll (POL-4) | The finding, and the record of #10 (open) and #12 | `200`. The finding listed two open PRs, #10 and #1, both in this repository. | `recorded-poll.json` |
+| 2 | A first refresh with items (POL-4, POL-12) | #15 | `200`. 1 comment, 3 reviews (all `COMMENTED`, each with 1 comment), 1 thread. | `recorded-first-refresh.json` |
+| 3 | Checks (POL-6) | #13 | `200`. Rollup `FAILURE`, 5 contexts: `SUCCESS`, `FAILURE`, `SKIPPED`, `CANCELLED` and a `StatusContext` `FAILURE`. `MERGEABLE`, `UNSTABLE`. | `recorded-checks.json` |
+| 4 | Merged and closed | #12, #11 | `200`. #12: `MERGED`, `UNKNOWN`, `UNKNOWN`, rollup `null`. #11: `CLOSED`, `MERGEABLE`, `CLEAN`, rollup `SUCCESS` with 2 checks. | `recorded-merged-and-closed.json` |
+| 5 | No checks | #14 | `200`. Rollup `null`, `CONFLICTING`, `DIRTY`. | `recorded-null-rollup.json` |
+| 6 | One made-up ID (POL-21) | #12, then a made-up ID | `200`. #12, then `null`, and one `NOT_FOUND` with `path: ["record", 1]`. | `recorded-unknown-id.json` |
+| 7 | By name (POL-16) | #15 | `200`, the record and items | `recorded-lookup-found.json` |
+| | | PR number 9999 | `200`. `pullRequest: null`, `NOT_FOUND`, `path: ["repository", "pullRequest"]`. | `recorded-lookup-no-pr.json` |
+| | | A repository that doesn't exist | `200`. `repository: null`, `NOT_FOUND`, `path: ["repository"]`. | `recorded-lookup-no-repo.json` |
+| 8 | A bad token | Case 1's body | `401`, `{"message": "Bad credentials", …, "status": "401"}` | `recorded-bad-credentials.json` |
+
+**Points:** every answer's `rateLimit.cost` was 1. With the read-only lookup of node IDs, **10 points** were spent.
+
+**Headers:**
+- **Every answer carried a `Date` header**, the 401 included. Each fell within the 15 s the requests took, in the order sent.
+- Every `200` carried `x-ratelimit-limit`, `-remaining`, `-used`, `-reset` and `-resource: graphql`. The 401 carried none of them. No answer carried `retry-after`.
+- **The counters alternated between two windows.** `rateLimit.resetAt` read 09:26:45 or 09:27:06, and `x-ratelimit-used` went 2, 1, 3, 4, 5, 2, 6, 3, 7 across the nine queries. Each window counted on by itself; together they add up to the points spent. `resetAt` and `x-ratelimit-reset` always agreed.
+
+**What differs from docs/02, or adds to it:**
+- **An error's `path` names the query's alias.** circitor asks `record: nodes(ids: …)`, so the made-up ID's error read `["record", 1]`, not `["nodes", 1]` as with the hand-written query of 2026-11-24. The decoder matches it (POL-21).
+- **A closed PR's checks are still returned:** #13's full rollup, two days after it was closed.
+- #10, open and untouched for over a month, read `mergeable: UNKNOWN` on this first read, as docs/02 §4 says of idle PRs.
+- Nothing else contradicts docs/02.
+
+**Decoding:** `tst12_every_fixture_decodes` passes on all ten. A one-off print of each decoded answer (not kept) showed no `UNDECODABLE`, `UNTYPED` or `UNLISTED_STATE` node. The 401 decoded as `Unauthorized`, and the made-up ID and both failed lookups as `NotFound`.
+
+**Scrubbing:** one map, shared by every file, replaced logins, owner and repository names, titles, URLs, branch names, node IDs, `databaseId`s (and the matching run and job numbers in `detailsUrl`), SHAs and cursors, also inside error messages. Each file's body has the same paths as the raw answer (`jq -S 'paths'`), and a grep for every real value finds nothing.
+
+**Left behind in `yachiko/experiment`:** nothing new. #1 and #10 were open before this entry and are still open.

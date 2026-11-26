@@ -1,0 +1,41 @@
+{
+  "request": {
+    "find": false,
+    "nodes": [],
+    "lookup": true
+  },
+  "status": 200,
+  "headers": {
+    "date": "Thu, 26 Nov 2026 08:27:18 GMT",
+    "x-ratelimit-limit": "5000",
+    "x-ratelimit-remaining": "4993",
+    "x-ratelimit-reset": "1795685205",
+    "x-ratelimit-resource": "graphql",
+    "x-ratelimit-used": "7"
+  },
+  "body": {
+    "data": {
+      "rateLimit": {
+        "cost": 1,
+        "remaining": 4993,
+        "resetAt": "2026-11-26T09:26:45Z"
+      },
+      "repository": null
+    },
+    "errors": [
+      {
+        "type": "NOT_FOUND",
+        "path": [
+          "repository"
+        ],
+        "locations": [
+          {
+            "line": 3,
+            "column": 3
+          }
+        ],
+        "message": "Could not resolve to a Repository with the name 'user1/repo2'."
+      }
+    ]
+  }
+}
