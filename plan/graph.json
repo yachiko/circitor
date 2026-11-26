@@ -1532,7 +1532,8 @@
     "T48"
    ],
    "dependents": [
-    "T57"
+    "T57",
+    "T60"
    ],
    "requirements": [
     "TST-8",
@@ -1724,7 +1725,9 @@
     "T45",
     "T49"
    ],
-   "dependents": [],
+   "dependents": [
+    "T60"
+   ],
    "requirements": [
     "TST-16",
     "NTF-6"
@@ -1785,6 +1788,30 @@
     "tests/golden/cli/error_starting.err"
    ],
    "file": "plan/tasks/T59-starting-message.md"
+  },
+  {
+   "id": "T60",
+   "title": "Follow-up to T49: find a stop's notice by its PR, not its place",
+   "kind": "test",
+   "status": "done",
+   "milestone": "M5",
+   "size": "S",
+   "wave": 10,
+   "remaining": 0,
+   "depends_on": [
+    "T49",
+    "T57"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-8",
+    "NTF-10"
+   ],
+   "owns": [
+    "tests/scn_notify.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T60-stop-notice-order.md"
   }
  ],
  "dropped_tasks": [],
@@ -1866,7 +1893,8 @@
    "T59"
   ],
   [
-   "T58"
+   "T58",
+   "T60"
   ]
  ],
  "critical_path": [

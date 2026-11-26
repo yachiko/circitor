@@ -665,6 +665,17 @@ async fn three_registered() -> (Harness, Vec<PrId>) {
     (h, prs)
 }
 
+/// The `stopped` notice for `pr` (NTF-10). A stop posts them all at once, so the order they
+/// arrive in isn't fixed: find it by its PR, never by its place.
+fn stopped_notice(h: &Harness, pr: &str) -> String {
+    let marker = format!("notify for {pr} is cancelled");
+    let got = notices(h);
+    match got.iter().find(|n| n.text.contains(&marker)) {
+        Some(n) => n.text.clone(),
+        None => panic!("no stopped notice for {pr}: {got:?}"),
+    }
+}
+
 /// The command a notice's `Ask again:` holds, as arguments.
 fn ask_again(text: &str) -> Vec<String> {
     let (_, cmd) = text.split_once("Ask again: ").expect("an Ask again");
@@ -759,7 +770,8 @@ async fn scn_notify_stop_ask_again_replacement() {
         c.split('-').next().unwrap().to_string()
     };
     assert_eq!(h.stop().await, 0);
-    let text = notices(&h)[3].text.clone();
+    // T60: by its PR, not `notices(&h)[3]`: the stop's notices arrive in any order.
+    let text = stopped_notice(&h, PR1);
     let args = ask_again(&text);
     let refs: Vec<&str> = args.iter().map(String::as_str).collect();
     let bg = h.cli_bg(&refs);
