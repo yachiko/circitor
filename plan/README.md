@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **59 tasks:** 3 todo, 54 done, 2 blocked. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **59 tasks:** 2 todo, 55 done, 2 blocked. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -102,7 +102,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 5 | [T22](tasks/T22-api-routes.md) | API routes: list, show, changes, track, untrack, refresh, status, shutdown, and starting up | code | L | done | T09, T15, T41 |
 | 5 | [T23](tasks/T23-api-wait.md) | Waiters: the wait route, its conditions, outcomes, deadline and clean end | code | L | done | T09, T15, T41, T44 |
 | 5 | [T24](tasks/T24-cli-conn.md) | CLI and the daemon: connecting, starting, replacing, stopping, request limits | code | L | done | T06, T17, T18, T41 |
-| 5 | [T37](tasks/T37-record-fixtures.md) | Owner: record real responses from yachiko/experiment | manual | S | todo | T07 |
+| 5 | [T37](tasks/T37-record-fixtures.md) | Owner: record real responses from yachiko/experiment | manual | S | done | T07 |
 | 5 | [T46](tasks/T46-notify-core.md) | Notify: subscriptions, the loop that evaluates them, the poster, and every notice's words | code | L | done | T09, T10, T15, T43, T44 |
 | 5 | [T54](tasks/T54-saver-spin.md) | Follow-up to T16: the saver spins on a moving clock and never writes | code | S | done | T16 |
 | 5 | [T55](tasks/T55-due-after-sleep.md) | Follow-up to T09: a record marked slept is due at the next poll (D14) | code | S | done | T52 |
@@ -182,7 +182,7 @@ flowchart LR
   T34["T34 Quota tests: what an hour costs i…"]:::done
   T35["T35 Golden output end to end: every c…"]:::done
   T36["T36 M4: real processes: spawning, two…"]:::done
-  T37["T37 Owner: record real responses from…"]:::manual
+  T37["T37 Owner: record real responses from…"]:::done
   T38["T38 Owner: the first CI run, on Linux…"]:::blocked
   T39["T39 Owner: set up the release tool, p…"]:::manual
   T40["T40 Owner: the acceptance checks on a…"]:::manual
@@ -533,6 +533,7 @@ Also the owner's: confirming the plan decisions above before T01 starts (P1 to P
 
 ## Change log
 
+- 2026-11-26: **T37 done** (the owner's, with the OK on the day). Ten real, scrubbed answers in `testdata/github/recorded/`, all decoding; 10 points spent; dated entry in docs/05. No follow-up to T07. For docs/02, on the owner's say: every answer carried a `Date` header (MOD-6), an error's `path` names the query's alias, and the rate-limit counters alternated between two windows. Left: the owner's T39 and T40, and T03/T38 (blocked, no CI).
 - 2026-11-26: **M5 reached.** Every executor task is done (T01, T02, T04 to T36, T41 to T59; T50 and T53 the owner's and the orchestrator's). `make verify` on main: 936 tests pass, 0 fail; the only ignored ones are T07's `dump_queries` (a printer for T37, by design) and three rustdoc examples. Every TST-8 scenario (T30 to T33, T49), TST-6's figures (T34), TST-7's golden output (T35) and TST-9's real processes with OPS-17 (T36) pass. Left: the owner's T37, T39, T40, and T03/T38 (blocked, no CI). Decisions taken by the orchestrator under the owner's rule: D12 to D16 (`specs/decisions.md`), and the readings recorded in this log and in each task's Evidence.
 - 2026-11-26: **Main red after T56, test window at fault; follow-up T58.** `ops17_no_cpu_between_polls` started its 5 s after a poll's first answer; since D15 a 200-PR poll sends its second finding page a second later, inside the window (8 to 40 ticks). With T56's `poll.rs` reverted the test passed 3 times at the same load, and the daemon doesn't spin: T58 moves the window after the poll's last request. **T57** was allowed to fix T49's `scn_notify_session_gone_full_queue` assertion (it forgot the registration's confirmation). **T35 found** the `starting` line saying "try again in a few seconds (try again in a minute)": follow-up T59 (the route's message drops its own hint) after T35 merges.
 - 2026-11-26: **D16** (orchestrator, after T49): `FakeSession::queue_full` lowers the backlog of the same listening socket instead of binding a new one, so the notifier's `look` sees the same session and its post fails as `reason=failed` (NTF-6, TST-16). Follow-up **T57** in `src/testkit/session/`, which also lifts T49's ignore. **Readings kept** (TST-8: the requirement wins): `notify-ends`' expired notice reads the record's `status` (`it's ready`), not `it's open`; `notify-keeps-active`'s row can't read all its numbers in one run. **Watch:** T27's `cli10_no_daemon_back` failed once under load ("ended at 9.9") and passed after.

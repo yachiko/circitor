@@ -4,7 +4,7 @@ title: "Owner: record real responses from yachiko/experiment"
 kind: manual
 milestone: M5
 size: S
-status: todo
+status: done
 depends_on: [T07]
 requirements: [TST-12]
 owns: [testdata/github/recorded/]
@@ -58,20 +58,20 @@ circitor's decoder was written from docs/02 and from synthetic responses (T07, `
 ## Acceptance
 The owner ticks each line.
 
-- [ ] **OK given** for a live measurement in `yachiko/experiment`, today's date noted.
-- [ ] **No other use of the token** while recording, and the budget checked first: `gh api rate_limit --jq .resources.graphql`.
-- [ ] **The query bodies come from the code:** `cargo test --features test-endpoint --lib github::client -- --ignored --nocapture dump_queries` prints each request body (`query`, `variables`). Save the ones for the eight cases as `body-<n>.json`, with the node IDs and numbers of the next step filled in.
-- [ ] **Node IDs looked up**, read-only: `gh api graphql -f query='{repository(owner:"yachiko",name:"experiment"){pullRequests(last:10){nodes{id number state}}}}'`.
-- [ ] **Each body sent** from a scratch directory outside the repository: `gh api graphql --input body-<n>.json -i > raw-<n>.txt`. `-i` adds the response's status line and headers; nothing prints the token. `gh` exits non-zero when the answer holds `errors` (cases 6 and 7): that's expected.
-- [ ] **The 401:** `curl -s -i -H 'Authorization: bearer gho_0000000000000000000000000000000000000000' -d @body-1.json https://api.github.com/graphql > raw-401.txt`.
-- [ ] **For case 1**, if no PR is open in `yachiko/experiment`: open two throwaway PRs there (one file each, no workflow), record, close them unmerged, delete their branches.
-- [ ] **Assembled and scrubbed** with one script (`jq`) into `testdata/github/recorded/recorded-<what>.json`: `request` (as the matching synthetic file writes it, with the scrubbed IDs and names), `status`, the kept `headers`, and `body`. The finding of case 1 is cut down to the `yachiko/experiment` PRs first: it lists the open PRs of every repository.
-- [ ] **Nothing real is left:** `grep -rniE 'yachiko|experiment|circitor-measure|gho_|PR_kw' testdata/github/recorded/` finds nothing, and neither does a grep for each real title and login.
-- [ ] **The shape survived:** for each file, `jq -S 'paths|map(tostring)|join(".")'` of the raw body and of the file's `.body` are equal (but for the PRs cut from case 1), and `jq '.headers|keys'` shows only `date`, `retry-after` and `x-ratelimit-*`.
-- [ ] **They decode:** `cargo test --features test-endpoint --lib github::client` passes; its `tst12_every_fixture_decodes` (T07's) is the test that reads `recorded/`. A failure is written down with the file and the field, and reported: it becomes a follow-up to T07.
-- [ ] **`make verify` passes.**
-- [ ] **`docs/05-measurements.md` has a new dated entry**: setup, the eight cases with the PRs used, points spent (`rateLimit.cost` of each answer), the headers, what differs from docs/02, and what was left behind in `yachiko/experiment`. Raw files go in `docs/measurements/<date>/` only once scrubbed the same way; otherwise they're deleted.
-- [ ] **Told the orchestrator** what was recorded, so the task gets its Evidence.
+- [x] **OK given** for a live measurement in `yachiko/experiment`, today's date noted.
+- [x] **No other use of the token** while recording, and the budget checked first: `gh api rate_limit --jq .resources.graphql`.
+- [x] **The query bodies come from the code:** `cargo test --features test-endpoint --lib github::client -- --ignored --nocapture dump_queries` prints each request body (`query`, `variables`). Save the ones for the eight cases as `body-<n>.json`, with the node IDs and numbers of the next step filled in.
+- [x] **Node IDs looked up**, read-only: `gh api graphql -f query='{repository(owner:"yachiko",name:"experiment"){pullRequests(last:10){nodes{id number state}}}}'`.
+- [x] **Each body sent** from a scratch directory outside the repository: `gh api graphql --input body-<n>.json -i > raw-<n>.txt`. `-i` adds the response's status line and headers; nothing prints the token. `gh` exits non-zero when the answer holds `errors` (cases 6 and 7): that's expected.
+- [x] **The 401:** `curl -s -i -H 'Authorization: bearer gho_0000000000000000000000000000000000000000' -d @body-1.json https://api.github.com/graphql > raw-401.txt`.
+- [x] **For case 1**, if no PR is open in `yachiko/experiment`: open two throwaway PRs there (one file each, no workflow), record, close them unmerged, delete their branches.
+- [x] **Assembled and scrubbed** with one script (`jq`) into `testdata/github/recorded/recorded-<what>.json`: `request` (as the matching synthetic file writes it, with the scrubbed IDs and names), `status`, the kept `headers`, and `body`. The finding of case 1 is cut down to the `yachiko/experiment` PRs first: it lists the open PRs of every repository.
+- [x] **Nothing real is left:** `grep -rniE 'yachiko|experiment|circitor-measure|gho_|PR_kw' testdata/github/recorded/` finds nothing, and neither does a grep for each real title and login.
+- [x] **The shape survived:** for each file, `jq -S 'paths|map(tostring)|join(".")'` of the raw body and of the file's `.body` are equal (but for the PRs cut from case 1), and `jq '.headers|keys'` shows only `date`, `retry-after` and `x-ratelimit-*`.
+- [x] **They decode:** `cargo test --features test-endpoint --lib github::client` passes; its `tst12_every_fixture_decodes` (T07's) is the test that reads `recorded/`. A failure is written down with the file and the field, and reported: it becomes a follow-up to T07.
+- [x] **`make verify` passes.**
+- [x] **`docs/05-measurements.md` has a new dated entry**: setup, the eight cases with the PRs used, points spent (`rateLimit.cost` of each answer), the headers, what differs from docs/02, and what was left behind in `yachiko/experiment`. Raw files go in `docs/measurements/<date>/` only once scrubbed the same way; otherwise they're deleted.
+- [x] **Told the orchestrator** what was recorded, so the task gets its Evidence.
 
 ## Traps
 - **`viewer.pullRequests` lists the owner's open PRs everywhere**, private repositories' names included. Nothing unscrubbed is saved inside the repository, and CLAUDE.md's "experiment only" covers what's opened or changed, so open nothing anywhere else.
@@ -89,3 +89,10 @@ The owner ticks each line.
 - **Whether a closed PR's check rollup is still returned** months later isn't measured. If #13 reads `null`, a new PR with a workflow on its branch is needed: closed unmerged, under docs/05's rules, with the owner's OK for the Actions minutes.
 - **`docs/05-measurements.md` and `docs/measurements/<date>/` aren't in this task's `owns`.** They're the owner's to write; say so to the orchestrator.
 - D5 and D6 don't touch this task.
+
+## Evidence
+- **2026-11-26**, branch `t37-record-fixtures`, run by the owner with Claude in one session; the owner gave the OK on the day. Dated entry: `docs/05-measurements.md`, "2026-11-26: recorded responses to circitor's own queries (T37)".
+- `testdata/github/recorded/`: ten files. `recorded-poll` (finding, #10 and #12), `recorded-first-refresh` (#15), `recorded-checks` (#13), `recorded-merged-and-closed` (#12, #11), `recorded-null-rollup` (#14), `recorded-unknown-id`, `recorded-lookup-found`, `-no-pr`, `-no-repo`, `recorded-bad-credentials` (401, to case 1's body). 10 GraphQL points spent, each answer cost 1.
+- `tst12_every_fixture_decodes` passes on all ten. A one-off print of the decoded answers (a temporary test, reverted) showed no `UNDECODABLE`, `UNTYPED` or `UNLISTED_STATE` node; the 401 is `Unauthorized`, the made-up ID and both failed lookups `NotFound`. No follow-up to T07. `make verify` passes: 936 tests, 0 fail.
+- Differences from the checklist: case 1 needed no throwaway PRs (#1 and #10 were open) and no cut (the finding held only `yachiko/experiment` PRs). The scrub script is Python, not `jq`, to keep key order with one shared map; it's kept as `docs/measurements/2026-11-26/assemble.py`. The raw answers were deleted, not kept.
+- For docs/02, on the owner's say: every answer carried a `Date` header (MOD-6); an error's `path` names the query's alias (`["record", 1]`); the counters alternated between two windows; #13's closed PR still returns its rollup, which closes this task's second open question.

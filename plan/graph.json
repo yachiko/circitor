@@ -1176,11 +1176,11 @@
    "id": "T37",
    "title": "Owner: record real responses from yachiko/experiment",
    "kind": "manual",
-   "status": "todo",
+   "status": "done",
    "milestone": "M5",
    "size": "S",
    "wave": 5,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T07"
    ],
