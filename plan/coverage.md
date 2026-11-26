@@ -54,7 +54,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | POL-4 | proposal | T21, T26 |
 | POL-5 | proposal | T21 |
 | POL-6 |  | T07, T26 |
-| POL-7 | proposal | T21 |
+| POL-7 | proposal | T21, T56 |
 | POL-8 | proposal | T21 |
 | POL-9 | dropped, proposal |  |
 | POL-10 | proposal | T09, T21 |
@@ -81,7 +81,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 |---|---|---|
 | STA-1 | proposal | T15 |
 | STA-2 | proposal | T15 |
-| STA-3 | proposal | T15, T21 |
+| STA-3 | proposal | T15, T21, T56 |
 | STA-4 |  | T15 |
 | STA-5 |  | T05, T15 |
 | STA-6 |  | T16 |

@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **55 tasks:** 7 todo, 3 in-progress, 43 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **56 tasks:** 7 todo, 3 in-progress, 44 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -105,7 +105,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 5 | [T37](tasks/T37-record-fixtures.md) | Owner: record real responses from yachiko/experiment | manual | S | todo | T07 |
 | 5 | [T46](tasks/T46-notify-core.md) | Notify: subscriptions, the loop that evaluates them, the poster, and every notice's words | code | L | done | T09, T10, T15, T43, T44 |
 | 5 | [T54](tasks/T54-saver-spin.md) | Follow-up to T16: the saver spins on a moving clock and never writes | code | S | done | T16 |
-| 5 | [T55](tasks/T55-due-after-sleep.md) | Follow-up to T09: a record marked slept is due at the next poll (D14) | code | S | todo | T52 |
+| 5 | [T55](tasks/T55-due-after-sleep.md) | Follow-up to T09: a record marked slept is due at the next poll (D14) | code | S | in-progress | T52 |
 | 6 | [T25](tasks/T25-engine-demand.md) | Poller engine: hot PRs, forced refreshes, reading through, track, the mergeable follow-up | code | L | done | T21 |
 | 6 | [T26](tasks/T26-m1-poll.md) | M1: the real client against the fake GitHub, polling end to end | integration | M | done | T07, T20, T21 |
 | 6 | [T27](tasks/T27-cli-commands.md) | CLI commands: run, each command, the wait's deadline and reconnect, exit codes | code | L | done | T10, T11, T24 |
@@ -118,13 +118,14 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 7 | [T51](tasks/T51-second-shutdown.md) | Follow-up to T28: a second shutdown request during a stop ends it at once | code | S | done | T28 |
 | 8 | [T30](tasks/T30-scenarios-checks.md) | Scenarios: checks and settling | test | L | in-progress | T29 |
 | 8 | [T31](tasks/T31-scenarios-waits.md) | Scenarios: a PR's life and waits | test | L | done | T29, T42 |
-| 8 | [T32](tasks/T32-scenarios-tracking.md) | Scenarios: tracking and polling | test | L | in-progress | T29, T42 |
+| 8 | [T32](tasks/T32-scenarios-tracking.md) | Scenarios: tracking and polling | test | L | done | T29, T42 |
 | 8 | [T33](tasks/T33-scenarios-daemon.md) | Scenarios: the daemon's life and failures | test | L | in-progress | T29 |
 | 8 | [T34](tasks/T34-quota-tests.md) | Quota tests: what an hour costs in each tier and state | test | M | todo | T29 |
 | 8 | [T35](tasks/T35-golden-cli.md) | Golden output end to end: every command's text and JSON, every exit code | test | L | todo | T29, T42, T47, T48 |
 | 8 | [T39](tasks/T39-release.md) | Owner: set up the release tool, publish to the tap | manual | M | todo | T19, T36 |
 | 8 | [T49](tasks/T49-scenarios-notify.md) | Scenarios: notify | test | L | todo | T29, T42, T47, T48 |
 | 9 | [T40](tasks/T40-acceptance.md) | Owner: the acceptance checks on a Mac and on Linux | manual | M | todo | T19, T36, T39, T47, T48 |
+| 9 | [T56](tasks/T56-limit-warning.md) | Follow-up to T21: a finding page left unread at the limit raises pr_limit (D15) | code | S | todo | T42, T32 |
 <!-- /plan:waves -->
 
 ## Critical path
@@ -132,7 +133,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 <!-- plan:critical -->
 T01 (S) → T02 (L) → T05 (L) → T15 (L) → T21 (L) → T28 (L) → T36 (L) → T39 (M) → T40 (M)
 
-Weight 23 of 120 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
+Weight 23 of 121 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
 <!-- /plan:critical -->
 
 The path runs through the model, the store and the engine's poll, each an L task that the next needs for real, then the daemon's wiring and the real-process tests. The engine's demand side (T25, T42), the routes and waiters (T22, T23), the CLI (T10, T11, T24, T27) and the fake GitHub (T14, T20) run beside it. **Notify adds no weight to it:** T28 needs the notifier (T46), which is as long as the engine's poll and runs beside it, on T15, T10 and T44; the notify routes, the command and the scenarios (T47, T48, T49) are off the path. That's why the conditions are a task of their own (P16): had the notifier waited for the wait route, the path would be three longer. The harness (T29) and the scenarios end one L task later than T36; the owner's T39 and T40 close the path. Nothing on it waits for an implementation where a contract would do.
@@ -173,7 +174,7 @@ flowchart LR
   T29["T29 M3: the harness, and the CLI agai…"]:::done
   T30["T30 Scenarios: checks and settling"]:::active
   T31["T31 Scenarios: a PR's life and waits"]:::done
-  T32["T32 Scenarios: tracking and polling"]:::active
+  T32["T32 Scenarios: tracking and polling"]:::done
   T33["T33 Scenarios: the daemon's life and…"]:::active
   T34["T34 Quota tests: what an hour costs i…"]
   T35["T35 Golden output end to end: every c…"]
@@ -196,7 +197,8 @@ flowchart LR
   T52["T52 Follow-up to T09: a PR whose last…"]:::done
   T53["T53 Follow-up to T01: nix's socket fe…"]:::done
   T54["T54 Follow-up to T16: the saver spins…"]:::done
-  T55["T55 Follow-up to T09: a record marked…"]
+  T55["T55 Follow-up to T09: a record marked…"]:::active
+  T56["T56 Follow-up to T21: a finding page…"]
   T01 --> T02
   T01 --> T03
   T02 --> T04
@@ -301,6 +303,7 @@ flowchart LR
   T01 --> T53
   T16 --> T54
   T52 --> T55
+  T32 --> T56
   classDef done fill:#d8f0dc,stroke:#2f7d3b
   classDef active fill:#fff1c2,stroke:#a07800
   classDef blocked fill:#f8d7da,stroke:#a12a35
@@ -313,7 +316,11 @@ Edges implied by others are left out. Green: done; yellow: in progress or review
 ## Merge hotspots
 
 <!-- plan:hotspots -->
-No task shares a path with another.
+Files that several tasks touch (`shares`). The owner creates the file; sharers add to it, so expect merge conflicts here, and merge in wave order.
+
+| Path | Owner | Shared by |
+|---|---|---|
+| `tests/scn_tracking.rs` | T32 | T56 |
 
 Paths that pass from one task to a later one (`owns` of ordered tasks):
 
@@ -323,7 +330,7 @@ Paths that pass from one task to a later one (`owns` of ordered tasks):
 | `Cargo.toml` | T01 → T53 |
 | `Makefile` | T01 → T50 |
 | `rust-toolchain.toml` | T01 → T50 |
-| `src/` | T01 → T02 → T04 → T05 → T06 → T07 → T08 → T09 → T10 → T11 → T12 → T43 → T13 → T14 → T15 → T16 → T17 → T18 → T20 → T21 → T22 → T44 → T23 → T24 → T25 → T27 → T46 → T28 → T45 → T29 → T42 → T47 → T48 → T51 → T52 → T54 → T55 |
+| `src/` | T01 → T02 → T04 → T05 → T06 → T07 → T08 → T09 → T10 → T11 → T12 → T43 → T13 → T14 → T15 → T16 → T17 → T18 → T20 → T21 → T22 → T44 → T23 → T24 → T25 → T27 → T46 → T28 → T45 → T29 → T42 → T47 → T48 → T51 → T52 → T54 → T55 → T56 |
 | `src/api/condition.rs` | T02 → T44 |
 | `src/api/notify/` | T02 → T47 |
 | `src/api/params.rs` | T02 → T43 |
@@ -353,7 +360,7 @@ Paths that pass from one task to a later one (`owns` of ordered tasks):
 | `src/notify/` | T02 → T46 |
 | `src/poller/auth/` | T02 → T13 |
 | `src/poller/cadence/` | T02 → T09 → T52 → T55 |
-| `src/poller/engine/` | T02 → T21 → T25 → T42 |
+| `src/poller/engine/` | T02 → T21 → T25 → T42 → T56 |
 | `src/poller/fake.rs` | T02 → T43 |
 | `src/poller/limits/` | T02 → T08 |
 | `src/state/file/` | T02 → T16 → T54 |
@@ -514,6 +521,7 @@ Also the owner's: confirming the plan decisions above before T01 starts (P1 to P
 
 ## Change log
 
+- 2026-11-26: **D15** (orchestrator's decision): a finding page left unread because every place is taken counts as PRs left out, so `pr_limit` is raised. Written into STA-3 and `specs/decisions.md`; follow-up **T56** in `src/poller/engine/`, which also lifts T32's ignore on `scn_many_prs_205_warning`. **Reading kept (orchestrator):** `untrack` of a `manual` PR already dropped answers with its last record (T15's `Untracked::record`, as T22 built), not `null`.
 - 2026-11-26: **D14** (orchestrator's decision): a record marked slept is due at the next poll, so the poll POL-22 starts on waking refreshes it. Written into POL-22 and `specs/decisions.md`; follow-up **T55** in `src/poller/cadence/`. Also noted for T29's owner: `Bg::cancel` counts the connections open at the command's start, so it cancels reliably only the newest command (T31).
 - 2026-11-26: **T36 found a T16 bug; follow-up T54.** The state-file saver's `due()` is the clock's `mono()` before a first write, read after the loop's own reading: on a moving clock no write is ever made and the loop spins (100 % CPU, `state.json` written only at the stop). T54 fixes it; T36 is held in review and merged after T54, so `make verify` on main never carries the CPU load's flake. **OPS-8 reading (orchestrator):** the idle time counts from a client request's arrival, as built; a long request is a wait, which the waiter rule already covers.
 - 2026-11-26: **D13, nix's `socket` feature (plan decision, amends P8).** T45 couldn't listen with a backlog of 0 or keep a socket's inode through `refuse`/`restore` with `std` alone, and filled `SOMAXCONN` instead (4 097 descriptors, over common limits). The orchestrator added `socket` to `nix`'s features (follow-up **T53**, done; one new crate, `memoffset`); T45, then in review, was sent the change for `queue_full`; `restore` after `refuse` stays a new socket file (TST-16's same inode back can't be had, and NTF-6 doesn't need it).

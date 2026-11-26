@@ -4,7 +4,7 @@ title: "Scenarios: tracking and polling"
 kind: test
 milestone: M5
 size: L
-status: in-progress
+status: done
 depends_on: [T29, T42]
 requirements: [TST-8]
 owns: [tests/scn_tracking.rs]
@@ -127,3 +127,10 @@ The scenarios:
 - **That a node ID survives a rename or a transfer, and that lost access looks like `NOT_FOUND`, aren't measured** (MOD-1, docs/02 §5). STA-1's 60 minutes, STA-2, STA-3, POL-5's second rule, POL-15's windows and POL-21's "three, and 5 minutes" are (proposal). Test them as written.
 - **`bare-pr`'s `shared` part** is staged with `hold_next()`. If the CLI's first look already finds the PR, the staging is wrong, not the CLI: don't loop until it happens.
 - D5 and D6 don't touch this task.
+
+Follow-ups: T56
+
+## Evidence
+- **2026-11-26**, branch `t32-scenarios-tracking`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `tests/scn_tracking.rs` only: 42 tests covering the eleven rows (in parts), each ending in `h.finish()`. `cargo test --features test-endpoint --test scn_tracking`: 41 passed, **1 ignored**: `scn_many_prs_205_warning` (T21: paging stops at the 200th place, so `pr_limit` never rises), decided **D15** by the orchestrator, follow-up **T56** lifts it. `make verify` passes on main after the merge.
+- Choices: `tiers` asserts an exact grid (21 polls 30 s apart to 600 s, then 300 s); `owners` asserts the poll at 60 s refreshes the manually tracked PR; `untrack` of a dropped `manual` PR answers its last record (kept as built, recorded in the change log).

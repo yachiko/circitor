@@ -1048,16 +1048,18 @@
    "id": "T32",
    "title": "Scenarios: tracking and polling",
    "kind": "test",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M5",
    "size": "L",
    "wave": 8,
-   "remaining": 3,
+   "remaining": 1,
    "depends_on": [
     "T29",
     "T42"
    ],
-   "dependents": [],
+   "dependents": [
+    "T56"
+   ],
    "requirements": [
     "TST-8"
    ],
@@ -1305,7 +1307,8 @@
     "T31",
     "T32",
     "T35",
-    "T49"
+    "T49",
+    "T56"
    ],
    "requirements": [
     "POL-21",
@@ -1655,7 +1658,7 @@
    "id": "T55",
    "title": "Follow-up to T09: a record marked slept is due at the next poll (D14)",
    "kind": "code",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M1",
    "size": "S",
    "wave": 5,
@@ -1672,6 +1675,32 @@
    ],
    "shares": [],
    "file": "plan/tasks/T55-due-after-sleep.md"
+  },
+  {
+   "id": "T56",
+   "title": "Follow-up to T21: a finding page left unread at the limit raises pr_limit (D15)",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M5",
+   "size": "S",
+   "wave": 9,
+   "remaining": 1,
+   "depends_on": [
+    "T42",
+    "T32"
+   ],
+   "dependents": [],
+   "requirements": [
+    "STA-3",
+    "POL-7"
+   ],
+   "owns": [
+    "src/poller/engine/"
+   ],
+   "shares": [
+    "tests/scn_tracking.rs"
+   ],
+   "file": "plan/tasks/T56-limit-warning.md"
   }
  ],
  "dropped_tasks": [],
@@ -1747,7 +1776,8 @@
    "T49"
   ],
   [
-   "T40"
+   "T40",
+   "T56"
   ]
  ],
  "critical_path": [

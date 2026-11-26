@@ -4,7 +4,7 @@ title: "Follow-up to T09: a record marked slept is due at the next poll (D14)"
 kind: code
 milestone: M1
 size: S
-status: todo
+status: in-progress
 depends_on: [T52]
 requirements: [POL-22]
 owns: [src/poller/cadence/]
