@@ -4,7 +4,7 @@ title: "Scenarios: notify"
 kind: test
 milestone: M5
 size: L
-status: in-progress
+status: done
 depends_on: [T29, T42, T47, T48]
 requirements: [TST-8, NTF-5, NTF-9, NTF-10]
 owns: [tests/scn_notify.rs]
@@ -123,3 +123,11 @@ The scenarios:
 - **NTF-5's cost** (the active tier, about 120 points an hour) is T34's kind of figure; no row asks for it. `notify-keeps-active` only shows the cadence.
 - **`pr_failing`'s notice** is NTF-8's sentence (D9): `notify-problem` asserts it whole, `circitor: can't read octo/app#1 from GitHub (pr_failing); notify is cancelled. Details: circitor status`.
 - D5 and D6 don't touch this task.
+
+Follow-ups: T57
+
+## Evidence
+- **2026-11-26**, branch `t49-scenarios-notify`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `tests/scn_notify.rs` only (no real environment read; every command through the harness's own fake session): 36 tests covering the ten notify rows and the subscription parts of `sleep` and `clock-back`, each ending in `h.finish()`. `cargo test --features test-endpoint --test scn_notify`: 35 passed, **1 ignored**: `scn_notify_session_gone_full_queue` (T45's `queue_full` makes a new socket file, so the post is never tried and the end is `session_gone`, not `reason=failed`): decided **D16**, follow-up **T57**. `make verify` passes on main after the merge.
+- **Readings kept by the orchestrator** (TST-8: the requirement wins): the expired notice reads the record's `status` (NTF-8: `expired after 1m; it's ready`), the row's "it's open" being a slip; `notify-keeps-active` (ended request before) asserts `active` at the end and the end plus 250 s, and the idle exit at the end plus 300 s, as the row's numbers can't all be read in one run.
+- Choices: each PR its own head SHA; `keeps-ended`'s 24 h-old merge made by merging then advancing 24 h; bare `notify` rows run with the PR in full.

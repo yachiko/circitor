@@ -176,7 +176,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | TST-13 |  | T40 |
 | TST-14 | proposal | T03, T38 |
 | TST-15 |  | T05 |
-| TST-16 |  | T29, T45, T53 |
+| TST-16 |  | T29, T45, T53, T57 |
 
 ## specs/08-notify.md
 
@@ -187,7 +187,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | NTF-3 | proposal | T46, T47 |
 | NTF-4 | proposal | T46; parts: T15 (a-pr-with-a-subscription-stays-tracked); T44 (a-subscription-searches-the-event-history-once) |
 | NTF-5 |  | T09, T21, T28, T47, T49 |
-| NTF-6 |  | T46 |
+| NTF-6 |  | T46, T57 |
 | NTF-7 |  | T46 |
 | NTF-8 | proposal | T46 |
 | NTF-9 |  | T02, T22, T46, T49 |

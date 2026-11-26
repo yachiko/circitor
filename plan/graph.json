@@ -1095,7 +1095,7 @@
    "id": "T34",
    "title": "Quota tests: what an hour costs in each tier and state",
    "kind": "test",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M5",
    "size": "M",
    "wave": 8,
@@ -1396,7 +1396,8 @@
     "T04"
    ],
    "dependents": [
-    "T29"
+    "T29",
+    "T57"
    ],
    "requirements": [
     "TST-16"
@@ -1515,18 +1516,20 @@
    "id": "T49",
    "title": "Scenarios: notify",
    "kind": "test",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M5",
    "size": "L",
    "wave": 8,
-   "remaining": 3,
+   "remaining": 1,
    "depends_on": [
     "T29",
     "T42",
     "T47",
     "T48"
    ],
-   "dependents": [],
+   "dependents": [
+    "T57"
+   ],
    "requirements": [
     "TST-8",
     "NTF-5",
@@ -1701,6 +1704,32 @@
     "tests/scn_tracking.rs"
    ],
    "file": "plan/tasks/T56-limit-warning.md"
+  },
+  {
+   "id": "T57",
+   "title": "Follow-up to T45: queue_full keeps the socket's inode (D16)",
+   "kind": "test",
+   "status": "todo",
+   "milestone": "M5",
+   "size": "S",
+   "wave": 9,
+   "remaining": 1,
+   "depends_on": [
+    "T45",
+    "T49"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-16",
+    "NTF-6"
+   ],
+   "owns": [
+    "src/testkit/session/"
+   ],
+   "shares": [
+    "tests/scn_notify.rs"
+   ],
+   "file": "plan/tasks/T57-queue-full-inode.md"
   }
  ],
  "dropped_tasks": [],
@@ -1777,7 +1806,8 @@
   ],
   [
    "T40",
-   "T56"
+   "T56",
+   "T57"
   ]
  ],
  "critical_path": [
