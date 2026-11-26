@@ -1562,11 +1562,11 @@
    "id": "T51",
    "title": "Follow-up to T28: a second shutdown request during a stop ends it at once",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M2",
    "size": "S",
    "wave": 7,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T28"
    ],

@@ -4,7 +4,7 @@ title: "Follow-up to T28: a second shutdown request during a stop ends it at onc
 kind: code
 milestone: M2
 size: S
-status: in-progress
+status: done
 depends_on: [T28]
 requirements: [OPS-7]
 owns: [src/daemon/run/]
@@ -40,3 +40,7 @@ T28 built the stop sequence in `src/daemon/run/life.rs`. A second request is not
 
 ## Open questions
 - None: decided by the orchestrator (owner's rule of 2026-11-26), recorded in the plan's change log.
+
+## Evidence
+- **2026-11-26**, branch `t51-second-shutdown`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `src/daemon/run/life.rs` (`second_request()`, a `select!` arm in `Life::run`, `SECOND_LOOK` 100 ms; no `Busy` across its sleep) and `tests.rs` (`ops7_second_request_from_the_handle`: a `StopHandle::request` from outside `Running` during a 10 s `stop_delay` ends the stop within 100 ms of the clock, status 0, the `second_request` line). `cargo test --features test-endpoint --lib daemon::run::`: 7 passed. `make verify` passes on main after the merge, `m2_serve` included, the macOS check included.
