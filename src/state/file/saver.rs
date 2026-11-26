@@ -145,8 +145,10 @@ impl Task {
     /// When the pending write is due (STA-7): 5 s after the last one, or after a failure 60 s after
     /// it unless something changed since.
     fn due(&self) -> Mono {
+        // No attempt yet: due at once. `Mono::ZERO` is never after a reading of the clock, so a
+        // clock that moves between two reads can't make the write wait.
         let Some(at) = self.last_attempt else {
-            return self.clock.mono();
+            return Mono::ZERO;
         };
         if self.failed && !self.changed_since_failure {
             at.plus(RETRY_AFTER)
@@ -207,10 +209,11 @@ impl Task {
         loop {
             // TST-4: work in flight from waking until parking again.
             let guard = busy.take().unwrap_or_else(|| self.activity.begin());
+            // One due time per turn: the decision and the sleep go by the same value.
+            let due = self.due();
             if self.writable {
                 let bytes = self.current();
-                if self.last.as_deref() != Some(bytes.as_slice()) && self.clock.mono() >= self.due()
-                {
+                if self.last.as_deref() != Some(bytes.as_slice()) && self.clock.mono() >= due {
                     let _ = self.write(bytes).await;
                     busy = Some(guard);
                     continue;
@@ -218,7 +221,7 @@ impl Task {
             }
             let sleep = if self.writable && self.last.as_deref() != Some(self.current().as_slice())
             {
-                Some(self.clock.sleep_until(self.due()))
+                Some(self.clock.sleep_until(due))
             } else {
                 None
             };

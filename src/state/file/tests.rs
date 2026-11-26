@@ -658,3 +658,71 @@ fn sta6_no_title_no_token() {
         assert_eq!(r.loaded(), c);
     }
 }
+
+/// A clock whose `mono()` moves 1 ms forward at every read, and counts the reads.
+struct MovingClock {
+    inner: Arc<TestClock>,
+    reads: std::sync::atomic::AtomicU64,
+}
+
+impl crate::clock::Clock for MovingClock {
+    fn wall(&self) -> Time {
+        self.inner.wall()
+    }
+    fn mono(&self) -> crate::clock::Mono {
+        use std::sync::atomic::Ordering::SeqCst;
+        let n = self.reads.fetch_add(1, SeqCst) + 1;
+        self.inner.mono().plus(Duration::from_millis(n))
+    }
+    fn sleep_until(&self, at: crate::clock::Mono) -> futures::future::BoxFuture<'static, ()> {
+        self.inner.sleep_until(at)
+    }
+}
+
+// STA-7, OPS-17
+#[tokio::test]
+async fn sta7_writes_on_a_moving_clock() {
+    use std::sync::atomic::Ordering::SeqCst;
+    let r = rig();
+    let moving = Arc::new(MovingClock {
+        inner: r.clock.clone(),
+        reads: Default::default(),
+    });
+    let source = Source::new(content(&[1]));
+    let _saver = Saver::spawn(SaverDeps {
+        fs: r.fs.clone(),
+        path: state_path(),
+        source: source.clone(),
+        clock: moving.clone(),
+        logger: r.logger.clone(),
+        warnings: r.warnings.clone(),
+        activity: r.clock.activity(),
+        writable: true,
+    });
+    r.clock.settle().await;
+    assert_eq!(writes(&r.fs), 1);
+    assert_eq!(r.loaded(), content(&[1]));
+    // Parked: a handful of clock reads, not thousands of turns.
+    assert!(
+        moving.reads.load(SeqCst) <= 10,
+        "{}",
+        moving.reads.load(SeqCst)
+    );
+    // A change inside the spacing waits for its due time, still without spinning.
+    source.set(content(&[1, 2]));
+    r.clock.settle().await;
+    assert_eq!(writes(&r.fs), 1);
+    assert!(
+        moving.reads.load(SeqCst) <= 20,
+        "{}",
+        moving.reads.load(SeqCst)
+    );
+    // The clock runs a few ms ahead of the test clock, so go past the 5 s.
+    r.advance(6).await;
+    assert_eq!(r.loaded(), content(&[1, 2]));
+    assert!(
+        moving.reads.load(SeqCst) <= 30,
+        "{}",
+        moving.reads.load(SeqCst)
+    );
+}
