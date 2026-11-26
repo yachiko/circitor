@@ -1,0 +1,3 @@
+[quota]
+reserve = 100
+burst = 5

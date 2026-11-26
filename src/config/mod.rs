@@ -138,11 +138,15 @@ pub const MAX_SOCKET_PATH: usize = 103;
 /// Why the paths can't be worked out (OPS-3, OPS-4). Each names what to fix.
 #[derive(Debug, thiserror::Error)]
 pub enum PathError {
-    #[error("CIRCITOR_SOCKET must be an absolute path: {0}")]
+    #[error("CIRCITOR_SOCKET must be an absolute path, not {}", .0.display())]
     RelativeSocket(PathBuf),
-    #[error("the socket path is over 103 bytes; set CIRCITOR_SOCKET to a shorter one: {0}")]
+    #[error(
+        "the socket path is {} bytes, over the limit of {MAX_SOCKET_PATH}: {}; set CIRCITOR_SOCKET to a shorter absolute path",
+        .0.as_os_str().len(),
+        .0.display()
+    )]
     TooLong(PathBuf),
-    #[error("no home directory: set HOME")]
+    #[error("no home directory to place circitor's files in: set HOME")]
     NoHome,
 }
 

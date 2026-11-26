@@ -1,0 +1,12 @@
+owners = ["Yachiko", "some-org"]
+interval = 60
+hot_interval = 20
+idle_interval = 900
+idle_after = 1200
+exit_after = 7200
+keep_done = 3600
+gh_path = "/opt/homebrew/bin/gh"
+
+[quota]
+max_per_hour = 1000
+reserve = 100
