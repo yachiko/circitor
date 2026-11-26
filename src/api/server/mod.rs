@@ -81,7 +81,7 @@ fn tier(state: &AppState) -> Tier {
 fn no_record(name: &PrName) -> ApiError {
     ApiError {
         code: ErrorCode::GithubUnavailable,
-        message: format!("{name} has no record after it was read; try again"),
+        message: format!("{name} has no record after it was read"),
         until: None,
     }
 }
@@ -123,7 +123,7 @@ fn starting() -> ApiError {
     ApiError {
         code: ErrorCode::Starting,
         message: format!(
-            "the first poll hasn't finished after {} s; try again in a few seconds",
+            "the first poll hasn't finished after {} s",
             FIRST_POLL_WAIT.as_secs()
         ),
         until: None,
