@@ -1,20 +1,20 @@
 ---
 id: T38
-title: "Owner: the first CI run, on Linux and macOS"
+title: "The first CI run: Linux on a pull request, Linux and macOS at the first tag"
 kind: manual
 milestone: M4
 size: S
-status: blocked
+status: in-progress
 depends_on: [T03]
 requirements: [TST-14]
 owns: []
 shares: []
 ---
 
-# T38 · Owner: the first CI run, on Linux and macOS
+# T38 · The first CI run: Linux on a pull request, Linux and macOS at the first tag
 
 
-> **Blocked (2026-11-25):** the owner chose no CI for now (plan decision P9). Don't start this task until the orchestrator unblocks it.
+> **Rescoped (2026-11-26, the owner):** CI runs Linux only on a pull request; macOS runs at a release tag, in `release.yml`'s `verify` job (T03's Evidence). So **the first run** is `ci.yml` on the pull request that adds the workflows, and **the run that counts** for macOS is `release.yml` at `v0.0.1` (or its dry run by hand, once the workflow is on `main`). The repository is public already. Where the brief below says `verify` runs on macOS on every push, read "at a tag".
 ## Outcome
 The repository is on GitHub, the workflow of T03 has run green on a Linux and a macOS runner, and whatever macOS showed that Linux couldn't is fixed or filed.
 

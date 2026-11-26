@@ -1,0 +1,46 @@
+name: CI
+
+# TST-14 on every pull request and every push to main: `make verify` on Linux
+# only. macOS runs at a release tag (release.yml), where it gates the build.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v6
+
+      # rust-toolchain.toml is the one pin: rustup installs what it names.
+      - name: Install the pinned toolchain
+        run: rustup toolchain install
+
+      - name: Toolchain versions
+        run: rustc --version && cargo --version
+
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6  # v2.9.2
+
+      # make verify ends with check-macos, which needs zig and cargo-zigbuild
+      # on Linux (README, "Building").
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29  # v2.2.1
+        with:
+          version: 0.17.1
+
+      - name: Install cargo-zigbuild
+        run: cargo install cargo-zigbuild --locked
+
+      # The tests are hermetic (TST-1): no token is passed to them.
+      - name: Verify
+        run: make verify

@@ -79,7 +79,7 @@ Configuration, files, the token, the daemon's life, and how circitor is shipped.
 
 ## Shipping
 
-- **OPS-10** **Homebrew, from the owner's tap** (`yachiko/homebrew-tap`), with prebuilt binaries from GitHub releases. **A formula written by `dist`** (D5). It doesn't need `brew services` in v1. A cask is quarantined, so its binary must be notarised; a formula isn't (docs/04 §2). The README installs with the full name, `brew install yachiko/tap/circitor`, which also trusts that item (docs/04 §2).
+- **OPS-10** **Homebrew, from the owner's tap** (`yachiko/homebrew-tap`), with prebuilt binaries from GitHub releases. **A formula written by circitor's release workflow** at a version tag (D5). It doesn't need `brew services` in v1. A cask is quarantined, so its binary must be notarised; a formula isn't (docs/04 §2). The README installs with the full name, `brew install yachiko/tap/circitor`, which also trusts that item (docs/04 §2).
 - **OPS-11** The binary carries its version and commit, printed by `circitor version` and sent as `version` (API-2). **`version` is `MAJOR.MINOR.PATCH`, with `+<commit>` as build metadata** (CLI-9).
 - **OPS-12** **For agents,** the repository ships the guide (CLI-11) in two forms: `skills/circitor/SKILL.md`, read by Claude Code, OpenCode v2 and pi, each from its own skills folders, and a section to paste into `AGENTS.md`, read by OpenCode and pi (docs/03 §1). The README says where each goes. Installing them isn't automated in v1. (proposal)
 - **OPS-13** **Targets:** macOS arm64 and x86-64, Linux x86-64 and arm64. Windows isn't built.

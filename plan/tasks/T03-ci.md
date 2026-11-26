@@ -1,20 +1,20 @@
 ---
 id: T03
-title: "CI: format, lints and every test on Linux and macOS, and the four release targets"
+title: "CI: make verify on Linux for each pull request; at a tag, Linux and macOS, the four targets, the release and the tap"
 kind: infra
 milestone: M4
 size: S
-status: blocked
+status: done
 depends_on: [T01]
 requirements: [TST-14, OPS-13]
-owns: [.github/workflows/]
+owns: [.github/]
 shares: []
 ---
 
-# T03 · CI: format, lints and every test on Linux and macOS, and the four release targets
+# T03 · CI: make verify on Linux for each pull request; at a tag, Linux and macOS, the four targets, the release and the tap
 
 
-> **Blocked (2026-11-25):** the owner chose no CI for now (plan decision P9). Don't start this task until the orchestrator unblocks it.
+> **Rescoped (2026-11-26, the owner):** CI after all, in two workflows. **`ci.yml`:** `make verify` on Linux only, on every pull request and push to `main`. **`release.yml`:** at a `v*` tag, `make verify` on Linux and macOS, then the four targets built natively, a GitHub release with checksums, a cosign bundle and SLSA provenance, and the formula in `yachiko/homebrew-tap`: the pipeline of the owner's `lege` (D5 changed: not `dist`). The brief below is the original; **the Evidence says what was built**, and wins where they differ.
 ## Outcome
 A GitHub Actions workflow runs `make verify` on a Linux and a macOS runner and builds the release binary for the four targets of OPS-13. It's written and checked for syntax here; its first real run is the owner's (T38).
 
@@ -68,3 +68,11 @@ T01 gives `make verify` and the pinned toolchain. This task writes the workflow 
 - **The repository has no remote, and may be private.** Then macOS minutes are paid for, and arm64 Linux runners may not be offered. Build the workflow as written; the owner decides at T38 whether macOS runs on every pull request or on `main` only.
 - **TST-14's CI service is a (proposal).** GitHub Actions is plan decision P9. Keep everything service-specific in this one file.
 - **D5** doesn't touch this task: nothing here publishes.
+
+## Evidence
+- **2026-11-26**, by the orchestrator, on the owner's rescoping. Built: `.github/workflows/ci.yml`, `.github/workflows/release.yml`, `.github/scripts/homebrew_formula.py`, and a `dist` target in the `Makefile` (owner's change to T01's file). `Cargo.toml`'s version set to `0.0.1` for the first tag, `v0.0.1`; `.gitignore` gains `dist/`.
+- **`ci.yml`:** `pull_request` and `push` on `main`; `permissions: contents: read`; cancels a pull request's run in progress. One job, `verify`, on `ubuntu-24.04`: `rustup toolchain install` (reads `rust-toolchain.toml`), the versions, `Swatinem/rust-cache`, zig 0.17.1 through `mlugg/setup-zig`, `cargo install cargo-zigbuild --locked`, `make verify`. No secret, no token.
+- **`release.yml`:** on a `v*` tag, and by hand (`workflow_dispatch`) as a dry run that stops after the builds. `verify` on `ubuntu-24.04` and `macos-15` (TST-14's macOS run); `build` on `ubuntu-22.04` (older glibc), `ubuntu-22.04-arm`, and `macos-15` for both Mac targets (Intel built with Apple's linker on the arm64 runner, as `lege` does); it checks the tag against `Cargo.toml`, runs `make dist TARGET=…` and runs the binary where native. Then `release` (checksums, cosign keyless, `gh release create`), `provenance` (SLSA generator v2.1.0), and `homebrew` (a token from the `yachiko-homebrew-bot` App, scoped to the tap; writes `Formula/circitor.rb`; a prerelease tag skips it). Actions pinned by SHA, the same pins as `lege`.
+- **`make dist`** builds without `test-endpoint` and fails if `CIRCITOR_TEST_` is in the binary. That check found **`CIRCITOR_TEST_GITHUB` in the release binary**, through `EndpointError`'s messages (T07's, dead code there): the constant and the variants `Unset` and `Refused` are now `cfg(any(test, feature = "test-endpoint"))` in `src/github/client/mod.rs`.
+- Checks: both files parse (PyYAML; `actionlint` not installed); `make dist` on Linux gives `circitor_0.0.1_linux_amd64.tar.gz` and `circitor 0.0.1+<commit>`; the formula script, fed four made-up checksums, writes the four platform blocks and exits 1 when an archive is missing. `make verify` passes.
+- **Secrets the owner sets:** `HOMEBREW_TAP_APP_CLIENT_ID` and `HOMEBREW_TAP_APP_PRIVATE_KEY` on `yachiko/circitor`, as on `lege`.
