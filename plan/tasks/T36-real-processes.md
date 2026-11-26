@@ -4,7 +4,7 @@ title: "M4: real processes: spawning, two CLIs, upgrades, signals, files and per
 kind: integration
 milestone: M4
 size: L
-status: todo
+status: review
 depends_on: [T20, T27, T28]
 requirements: [TST-9, OPS-17]
 owns: [tests/real/]

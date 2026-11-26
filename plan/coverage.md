@@ -85,7 +85,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | STA-4 |  | T15 |
 | STA-5 |  | T05, T15 |
 | STA-6 |  | T16 |
-| STA-7 |  | T16 |
+| STA-7 |  | T16, T54 |
 | STA-8 |  | parts: T15 (a-loaded-pr-keeps-its); T15 (entries-past-their-keep-done-are-dropped-on-load); T16 (a-binary-reads-every-earlier-version); T16 (a-file-that-isn-t-json); T16 (a-file-with-a-newer); T16 (a-missing-file-is-normal) |
 | STA-9 |  | T15 |
 | STA-10 | proposal | T15 |
@@ -154,7 +154,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | OPS-14 | proposal | T19 |
 | OPS-15 |  | T19 |
 | OPS-16 |  | T07, T46 |
-| OPS-17 | proposal | T36 |
+| OPS-17 | proposal | T36, T54 |
 | OPS-18 | proposal | T19 |
 
 ## specs/07-testing.md

@@ -526,7 +526,8 @@
     "T04"
    ],
    "dependents": [
-    "T28"
+    "T28",
+    "T54"
    ],
    "requirements": [
     "STA-6",
@@ -1141,7 +1142,7 @@
    "id": "T36",
    "title": "M4: real processes: spawning, two CLIs, upgrades, signals, files and permissions",
    "kind": "integration",
-   "status": "todo",
+   "status": "review",
    "milestone": "M4",
    "size": "L",
    "wave": 7,
@@ -1624,6 +1625,29 @@
    ],
    "shares": [],
    "file": "plan/tasks/T53-nix-socket.md"
+  },
+  {
+   "id": "T54",
+   "title": "Follow-up to T16: the saver spins on a moving clock and never writes",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M4",
+   "size": "S",
+   "wave": 5,
+   "remaining": 1,
+   "depends_on": [
+    "T16"
+   ],
+   "dependents": [],
+   "requirements": [
+    "STA-7",
+    "OPS-17"
+   ],
+   "owns": [
+    "src/state/file/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T54-saver-spin.md"
   }
  ],
  "dropped_tasks": [],
@@ -1670,7 +1694,8 @@
    "T23",
    "T24",
    "T37",
-   "T46"
+   "T46",
+   "T54"
   ],
   [
    "T25",
