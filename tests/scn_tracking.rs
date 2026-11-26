@@ -844,7 +844,6 @@ async fn scn_many_prs_205() {
 // TST-8: many-prs
 // POL-7, STA-3: found PRs left out raise `pr_limit`, and a finding that fits clears it.
 #[tokio::test]
-#[ignore = "T21: with 205 open PRs the finding stops paging at the 200th place (poll.rs `steps`), so no PR is ever left out and `pr_limit` is never raised"]
 async fn scn_many_prs_205_warning() {
     let (h, p) = many_world(TRACKED_MAX + 5).await;
     h.clock().advance(s(15)).await;
@@ -856,7 +855,8 @@ async fn scn_many_prs_205_warning() {
             w.close(*pr);
         }
     });
-    h.clock().advance(s(45)).await;
+    // Waits for the next poll: the tier is idle (updated for D15, T56).
+    h.clock().advance(s(345)).await;
     let st = status(&h).await;
     assert!(warning(&st, "pr_limit").is_none(), "{st}");
     h.finish().await;

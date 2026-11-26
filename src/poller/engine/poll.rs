@@ -133,9 +133,11 @@ impl Run {
             return;
         }
 
-        // Further finding pages (POL-7), until every place is taken (STA-3).
+        // Further finding pages (POL-7), until a found PR gets no place (STA-3, D15).
         while let Some(after) = next.take() {
-            if self.d.store.places_free() == 0 {
+            // D15: stop at the first page holding a found PR with no place (`left_out`, set by
+            // `take_found`); the pages left unread count as left out too.
+            if p.left_out {
                 next = Some(after);
                 break;
             }

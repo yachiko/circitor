@@ -342,6 +342,39 @@ async fn sta3_places() {
     assert!(r.warnings.list().is_empty());
 }
 
+// D15, STA-3, POL-7: with every place taken, an unread page of the finding raises `pr_limit`; a poll
+// that reads the finding to its end and leaves none out clears it.
+#[tokio::test]
+async fn d15_an_unread_page_at_the_limit_raises_pr_limit() {
+    let names: Vec<String> = (1..=205).map(|i| format!("o/r#{i}")).collect();
+    let refs: Vec<&str> = names.iter().map(String::as_str).collect();
+    let r = start(Setup {
+        world: world_of(&refs),
+        ..Setup::default()
+    })
+    .await;
+    r.advance(20).await;
+    r.advance(300).await;
+    assert_eq!(r.store.places_free(), 0);
+    assert_eq!(r.warnings.list()[0].code, WarningCode::PrLimit);
+    let calls = r.calls();
+    // Pages 1 and 2 are read (every PR on them is tracked), page 3 shows the 5 with no place.
+    assert!(calls.iter().any(|q| q.find
+        == Some(Find {
+            after: Some("o200".into())
+        })));
+
+    {
+        let mut w = r.world();
+        for i in 1..=5 {
+            w.set_state(&format!("o/r#{i}"), ReadState::Closed);
+        }
+    }
+    r.advance(300).await;
+    r.advance(20).await;
+    assert!(r.warnings.list().is_empty());
+}
+
 // POL-8: a PR's check pages are one read.
 #[tokio::test]
 async fn pol8_check_pages() {

@@ -324,8 +324,10 @@ async fn pol15_goes_next() {
     let calls = r.calls();
     assert_eq!(named(&calls[held + 1]), vec![id("o/r#100")]);
     assert!(!has_find(&calls[held + 1]));
-    // STA-3: every place is taken, so the finding stops at its first page; the batches go on.
-    assert!(!has_find(&calls[held + 2]) && calls[held + 2].nodes.len() == 40);
+    // Updated for D15 (T56): every PR on page 1 is tracked, so the finding reads page 2, then the
+    // batches go on.
+    assert!(has_find(&calls[held + 2]) && calls[held + 2].nodes.is_empty());
+    assert!(!has_find(&calls[held + 3]) && calls[held + 3].nodes.len() == 40);
     let later: Vec<NodeId> = calls[held + 2..].iter().flat_map(named).collect();
     assert!(!later.contains(&id("o/r#100")));
     assert_eq!(later.len() + 40, 199, "every other PR, once");
