@@ -4,7 +4,7 @@ title: "Golden output end to end: every command's text and JSON, every exit code
 kind: test
 milestone: M5
 size: L
-status: todo
+status: in-progress
 depends_on: [T29, T42, T47, T48]
 requirements: [TST-7]
 owns: [tests/golden_cli.rs, tests/golden/cli/]

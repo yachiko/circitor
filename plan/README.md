@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **56 tasks:** 7 todo, 2 in-progress, 45 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **56 tasks:** 5 todo, 3 in-progress, 46 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -105,7 +105,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 5 | [T37](tasks/T37-record-fixtures.md) | Owner: record real responses from yachiko/experiment | manual | S | todo | T07 |
 | 5 | [T46](tasks/T46-notify-core.md) | Notify: subscriptions, the loop that evaluates them, the poster, and every notice's words | code | L | done | T09, T10, T15, T43, T44 |
 | 5 | [T54](tasks/T54-saver-spin.md) | Follow-up to T16: the saver spins on a moving clock and never writes | code | S | done | T16 |
-| 5 | [T55](tasks/T55-due-after-sleep.md) | Follow-up to T09: a record marked slept is due at the next poll (D14) | code | S | in-progress | T52 |
+| 5 | [T55](tasks/T55-due-after-sleep.md) | Follow-up to T09: a record marked slept is due at the next poll (D14) | code | S | done | T52 |
 | 6 | [T25](tasks/T25-engine-demand.md) | Poller engine: hot PRs, forced refreshes, reading through, track, the mergeable follow-up | code | L | done | T21 |
 | 6 | [T26](tasks/T26-m1-poll.md) | M1: the real client against the fake GitHub, polling end to end | integration | M | done | T07, T20, T21 |
 | 6 | [T27](tasks/T27-cli-commands.md) | CLI commands: run, each command, the wait's deadline and reconnect, exit codes | code | L | done | T10, T11, T24 |
@@ -121,9 +121,9 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 8 | [T32](tasks/T32-scenarios-tracking.md) | Scenarios: tracking and polling | test | L | done | T29, T42 |
 | 8 | [T33](tasks/T33-scenarios-daemon.md) | Scenarios: the daemon's life and failures | test | L | in-progress | T29 |
 | 8 | [T34](tasks/T34-quota-tests.md) | Quota tests: what an hour costs in each tier and state | test | M | todo | T29 |
-| 8 | [T35](tasks/T35-golden-cli.md) | Golden output end to end: every command's text and JSON, every exit code | test | L | todo | T29, T42, T47, T48 |
+| 8 | [T35](tasks/T35-golden-cli.md) | Golden output end to end: every command's text and JSON, every exit code | test | L | in-progress | T29, T42, T47, T48 |
 | 8 | [T39](tasks/T39-release.md) | Owner: set up the release tool, publish to the tap | manual | M | todo | T19, T36 |
-| 8 | [T49](tasks/T49-scenarios-notify.md) | Scenarios: notify | test | L | todo | T29, T42, T47, T48 |
+| 8 | [T49](tasks/T49-scenarios-notify.md) | Scenarios: notify | test | L | in-progress | T29, T42, T47, T48 |
 | 9 | [T40](tasks/T40-acceptance.md) | Owner: the acceptance checks on a Mac and on Linux | manual | M | todo | T19, T36, T39, T47, T48 |
 | 9 | [T56](tasks/T56-limit-warning.md) | Follow-up to T21: a finding page left unread at the limit raises pr_limit (D15) | code | S | todo | T42, T32 |
 <!-- /plan:waves -->
@@ -177,7 +177,7 @@ flowchart LR
   T32["T32 Scenarios: tracking and polling"]:::done
   T33["T33 Scenarios: the daemon's life and…"]:::active
   T34["T34 Quota tests: what an hour costs i…"]
-  T35["T35 Golden output end to end: every c…"]
+  T35["T35 Golden output end to end: every c…"]:::active
   T36["T36 M4: real processes: spawning, two…"]:::done
   T37["T37 Owner: record real responses from…"]:::manual
   T38["T38 Owner: the first CI run, on Linux…"]:::blocked
@@ -191,13 +191,13 @@ flowchart LR
   T46["T46 Notify: subscriptions, the loop t…"]:::done
   T47["T47 Notify routes: registering a subs…"]:::done
   T48["T48 CLI: the notify command"]:::done
-  T49["T49 Scenarios: notify"]
+  T49["T49 Scenarios: notify"]:::active
   T50["T50 Follow-up to T01: check-macos fro…"]:::done
   T51["T51 Follow-up to T28: a second shutdo…"]:::done
   T52["T52 Follow-up to T09: a PR whose last…"]:::done
   T53["T53 Follow-up to T01: nix's socket fe…"]:::done
   T54["T54 Follow-up to T16: the saver spins…"]:::done
-  T55["T55 Follow-up to T09: a record marked…"]:::active
+  T55["T55 Follow-up to T09: a record marked…"]:::done
   T56["T56 Follow-up to T21: a finding page…"]
   T01 --> T02
   T01 --> T03
@@ -521,6 +521,7 @@ Also the owner's: confirming the plan decisions above before T01 starts (P1 to P
 
 ## Change log
 
+- 2026-11-26: **OPS-17's timing tests under load (orchestrator's reading).** `ops17_list_from_memory_within_50_ms` can miss 50 ms when other worktrees build (median 62.9 ms at a load of 8.5). It stays in `make verify`, unchanged; while the swarm runs, a `make verify` that fails only on an `ops17_` test is run once more, and the rerun recorded.
 - 2026-11-26: **D15** (orchestrator's decision): a finding page left unread because every place is taken counts as PRs left out, so `pr_limit` is raised. Written into STA-3 and `specs/decisions.md`; follow-up **T56** in `src/poller/engine/`, which also lifts T32's ignore on `scn_many_prs_205_warning`. **Reading kept (orchestrator):** `untrack` of a `manual` PR already dropped answers with its last record (T15's `Untracked::record`, as T22 built), not `null`.
 - 2026-11-26: **D14** (orchestrator's decision): a record marked slept is due at the next poll, so the poll POL-22 starts on waking refreshes it. Written into POL-22 and `specs/decisions.md`; follow-up **T55** in `src/poller/cadence/`. Also noted for T29's owner: `Bg::cancel` counts the connections open at the command's start, so it cancels reliably only the newest command (T31).
 - 2026-11-26: **T36 found a T16 bug; follow-up T54.** The state-file saver's `due()` is the clock's `mono()` before a first write, read after the loop's own reading: on a moving clock no write is ever made and the loop spins (100 % CPU, `state.json` written only at the stop). T54 fixes it; T36 is held in review and merged after T54, so `make verify` on main never carries the CPU load's flake. **OPS-8 reading (orchestrator):** the idle time counts from a client request's arrival, as built; a long request is a wait, which the waiter rule already covers.

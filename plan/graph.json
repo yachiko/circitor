@@ -1118,7 +1118,7 @@
    "id": "T35",
    "title": "Golden output end to end: every command's text and JSON, every exit code",
    "kind": "test",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M5",
    "size": "L",
    "wave": 8,
@@ -1515,7 +1515,7 @@
    "id": "T49",
    "title": "Scenarios: notify",
    "kind": "test",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M5",
    "size": "L",
    "wave": 8,
@@ -1592,7 +1592,7 @@
    "milestone": "M1",
    "size": "S",
    "wave": 4,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T09"
    ],
@@ -1658,11 +1658,11 @@
    "id": "T55",
    "title": "Follow-up to T09: a record marked slept is due at the next poll (D14)",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M1",
    "size": "S",
    "wave": 5,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T52"
    ],

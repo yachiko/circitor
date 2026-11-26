@@ -4,7 +4,7 @@ title: "Follow-up to T09: a record marked slept is due at the next poll (D14)"
 kind: code
 milestone: M1
 size: S
-status: in-progress
+status: done
 depends_on: [T52]
 requirements: [POL-22]
 owns: [src/poller/cadence/]
@@ -33,3 +33,8 @@ T31 found that after `sleep_wall_only` the poll that starts on waking sends only
 
 ## Open questions
 - None: decided by the orchestrator (owner's rule of 2026-11-26).
+
+## Evidence
+- **2026-11-26**, branch `t55-due-after-sleep`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `src/poller/cadence/mod.rs` (`// POL-22, D14:` in `in_poll`) and `tests.rs` (`d14_a_slept_pr_is_due_at_the_next_poll`). `cargo test --features test-endpoint --lib poller::`: 111 passed; `--test scn_waits`: 24 passed; no other task's test counted the old behaviour. `make verify` passes on main after the merge, at a load of about 8.
+- **Noted:** the executor's own `make verify` once stopped on `ops17_list_from_memory_within_50_ms` (median 62.9 ms) under a load of about 8.5 from other worktrees, and passed when the load dropped. OPS-17's figures need a quiet machine (as T36 ran alone); the orchestrator keeps them in `make verify` and reruns once when only an `ops17_` test fails under the swarm's load.

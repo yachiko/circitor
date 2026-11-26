@@ -4,7 +4,7 @@ title: "Scenarios: notify"
 kind: test
 milestone: M5
 size: L
-status: todo
+status: in-progress
 depends_on: [T29, T42, T47, T48]
 requirements: [TST-8, NTF-5, NTF-9, NTF-10]
 owns: [tests/scn_notify.rs]
