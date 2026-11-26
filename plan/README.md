@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **62 tasks:** 2 todo, 1 in-progress, 59 done. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **62 tasks:** 3 todo, 1 in-progress, 58 done. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -124,7 +124,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 8 | [T35](tasks/T35-golden-cli.md) | Golden output end to end: every command's text and JSON, every exit code | test | L | done | T29, T42, T47, T48 |
 | 8 | [T39](tasks/T39-release.md) | Owner: the first release, v0.0.1, to the tap | manual | M | todo | T19, T36 |
 | 8 | [T49](tasks/T49-scenarios-notify.md) | Scenarios: notify | test | L | done | T29, T42, T47, T48 |
-| 8 | [T62](tasks/T62-response-in-flight.md) | Follow-up to T28 and T51: an answer waiting for room in the socket is work in flight | code | S | done | T28, T51 |
+| 8 | [T62](tasks/T62-response-in-flight.md) | Follow-up to T28 and T51: an answer waiting for room in the socket is work in flight | code | S | todo | T28, T51 |
 | 9 | [T40](tasks/T40-acceptance.md) | Owner: the acceptance checks on a Mac and on Linux | manual | M | todo | T19, T36, T39, T47, T48 |
 | 9 | [T56](tasks/T56-limit-warning.md) | Follow-up to T21: a finding page left unread at the limit raises pr_limit (D15) | code | S | done | T42, T32 |
 | 9 | [T57](tasks/T57-queue-full-inode.md) | Follow-up to T45: queue_full keeps the socket's inode (D16) | test | S | done | T45, T49 |
@@ -210,7 +210,7 @@ flowchart LR
   T59["T59 Follow-up to T22: the starting er…"]:::done
   T60["T60 Follow-up to T49: find a stop's n…"]:::done
   T61["T61 Follow-up to T45 and T57: the fak…"]:::done
-  T62["T62 Follow-up to T28 and T51: an answ…"]:::done
+  T62["T62 Follow-up to T28 and T51: an answ…"]
   T01 --> T02
   T01 --> T03
   T02 --> T04
@@ -548,6 +548,7 @@ Also the owner's: confirming the plan decisions above before T01 starts (P1 to P
 - 2026-11-26: **M5 reached.** Every executor task is done (T01, T02, T04 to T36, T41 to T59; T50 and T53 the owner's and the orchestrator's). `make verify` on main: 936 tests pass, 0 fail; the only ignored ones are T07's `dump_queries` (a printer for T37, by design) and three rustdoc examples. Every TST-8 scenario (T30 to T33, T49), TST-6's figures (T34), TST-7's golden output (T35) and TST-9's real processes with OPS-17 (T36) pass. Left: the owner's T37, T39, T40, and T03/T38 (blocked, no CI). Decisions taken by the orchestrator under the owner's rule: D12 to D16 (`specs/decisions.md`), and the readings recorded in this log and in each task's Evidence.
 - 2026-11-26: **Main red after T56, test window at fault; follow-up T58.** `ops17_no_cpu_between_polls` started its 5 s after a poll's first answer; since D15 a 200-PR poll sends its second finding page a second later, inside the window (8 to 40 ticks). With T56's `poll.rs` reverted the test passed 3 times at the same load, and the daemon doesn't spin: T58 moves the window after the poll's last request. **T57** was allowed to fix T49's `scn_notify_session_gone_full_queue` assertion (it forgot the registration's confirmation). **T35 found** the `starting` line saying "try again in a few seconds (try again in a minute)": follow-up T59 (the route's message drops its own hint) after T35 merges.
 - 2026-11-26: **D16** (orchestrator, after T49): `FakeSession::queue_full` lowers the backlog of the same listening socket instead of binding a new one, so the notifier's `look` sees the same session and its post fails as `reason=failed` (NTF-6, TST-16). Follow-up **T57** in `src/testkit/session/`, which also lifts T49's ignore. **Readings kept** (TST-8: the requirement wins): `notify-ends`' expired notice reads the record's `status` (`it's ready`), not `it's open`; `notify-keeps-active`'s row can't read all its numbers in one run. **Watch:** T27's `cli10_no_daemon_back` failed once under load ("ended at 9.9") and passed after.
+- 2026-11-26: **T62 reopened (`todo`).** The fourth dry run still failed its two tests on `macos-26`: `Writing` closed the Linux-reproducible gap, not macOS's. On the owner's fallback, both are ignored on macOS only, pointing to T62. TST-6 and TST-8's `many-checks` row are unproven on macOS meanwhile.
 - 2026-11-26: **The third dry run (`macos-26`) failed three tests; T61 extended, follow-up T62, done.** `tst16_queue_full`: macOS keeps a socket's first backlog (128), recorded in docs/05 with the refusal (the owner's OK). `quota`'s 200-PR test and `scn_many_checks_truncated_failing`: **an answer parked on a full socket buffer wasn't work in flight** (TST-4), and macOS's small Unix-socket buffer let the clock settle half-way. Reproduced on Linux with a 2 KB `SO_SNDBUF`; `Conns::serve` now holds an `Activity` guard while a write waits.
 - 2026-11-26: **The second dry run compiled on macOS and failed three unit tests; T61 extended.** A full Unix-socket queue on macOS refuses (`ECONNREFUSED`), as NTF-6 says; the fake session socket assumed Linux's `EAGAIN`. **D17 (the owner): macOS is arm64 only**, verified and built on `macos-26`; OPS-13 and the overview updated, the formula's macOS block is arm64 only, the README's Intel prefix sentence gone; T39 edited, a note on T03, T38's change waiting. `make verify` runs `cargo test --no-fail-fast`, so one CI run shows every failure.
 - 2026-11-26: **The first release dry run failed on macOS; follow-up T61, done.** `verify (macos-15)` didn't compile: the fake session socket (`src/testkit/session/`) passed `SOCK_NONBLOCK` and `SOCK_CLOEXEC`, which are Linux-only. **The first macOS build of the test code**: the old `check-macos` built without `test-endpoint`. Now set with `fcntl` after `socket()`, on every platform. A one-off check from Linux found no other macOS compile error in the test build.
