@@ -4,7 +4,7 @@ title: "Fake GitHub: the scripted world and the GraphQL engine that answers from
 kind: test
 milestone: M1
 size: L
-status: in-progress
+status: done
 depends_on: [T02, T41]
 requirements: [TST-3:it-answers-the-queries-circitor-sends, TST-3:by-default-its-world-behaves, TST-3:it-parses-each-query-and]
 owns: [src/testkit/github/, tests/cost/]
@@ -82,3 +82,11 @@ Unit tests in `src/testkit/github/`, with hand-written queries.
 - **The formula is `documented`, its fit to the rows `observed`** (docs/02 §2). Whether exactly half a point rounds up isn't measured: round half up, in one place.
 - **Deletion, lost access, a rename's node ID, a re-run and a review's late `updatedAt` aren't measured** (docs/02 §5, §6; MOD-1, MOD-4). Play them as the requirement that cites them assumes: `NOT_FOUND`, the same ID, a run back to `QUEUED` on the same head, about 10 s late.
 - This is the plan's least certain size (plan README, "Risks"). If the world's builders won't fit beside the executor, say which part you'd split off; don't thin the acceptance.
+
+## Evidence
+- **2026-11-26**, branch `t14-fake-github-engine`, executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- Changed: `src/testkit/github/` (`mod.rs`, new `query.rs`, `cost.rs`, `exec.rs`, `world.rs`, `tests.rs`) and `tests/cost/` (16 files: `frag.graphql` and one per row of "Measured cost"). Every test the Acceptance names exists; nothing here reads the environment or opens a connection.
+- `cargo test --features test-endpoint --lib testkit::github::`: 14 passed (executor). After rebasing onto T07 and T15: `make verify` passes in the worktree and on main after the merge (281 lib tests, 1 ignored), the macOS check included. The size risk didn't materialise: no split needed.
+- Contract-compatible additions: extra derives on `Rejected`, `Executed`, `Asked`; `node_ids` also lists `node(id:)` IDs; exports `PrId`, `RepoId`, `RunId`; `World::{spend, rate, login, set_login}`.
+- Unmeasured defaults chosen and documented in `world.rs`: a lagged push also serves the old `updatedAt` (as `a2.log` 22:13:51 shows); a reopen moves `updatedAt`, a title or base edit doesn't; a re-run keeps its `databaseId`; the review lag is 10 s (`set_review_lag`); a push doesn't make `mergeable` `UNKNOWN` by itself; an unknown conclusion counts as failed in the rollup, a status `ERROR` makes it `FAILURE`; `autoMergeRequest` and `mergeQueueEntry` are `null`; `first`/`last` outside 1 to 100 is `NotInSchema`; cursors are positions (`Y3Vyc29y:<n>`), a bad one an `INVALID_CURSOR_ARGUMENTS` field error.
+- **Open, for T26:** `describe`'s `AskedOf` is inferred from the query's shape (record fields, items with `first`/`last`, `contexts(after:)` alone), written before T07's queries existed; the resolvers are the fields listed in `exec.rs`'s `SUPPORTED`. A mismatch with T07 shows in T26.

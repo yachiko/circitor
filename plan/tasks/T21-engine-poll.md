@@ -4,7 +4,7 @@ title: "Poller engine: the loop, the gate, the poll, errors, the tick"
 kind: code
 milestone: M1
 size: L
-status: todo
+status: in-progress
 depends_on: [T08, T09, T13, T15]
 requirements: [POL-2, POL-4, POL-5, POL-7, POL-8, POL-10, POL-12, POL-13, POL-19, POL-20, POL-21, POL-22, POL-23, POL-24, POL-25, POL-26, STA-3, API-18, API-4, API-16, OPS-9:logged, OPS-9:circitor-log-debug-adds-one-line-per-request-to, NTF-5, U2]
 owns: [src/poller/engine/]

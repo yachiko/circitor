@@ -446,11 +446,11 @@
    "id": "T14",
    "title": "Fake GitHub: the scripted world and the GraphQL engine that answers from it",
    "kind": "test",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M1",
    "size": "L",
    "wave": 4,
-   "remaining": 14,
+   "remaining": 11,
    "depends_on": [
     "T02",
     "T41"
@@ -662,7 +662,7 @@
    "id": "T21",
    "title": "Poller engine: the loop, the gate, the poll, errors, the tick",
    "kind": "code",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M1",
    "size": "L",
    "wave": 5,
@@ -1260,7 +1260,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 14,
+   "remaining": 13,
    "depends_on": [
     "T02"
    ],
