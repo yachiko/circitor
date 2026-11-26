@@ -48,6 +48,12 @@ pub const FULL_QUEUE: ErrorKind = if cfg!(target_os = "macos") {
     ErrorKind::WouldBlock
 };
 
+/// At most this many of the fake's own connections fill the queue. On Linux a second `listen` with a
+/// backlog of 0 shrinks it to one or two; on macOS it doesn't, and the queue holds its first backlog,
+/// the system's maximum of 128 (seen on the `macos-26` runner, 2026-11-26; T61).
+#[cfg(test)]
+const FILL_LIMIT: usize = if cfg!(target_os = "macos") { 130 } else { 10 };
+
 /// One line as it arrived.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Line {
@@ -321,8 +327,8 @@ impl FakeSession {
     /// It listens without accepting until its backlog is full, so a connect fails at once.
     ///
     /// The same socket (same device and inode): it stops accepting and calls `listen` again with a backlog
-    /// of 0, which sets the backlog of a socket already listening on Linux. The fake fills the queue with
-    /// connections of its own (one or two on Linux), from a non-blocking connect, until one gets [`FULL_QUEUE`],
+    /// of 0, which sets the backlog of a socket already listening on Linux; macOS keeps the first one. The fake
+    /// fills the queue with connections of its own (one or two on Linux, 128 on macOS), from a non-blocking connect, until one gets [`FULL_QUEUE`],
     /// so this needs the tokio runtime (every test has it). After `refuse` or `vanish` there is no
     /// listener, and it makes a new one first.
     pub fn queue_full(&self) {
@@ -669,7 +675,10 @@ mod tests {
         println!("queue_full: a connect saw {:?}: {err}", err.kind());
         assert_eq!(err.kind(), FULL_QUEUE);
         let used = session.inner.lock().fillers.len();
-        assert!(used < 10, "{used} descriptors used to fill the backlog");
+        assert!(
+            used < FILL_LIMIT,
+            "{used} descriptors used to fill the backlog"
+        );
         clock.settle().await;
         assert!(session.lines().is_empty());
         session.restore();
