@@ -4,7 +4,7 @@ title: "Waiters: the wait route, its conditions, outcomes, deadline and clean en
 kind: code
 milestone: M2
 size: L
-status: todo
+status: done
 depends_on: [T09, T15, T41, T44]
 requirements: [API-9, API-10, API-11, API-12, API-13, API-14, U6]
 owns: [src/api/wait/]
@@ -87,3 +87,8 @@ Unit tests in `src/api/wait/`, through `oneshot` on `api::router`, reading the b
 ## Open questions
 - **(proposal):** API-12's 100 and 3 600, API-14's 64. Built as written. API-10's and API-11's own proposals are T44's.
 - **A wait's `record` carries `checks.items`; a reset's `records` don't** (API-19).
+
+## Evidence
+- **2026-11-26**, branch `t23-api-wait`, executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- `src/api/wait/mod.rs` and a new `tests.rs`; no public signature changed. `cargo test --features test-endpoint --lib api::wait::`: 11 passed, 6 runs, no flake. `make verify` passes on main after the merge (408 lib tests), the macOS check included.
+- Choices: a deadline that passes during the read-through answers with `circitor-cursor` and the events `window` gives for an ID matching none; a tracked `First` PR without a record is read through; the limit errors are the executor's words ("Too many waiters: 64 are held."). No whole-body golden file (shapes compared with T41's files instead).

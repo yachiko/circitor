@@ -4,7 +4,7 @@ title: "Notify: subscriptions, the loop that evaluates them, the poster, and eve
 kind: code
 milestone: M2
 size: L
-status: todo
+status: done
 depends_on: [T09, T10, T15, T43, T44]
 requirements: [NTF-1, NTF-2, NTF-3, NTF-4, NTF-6, NTF-7, NTF-8, NTF-9, NTF-10, OPS-16, OPS-9:logged, TST-7]
 owns: [src/notify/, tests/golden/notify/]
@@ -102,3 +102,8 @@ Unit tests in `src/notify/`, on `TestClock`, a real `Store` filled through `rese
 - **A session that was killed may leave its socket file** (NTF-4, not measured): then the tick sees nothing wrong, and the subscription lasts until its notice is refused or `for` passes.
 - **NTF-4's `problem` for `auth` is timed from `PollerStatus::problem_since`** (T21 publishes it), so it comes at the first tick at or after the 10 minutes. `pr_failing` is T42's warning, read with `Warnings::since`.
 - `pr_failing`'s `problem` notice is NTF-8's sentence with its code (D9), and a forward step of the wall clock counts towards `for` as a sleep (NTF-4, D9): both are in the spec now.
+
+## Evidence
+- **2026-11-26**, branch `t46-notify-core`, executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- `src/notify/` (`notifier.rs`, `poster.rs`, `fake.rs`, `text.rs`, new `notifier/tests.rs`, `text/tests.rs`) and 25 golden files in `tests/golden/notify/`, read by the executor against NTF-7 and NTF-8 (their examples byte for byte in the tests). **Checked by the orchestrator:** nothing reads `CLAUDE_CODE_MESSAGING_SOCKET` or the environment; `RealPoster`'s tests post only to listeners bound in their own `ShortDir`. `cargo test --features test-endpoint --lib notify::`: 30 passed, 8 runs, no flake. `make verify` passes on main after the merge (435 lib tests), the macOS check included; `cargo build --release` passes.
+- Choices: `for` is also checked at a wake where `sleep.total()` moved; the confirmation is posted without a `look` (the route just did one); at `stop`, each open or confirming subscription logs `subscription ended … end=stopped` besides one `notice not posted reason=stop count=N` line (T28, T49 match on it), and a confirming one whose end was found gets `stopped`; a `register` future dropped mid-confirmation takes the subscription out and logs `end=cancelled`.

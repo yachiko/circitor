@@ -146,7 +146,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 3,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T02"
    ],
@@ -285,7 +285,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T02"
    ],
@@ -319,7 +319,7 @@
    "milestone": "M3",
    "size": "L",
    "wave": 4,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T02",
     "T41"
@@ -390,11 +390,11 @@
    "id": "T12",
    "title": "Token source: running gh auth token",
    "kind": "code",
-   "status": "todo",
+   "status": "done",
    "milestone": "M1",
    "size": "M",
    "wave": 4,
-   "remaining": 12,
+   "remaining": 10,
    "depends_on": [
     "T04"
    ],
@@ -478,7 +478,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 4,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T04",
     "T05",
@@ -714,11 +714,11 @@
    "id": "T22",
    "title": "API routes: list, show, changes, track, untrack, refresh, status, shutdown, and starting up",
    "kind": "code",
-   "status": "todo",
+   "status": "done",
    "milestone": "M2",
    "size": "L",
    "wave": 5,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T09",
     "T15",
@@ -752,11 +752,11 @@
    "id": "T23",
    "title": "Waiters: the wait route, its conditions, outcomes, deadline and clean end",
    "kind": "code",
-   "status": "todo",
+   "status": "done",
    "milestone": "M2",
    "size": "L",
    "wave": 5,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T09",
     "T15",
@@ -1357,7 +1357,7 @@
    "milestone": "M2",
    "size": "M",
    "wave": 3,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T02"
    ],
@@ -1404,11 +1404,11 @@
    "id": "T46",
    "title": "Notify: subscriptions, the loop that evaluates them, the poster, and every notice's words",
    "kind": "code",
-   "status": "todo",
+   "status": "done",
    "milestone": "M2",
    "size": "L",
    "wave": 5,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T09",
     "T10",

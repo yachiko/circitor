@@ -4,7 +4,7 @@ title: "Token source: running gh auth token"
 kind: code
 milestone: M1
 size: M
-status: todo
+status: done
 depends_on: [T04]
 requirements: [OPS-5:a-gh-path-with-a, OPS-5:a-read-has-three-outcomes, OPS-5:the-token-is-held-in-memory-only, U11, U13]
 owns: [src/token/gh/]
@@ -87,3 +87,8 @@ Unit tests in `src/token/gh/`, each with fake `gh` shell scripts written into a 
 - **OPS-5 is a (proposal)** where it names Homebrew's directories, and whether `gh auth token` works from a service on macOS, or what it answers while the Keychain asks, isn't checked (docs/04 §8 items 2 and 4). Build as written; TST-13 step 6 checks it on the owner's Mac.
 - **What counts as `NoOutput`** beyond empty output is this brief's reading: list it under Open items.
 - D5 and D6 don't touch this task.
+
+## Evidence
+- **2026-11-26**, branch `t12-token-source`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `src/token/gh/mod.rs` and a new `tests.rs`; no public signature changed. Every test runs a fake `gh` script; tests that look a name up use a `PATH` without `/usr/bin`, since this machine has a real `/usr/bin/gh`. `cargo test --features test-endpoint --lib token::gh::`: 13 passed, 3 runs, no flake. `make verify` passes on main after the merge (383 lib tests), the macOS check included.
+- Choices: `NoOutput` covers non-UTF-8, white space only, empty and several lines; only one trailing `\n` is cut (a `\r\n` keeps its `\r`); the test helper spins on `yield_now` (TST-2's guard bans `thread::sleep`). Unchecked: `gh` from a service on macOS (T40).

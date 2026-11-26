@@ -31,6 +31,7 @@ T21 built the loop, the gate, the poll, the error handling and the status, and l
 ## Scope
 - **Hot refreshes (POL-14's share here).** Add the hot timer to the loop's wait: `cadence::hot_due(...).next`. When PRs are due, refresh them by ID, 40 a request, with no finding; a PR with no record is asked as `RecordAndItems`. Check pages and POL-12's items follow as in a poll, straight after. `nudge` makes the loop look again. Which PRs are hot and when is T09's share.
 - **Forced refreshes (POL-15's share here).** `refresh_pr(id)`, in this order: when that PR is in the request in flight, whatever started it, or already waits in the demand queue, the call joins it and returns its result; else `NotSent` when `cadence::may_force_pr` says the window holds, when `policy.demand` is false, in a backoff, or when `Auth::token(true)` gives no token; else one request for that PR. `Applied` or `Failed` is what that request did to this PR. The windows are T09's share; `poll_now` and its `shared` are T21's.
+- **A forced poll refreshes every tracked PR (D11, POL-15; decided after T21).** The poll `poll_now` starts (not one it joins, and not an ordinary one) refreshes every tracked PR with a place, whatever `cadence::in_poll` says is due, besides its finding: 40 a request as in any poll, with check pages and items after. Every request still marks its PRs sent at the poll's send time (P10). Build it in the poll T21 wrote, behind one flag the `poll_now` path sets; cadence (T09) is unchanged. `Shared`, the 10 s window and the outcomes stay T21's.
 - **Demand goes next (POL-15).** A forced refresh, a read-through and a `track` are sent before the rest of a poll in flight, between its requests, and before a hot refresh that's due. The gate's 1 s still holds.
 - **Reading through (POL-16, whole).** `read_through(name)`:
   - `store.lookup` first. A PR with a record: `Ok`, nothing sent. Untracked and `places_free()` at 0: `Limit`, nothing sent (STA-3).
@@ -48,7 +49,7 @@ T21 built the loop, the gate, the poll, the error handling and the status, and l
 - **Provides:** the rest of `impl PollerHandle for Engine`: `read_through`, `track`, `refresh_pr`, and `nudge` with an effect. No signature changes.
 
 ## Out of scope
-- The gate, the poll, `poll_now`, the tier, the tick, the status, the backoff's own tries: T21. Change them only where this brief says a hook goes; report anything else.
+- The gate, the poll (but for D11's flag above), `poll_now`, the tier, the tick, the status, the backoff's own tries: T21. Change them only where this brief says a hook goes; report anything else.
 - What a PR's errors add up to (`gone`, `pr_failing`, the `pr error` line): T42. Leave its three calls empty.
 - Deciding when a route reads through or forces (`fresh`, a wait's arrival, a loaded PR's wait held without one): T22, T23.
 - `untrack`, the `asked` PR's 60 minutes, source strength: T15. The cadence and window arithmetic: T09.
@@ -56,6 +57,7 @@ T21 built the loop, the gate, the poll, the error handling and the status, and l
 
 ## Acceptance
 Unit tests in `src/poller/engine/`, set up as T21's: `ScriptedGitHub`, the real `Store` (waiters through `store.add_waiter`, naming through `store.name`), `TestClock`, OPS-2's defaults.
+- `d11_forced_poll_refreshes_every_pr`: in the idle tier, a `poll_now` 60 s after an ordinary poll sends the finding and every tracked PR (three PRs: one request with all three); an ordinary poll 60 s after that one asks none of them; a fourth PR beyond 40 goes in a second request.
 - `pol14_hot_between_polls`: with a waiter on one tracked PR in the active tier, after a poll sent at t that PR alone is asked at t + 10 s and t + 20 s, by ID, with no finding; the poll at t + 30 s counts as its refresh, so the next is at t + 40 s. When the waiter is dropped and `nudge` called, they stop.
 - `pol14_named_while_pending`: a PR named now with status `checks_pending` is refreshed every 10 s for 120 s, then not; a `ready` one never.
 - `pol14_many_hot`: 41 hot PRs are two requests.

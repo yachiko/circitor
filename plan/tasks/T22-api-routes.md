@@ -4,7 +4,7 @@ title: "API routes: list, show, changes, track, untrack, refresh, status, shutdo
 kind: code
 milestone: M2
 size: L
-status: todo
+status: done
 depends_on: [T09, T15, T41]
 requirements: [API-1, API-2, API-3, API-4, API-5, API-6, API-7, API-8, API-15, API-16, API-17, API-18, NTF-9]
 owns: [src/api/server/]
@@ -84,3 +84,8 @@ Unit tests in `src/api/server/`, through `tower::ServiceExt::oneshot` on `api::r
 - **(proposal):** the names of API-5 and API-19, API-5's codes, API-16, `rate_limited`. Built as written.
 - **`checks.items` (API-19):** in every single `record` (`show`, `track`, `untrack`), in `list`'s records only with `checks=1`, and never in a reset's `records`. `present`'s last argument says which.
 - **At STA-3's limit** a `show` of an untracked PR answers `limit` and nothing is sent, as TST-8's `many-prs` row now says too.
+
+## Evidence
+- **2026-11-26**, branch `t22-api-routes`, executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- `src/api/server/` (`mod.rs`, new `reading.rs`, `changing.rs`, `status.rs`, `tests.rs`); no public signature changed. `cargo test --features test-endpoint --lib api::server::`: 14 passed, among them `api1_router_fallback_and_layer` (T43's fallbacks and layer through `router`) and `api19_shapes` (key order at every level against T41's files). `make verify` passes on main after the merge (397 lib tests), the macOS check included. No fault found in T43's files.
+- Choices: a read-through or `track` that answers `Ok(id)` with no record in the view then answers `github_unavailable` with the route's own message; `status`, `refresh` and `shutdown` refuse unknown query parameters too; the shutdown body is a `Full` whose drop guard asks the stop (whether the written bytes survive the stop is T28's to prove).

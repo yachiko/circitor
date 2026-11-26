@@ -22,6 +22,7 @@ Decided before the spec and binding on it: one local poller (log D1), polling wi
 | D8 | Narrower conditions | **`--kind` on `changed` and `--fail-fast` on `checks-done`**, for `wait` and `notify` alike (API-10, API-11, CLI-5, CLI-6). Decided 2026-11-25. See below. |
 | D9 | Gaps found while planning | **The owner's answers to the plan's open spec issues**, written into the specs they touch: `fail_fast` doesn't wait for `settled` (API-10); `again:` repeats `--timeout` and `--json` when given, and `more events:` names the PR after a per-PR answer (CLI-3, CLI-6); durations leave out a zero second unit (CLI-3); the guide is under 120 lines (CLI-11); the fake GitHub marks check names and logins by default (TST-11); a forward clock step is a sleep (NTF-4, TST-8 `clock-back`); `pr_failing`'s notice, the exit-11 line, a cancel during a post (NTF-3, NTF-8, NTF-11). Decided 2026-11-26. See below. |
 | D10 | Setting the socket's mode | **Bind at a temporary name, set 0600, rename into place** (OPS-4, STA-12), in place of binding under a umask of 0177: the umask is the whole process's, so a directory another thread made meanwhile came out 0600 (found by T18, 2026-11-26). Decided 2026-11-26. |
+| D11 | What `refresh` refreshes | **Every tracked PR**, whatever its period, besides finding (POL-15, API-16): an ordinary poll made now would refresh only what's due, so in the idle tier a `refresh` a minute after a poll would refresh no record (found by T21, 2026-11-26). Decided 2026-11-26. |
 
 ## Open
 
