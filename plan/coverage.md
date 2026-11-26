@@ -113,7 +113,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | API-15 |  | T22 |
 | API-16 |  | T21, T22 |
 | API-17 |  | T22, T28 |
-| API-18 |  | T21, T22 |
+| API-18 |  | T21, T22, T59 |
 | API-19 | proposal | T02, T41 |
 
 ## specs/05-cli.md
@@ -124,7 +124,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | CLI-2 | proposal | T11, T27 |
 | CLI-3 | proposal | T10 |
 | CLI-4 |  | T27 |
-| CLI-5 | proposal | T10, T27; parts: T48 (notify-exits-0-once-it-s) |
+| CLI-5 | proposal | T10, T27, T59; parts: T48 (notify-exits-0-once-it-s) |
 | CLI-6 |  | parts: T10 (a-truncated-failing-adds); T10 (a-wait-answered-before-its); T10 (a-wait-that-ends-without); T10 (on-a-timeout-it-prints); T10 (the-outcome-line-says-what-the-wait-found); T10 (with-sha); T27 (one-deadline-for-the-whole-command); T27 (sigint-and-sigterm-end-it-at-once); T27 (without-timeout) |
 | CLI-7 | proposal | T24; parts: T27 (every-request-has-a-limit) |
 | CLI-8 |  | T24, T27 |

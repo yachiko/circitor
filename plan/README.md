@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **58 tasks:** 3 todo, 53 done, 2 blocked. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **59 tasks:** 4 todo, 53 done, 2 blocked. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -127,6 +127,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 9 | [T40](tasks/T40-acceptance.md) | Owner: the acceptance checks on a Mac and on Linux | manual | M | todo | T19, T36, T39, T47, T48 |
 | 9 | [T56](tasks/T56-limit-warning.md) | Follow-up to T21: a finding page left unread at the limit raises pr_limit (D15) | code | S | done | T42, T32 |
 | 9 | [T57](tasks/T57-queue-full-inode.md) | Follow-up to T45: queue_full keeps the socket's inode (D16) | test | S | done | T45, T49 |
+| 9 | [T59](tasks/T59-starting-message.md) | Follow-up to T22: the starting error gives one retry hint | code | S | todo | T22, T35 |
 | 10 | [T58](tasks/T58-cpu-window.md) | Follow-up to T36: OPS-17's CPU window starts after the poll's last request | test | S | done | T36, T56 |
 <!-- /plan:waves -->
 
@@ -135,7 +136,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 <!-- plan:critical -->
 T01 (S) → T02 (L) → T05 (L) → T15 (L) → T21 (L) → T25 (L) → T29 (L) → T32 (L) → T56 (S) → T58 (S)
 
-Weight 24 of 123 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
+Weight 24 of 124 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
 <!-- /plan:critical -->
 
 The path runs through the model, the store and the engine's poll, each an L task that the next needs for real, then the daemon's wiring and the real-process tests. The engine's demand side (T25, T42), the routes and waiters (T22, T23), the CLI (T10, T11, T24, T27) and the fake GitHub (T14, T20) run beside it. **Notify adds no weight to it:** T28 needs the notifier (T46), which is as long as the engine's poll and runs beside it, on T15, T10 and T44; the notify routes, the command and the scenarios (T47, T48, T49) are off the path. That's why the conditions are a task of their own (P16): had the notifier waited for the wait route, the path would be three longer. The harness (T29) and the scenarios end one L task later than T36; the owner's T39 and T40 close the path. Nothing on it waits for an implementation where a contract would do.
@@ -203,6 +204,7 @@ flowchart LR
   T56["T56 Follow-up to T21: a finding page…"]:::done
   T57["T57 Follow-up to T45: queue_full keep…"]:::done
   T58["T58 Follow-up to T36: OPS-17's CPU wi…"]:::done
+  T59["T59 Follow-up to T22: the starting er…"]
   T01 --> T02
   T01 --> T03
   T02 --> T04
@@ -311,6 +313,7 @@ flowchart LR
   T49 --> T57
   T36 --> T58
   T56 --> T58
+  T35 --> T59
   classDef done fill:#d8f0dc,stroke:#2f7d3b
   classDef active fill:#fff1c2,stroke:#a07800
   classDef blocked fill:#f8d7da,stroke:#a12a35
@@ -327,6 +330,7 @@ Files that several tasks touch (`shares`). The owner creates the file; sharers a
 
 | Path | Owner | Shared by |
 |---|---|---|
+| `tests/golden/cli/error_starting.err` | T35 | T59 |
 | `tests/scn_notify.rs` | T49 | T57 |
 | `tests/scn_tracking.rs` | T32 | T56 |
 
@@ -338,14 +342,14 @@ Paths that pass from one task to a later one (`owns` of ordered tasks):
 | `Cargo.toml` | T01 → T53 |
 | `Makefile` | T01 → T50 |
 | `rust-toolchain.toml` | T01 → T50 |
-| `src/` | T01 → T02 → T04 → T05 → T06 → T07 → T08 → T09 → T10 → T11 → T12 → T43 → T13 → T14 → T15 → T16 → T17 → T18 → T20 → T21 → T22 → T44 → T23 → T24 → T25 → T27 → T46 → T28 → T45 → T29 → T42 → T47 → T48 → T51 → T52 → T54 → T55 → T56 → T57 |
+| `src/` | T01 → T02 → T04 → T05 → T06 → T07 → T08 → T09 → T10 → T11 → T12 → T43 → T13 → T14 → T15 → T16 → T17 → T18 → T20 → T21 → T22 → T44 → T23 → T24 → T25 → T27 → T46 → T28 → T45 → T29 → T42 → T47 → T48 → T51 → T52 → T54 → T55 → T56 → T57 → T59 |
 | `src/api/condition.rs` | T02 → T44 |
 | `src/api/notify/` | T02 → T47 |
 | `src/api/params.rs` | T02 → T43 |
 | `src/api/request.rs` | T02 → T43 |
 | `src/api/respond.rs` | T02 → T43 |
 | `src/api/router.rs` | T02 → T43 |
-| `src/api/server/` | T02 → T22 |
+| `src/api/server/` | T02 → T22 → T59 |
 | `src/api/wait/` | T02 → T23 |
 | `src/cli/args/` | T02 → T11 |
 | `src/cli/commands/` | T02 → T27 |

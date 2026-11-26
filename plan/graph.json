@@ -728,7 +728,8 @@
     "T41"
    ],
    "dependents": [
-    "T28"
+    "T28",
+    "T59"
    ],
    "requirements": [
     "API-1",
@@ -826,7 +827,7 @@
    "milestone": "M2",
    "size": "L",
    "wave": 6,
-   "remaining": 0,
+   "remaining": 1,
    "depends_on": [
     "T21"
    ],
@@ -855,7 +856,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 6,
-   "remaining": 0,
+   "remaining": 1,
    "depends_on": [
     "T07",
     "T20",
@@ -968,7 +969,7 @@
    "milestone": "M3",
    "size": "L",
    "wave": 7,
-   "remaining": 0,
+   "remaining": 1,
    "depends_on": [
     "T07",
     "T20",
@@ -1122,14 +1123,16 @@
    "milestone": "M5",
    "size": "L",
    "wave": 8,
-   "remaining": 0,
+   "remaining": 1,
    "depends_on": [
     "T29",
     "T42",
     "T47",
     "T48"
    ],
-   "dependents": [],
+   "dependents": [
+    "T59"
+   ],
    "requirements": [
     "TST-7"
    ],
@@ -1300,7 +1303,7 @@
    "milestone": "M2",
    "size": "M",
    "wave": 7,
-   "remaining": 0,
+   "remaining": 1,
    "depends_on": [
     "T25"
    ],
@@ -1392,7 +1395,7 @@
    "milestone": "M3",
    "size": "S",
    "wave": 4,
-   "remaining": 0,
+   "remaining": 1,
    "depends_on": [
     "T04"
    ],
@@ -1756,6 +1759,32 @@
    ],
    "shares": [],
    "file": "plan/tasks/T58-cpu-window.md"
+  },
+  {
+   "id": "T59",
+   "title": "Follow-up to T22: the starting error gives one retry hint",
+   "kind": "code",
+   "status": "todo",
+   "milestone": "M5",
+   "size": "S",
+   "wave": 9,
+   "remaining": 1,
+   "depends_on": [
+    "T22",
+    "T35"
+   ],
+   "dependents": [],
+   "requirements": [
+    "API-18",
+    "CLI-5"
+   ],
+   "owns": [
+    "src/api/server/"
+   ],
+   "shares": [
+    "tests/golden/cli/error_starting.err"
+   ],
+   "file": "plan/tasks/T59-starting-message.md"
   }
  ],
  "dropped_tasks": [],
@@ -1833,7 +1862,8 @@
   [
    "T40",
    "T56",
-   "T57"
+   "T57",
+   "T59"
   ],
   [
    "T58"
