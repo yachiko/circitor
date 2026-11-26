@@ -124,7 +124,7 @@ The scenarios:
 - **`pr_failing`'s notice** is NTF-8's sentence (D9): `notify-problem` asserts it whole, `circitor: can't read octo/app#1 from GitHub (pr_failing); notify is cancelled. Details: circitor status`.
 - D5 and D6 don't touch this task.
 
-Follow-ups: T57
+Follow-ups: T57, T60
 
 ## Evidence
 - **2026-11-26**, branch `t49-scenarios-notify`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.

@@ -79,13 +79,13 @@
   },
   {
    "id": "T03",
-   "title": "CI: format, lints and every test on Linux and macOS, and the four release targets",
+   "title": "CI: make verify on Linux for each pull request; at a tag, Linux and macOS, the four targets, the release and the tap",
    "kind": "infra",
-   "status": "blocked",
+   "status": "done",
    "milestone": "M4",
    "size": "S",
    "wave": 2,
-   "remaining": 2,
+   "remaining": 1,
    "depends_on": [
     "T01"
    ],
@@ -97,7 +97,7 @@
     "OPS-13"
    ],
    "owns": [
-    ".github/workflows/"
+    ".github/"
    ],
    "shares": [],
    "file": "plan/tasks/T03-ci.md"
@@ -1196,9 +1196,9 @@
   },
   {
    "id": "T38",
-   "title": "Owner: the first CI run, on Linux and macOS",
+   "title": "The first CI run: Linux on a pull request, Linux and macOS at the first tag",
    "kind": "manual",
-   "status": "blocked",
+   "status": "in-progress",
    "milestone": "M4",
    "size": "S",
    "wave": 3,
@@ -1216,7 +1216,7 @@
   },
   {
    "id": "T39",
-   "title": "Owner: set up the release tool, publish to the tap",
+   "title": "Owner: the first release, v0.0.1, to the tap",
    "kind": "manual",
    "status": "todo",
    "milestone": "M5",
@@ -1532,7 +1532,8 @@
     "T48"
    ],
    "dependents": [
-    "T57"
+    "T57",
+    "T60"
    ],
    "requirements": [
     "TST-8",
@@ -1724,7 +1725,9 @@
     "T45",
     "T49"
    ],
-   "dependents": [],
+   "dependents": [
+    "T60"
+   ],
    "requirements": [
     "TST-16",
     "NTF-6"
@@ -1785,6 +1788,30 @@
     "tests/golden/cli/error_starting.err"
    ],
    "file": "plan/tasks/T59-starting-message.md"
+  },
+  {
+   "id": "T60",
+   "title": "Follow-up to T49: find a stop's notice by its PR, not its place",
+   "kind": "test",
+   "status": "done",
+   "milestone": "M5",
+   "size": "S",
+   "wave": 10,
+   "remaining": 0,
+   "depends_on": [
+    "T49",
+    "T57"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-8",
+    "NTF-10"
+   ],
+   "owns": [
+    "tests/scn_notify.rs"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T60-stop-notice-order.md"
   }
  ],
  "dropped_tasks": [],
@@ -1866,7 +1893,8 @@
    "T59"
   ],
   [
-   "T58"
+   "T58",
+   "T60"
   ]
  ],
  "critical_path": [

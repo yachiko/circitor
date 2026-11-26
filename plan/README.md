@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **59 tasks:** 2 todo, 55 done, 2 blocked. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **60 tasks:** 2 todo, 1 in-progress, 57 done. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -72,7 +72,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 |---|---|---|---|---|---|---|
 | 1 | [T01](tasks/T01-scaffold.md) | Scaffold: the package, every dependency, the toolchain, make verify | infra | S | done | – |
 | 2 | [T02](tasks/T02-contracts.md) | Contracts as code: the module tree, every seam's declarations, and the small shared types | infra | L | done | T01 |
-| 2 | [T03](tasks/T03-ci.md) | CI: format, lints and every test on Linux and macOS, and the four release targets | infra | S | blocked | T01 |
+| 2 | [T03](tasks/T03-ci.md) | CI: make verify on Linux for each pull request; at a tag, Linux and macOS, the four targets, the release and the tap | infra | S | done | T01 |
 | 2 | [T50](tasks/T50-check-macos-zig.md) | Follow-up to T01: check-macos from Linux through cargo-zigbuild, last step of make verify | infra | S | done | T01 |
 | 2 | [T53](tasks/T53-nix-socket.md) | Follow-up to T01: nix's socket feature, for the fake session socket (D13) | infra | S | done | T01 |
 | 3 | [T04](tasks/T04-clock-log.md) | Clock, test clock, work in flight, sleep detection, logger and warnings | code | M | done | T02 |
@@ -81,7 +81,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 3 | [T08](tasks/T08-poller-limits.md) | Poller limits: the quota count, the quota states and the backoff | code | M | done | T02 |
 | 3 | [T09](tasks/T09-poller-cadence.md) | Poller cadence: tiers, periods, hot PRs, the forced-refresh windows and staleness | code | M | done | T02 |
 | 3 | [T11](tasks/T11-cli-args-naming-guide.md) | CLI arguments, naming a PR, and the guide for agents | code | M | done | T02 |
-| 3 | [T38](tasks/T38-first-ci-run.md) | Owner: the first CI run, on Linux and macOS | manual | S | blocked | T03 |
+| 3 | [T38](tasks/T38-first-ci-run.md) | The first CI run: Linux on a pull request, Linux and macOS at the first tag | manual | S | in-progress | T03 |
 | 3 | [T41](tasks/T41-golden-files.md) | Golden files: the API's and the model's JSON, and GitHub's public schema | infra | M | done | T02 |
 | 3 | [T43](tasks/T43-api-shared-fakes.md) | The API's shared parts and the simple fakes | infra | M | done | T02 |
 | 3 | [T44](tasks/T44-conditions.md) | Conditions: checking and evaluating a wait's or a subscription's condition, once | code | M | done | T02 |
@@ -122,13 +122,14 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 8 | [T33](tasks/T33-scenarios-daemon.md) | Scenarios: the daemon's life and failures | test | L | done | T29 |
 | 8 | [T34](tasks/T34-quota-tests.md) | Quota tests: what an hour costs in each tier and state | test | M | done | T29 |
 | 8 | [T35](tasks/T35-golden-cli.md) | Golden output end to end: every command's text and JSON, every exit code | test | L | done | T29, T42, T47, T48 |
-| 8 | [T39](tasks/T39-release.md) | Owner: set up the release tool, publish to the tap | manual | M | todo | T19, T36 |
+| 8 | [T39](tasks/T39-release.md) | Owner: the first release, v0.0.1, to the tap | manual | M | todo | T19, T36 |
 | 8 | [T49](tasks/T49-scenarios-notify.md) | Scenarios: notify | test | L | done | T29, T42, T47, T48 |
 | 9 | [T40](tasks/T40-acceptance.md) | Owner: the acceptance checks on a Mac and on Linux | manual | M | todo | T19, T36, T39, T47, T48 |
 | 9 | [T56](tasks/T56-limit-warning.md) | Follow-up to T21: a finding page left unread at the limit raises pr_limit (D15) | code | S | done | T42, T32 |
 | 9 | [T57](tasks/T57-queue-full-inode.md) | Follow-up to T45: queue_full keeps the socket's inode (D16) | test | S | done | T45, T49 |
 | 9 | [T59](tasks/T59-starting-message.md) | Follow-up to T22: the starting error gives one retry hint | code | S | done | T22, T35 |
 | 10 | [T58](tasks/T58-cpu-window.md) | Follow-up to T36: OPS-17's CPU window starts after the poll's last request | test | S | done | T36, T56 |
+| 10 | [T60](tasks/T60-stop-notice-order.md) | Follow-up to T49: find a stop's notice by its PR, not its place | test | S | done | T49, T57 |
 <!-- /plan:waves -->
 
 ## Critical path
@@ -136,7 +137,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 <!-- plan:critical -->
 T01 (S) → T02 (L) → T05 (L) → T15 (L) → T21 (L) → T25 (L) → T29 (L) → T32 (L) → T56 (S) → T58 (S)
 
-Weight 24 of 124 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
+Weight 24 of 125 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
 <!-- /plan:critical -->
 
 The path runs through the model, the store and the engine's poll, each an L task that the next needs for real, then the daemon's wiring and the real-process tests. The engine's demand side (T25, T42), the routes and waiters (T22, T23), the CLI (T10, T11, T24, T27) and the fake GitHub (T14, T20) run beside it. **Notify adds no weight to it:** T28 needs the notifier (T46), which is as long as the engine's poll and runs beside it, on T15, T10 and T44; the notify routes, the command and the scenarios (T47, T48, T49) are off the path. That's why the conditions are a task of their own (P16): had the notifier waited for the wait route, the path would be three longer. The harness (T29) and the scenarios end one L task later than T36; the owner's T39 and T40 close the path. Nothing on it waits for an implementation where a contract would do.
@@ -148,7 +149,7 @@ The path runs through the model, the store and the engine's poll, each an L task
 flowchart LR
   T01["T01 Scaffold: the package, every depe…"]:::done
   T02["T02 Contracts as code: the module tre…"]:::done
-  T03["T03 CI: format, lints and every test…"]:::blocked
+  T03["T03 CI: make verify on Linux for each…"]:::done
   T04["T04 Clock, test clock, work in flight…"]:::done
   T05["T05 Model: checks summary, status, se…"]:::done
   T06["T06 Config file, environment and paths"]:::done
@@ -183,8 +184,8 @@ flowchart LR
   T35["T35 Golden output end to end: every c…"]:::done
   T36["T36 M4: real processes: spawning, two…"]:::done
   T37["T37 Owner: record real responses from…"]:::done
-  T38["T38 Owner: the first CI run, on Linux…"]:::blocked
-  T39["T39 Owner: set up the release tool, p…"]:::manual
+  T38["T38 The first CI run: Linux on a pull…"]:::active
+  T39["T39 Owner: the first release, v0.0.1,…"]:::manual
   T40["T40 Owner: the acceptance checks on a…"]:::manual
   T41["T41 Golden files: the API's and the m…"]:::done
   T42["T42 Poller engine: a PR's errors: gon…"]:::done
@@ -205,6 +206,7 @@ flowchart LR
   T57["T57 Follow-up to T45: queue_full keep…"]:::done
   T58["T58 Follow-up to T36: OPS-17's CPU wi…"]:::done
   T59["T59 Follow-up to T22: the starting er…"]:::done
+  T60["T60 Follow-up to T49: find a stop's n…"]:::done
   T01 --> T02
   T01 --> T03
   T02 --> T04
@@ -314,6 +316,7 @@ flowchart LR
   T36 --> T58
   T56 --> T58
   T35 --> T59
+  T57 --> T60
   classDef done fill:#d8f0dc,stroke:#2f7d3b
   classDef active fill:#fff1c2,stroke:#a07800
   classDef blocked fill:#f8d7da,stroke:#a12a35
@@ -331,7 +334,7 @@ Files that several tasks touch (`shares`). The owner creates the file; sharers a
 | Path | Owner | Shared by |
 |---|---|---|
 | `tests/golden/cli/error_starting.err` | T35 | T59 |
-| `tests/scn_notify.rs` | T49 | T57 |
+| `tests/scn_notify.rs` | T49, T60 | T57 |
 | `tests/scn_tracking.rs` | T32 | T56 |
 
 Paths that pass from one task to a later one (`owns` of ordered tasks):
@@ -387,6 +390,7 @@ Paths that pass from one task to a later one (`owns` of ordered tasks):
 | `src/transport/` | T02 → T17 |
 | `src/version.rs` | T01 → T02 |
 | `tests/real/` | T01 → T36 → T58 |
+| `tests/scn_notify.rs` | T49 → T60 |
 <!-- /plan:hotspots -->
 
 There are no shared files by design: T01 declares every dependency and test target, T02 writes every parent `mod.rs`, T43 the router and the fakes, and each later task owns leaf directories or files. Notify follows it: `src/notify/` is one leaf (T46), `src/api/condition.rs` one file (T44), and `src/api/notify/`, `src/cli/notify/` and `src/testkit/session/` a leaf each (T47, T48, T45). Places where tasks follow each other in one directory:
@@ -422,9 +426,9 @@ Choices the specs leave open, made so that work can start. All are proposals unt
 | P6 | **GitHub's public schema is downloaded once**, without a token, from `docs.github.com/public/fpt/schema.docs.graphql` into `testdata/github/schema.graphql` (about 1.5 MB), by T41. `apollo-compiler` (stable 1.x) parses and validates against it, in test builds only. | TST-3 needs the real schema; a hand-written one proves nothing. The fallback is `graphql-parser` with a hand-written field check. | T41, T07, T14 | **agreed** 2026-11-25 |
 | P7 | **Synthetic GitHub responses stand in for recorded ones.** T07 writes them from docs/02 §4, §5 and the logs into `testdata/github/responses/`; the owner's recording (T37) adds `testdata/github/recorded/`. | docs/05 says no recorded fixtures exist, and executors can't call the API. No code task waits for T37. | T07, T26, T37 | proposal |
 | P8 | **Dependencies:** `tokio`, `axum` 0.8, `hyper` 1 with `hyper-util`, `reqwest` with rustls, `serde`, `serde_json`, `toml`, `clap` (00-overview's list), plus `chrono`, `async-trait`, `futures`, `thiserror`, `nix` (with `socket` since D13), `semver`, `fastrand`, `tower`, `http`, `http-body-util`, `bytes`; test builds add `apollo-compiler` and `tempfile`. Hand-written GraphQL strings with serde types; no code generation. No `anyhow`, no logging crate. | 00-overview asks the plan to confirm the list. Only T01 edits `Cargo.toml`. | T01, every task | proposal |
-| P9 | **No CI for now** (the owner's choice, 2026-11-25). T03 and T38 are `blocked` until CI is wanted; `make verify` on main after every merge is the only gate. **macOS is compile-checked from Linux by `make verify`'s last step** (not linked: that needs Apple's SDK), through zig and cargo-zigbuild (T50, 2026-11-26); nothing runs on macOS before CI or the owner's Mac. TST-14 and TST-9's "CI's Linux and macOS runners" are unmet meanwhile: TST-9 runs on Linux only (T36). When CI is wanted, T03's brief is ready: a GitHub Actions workflow on Linux and macOS. | The owner deferred CI. The cost: macOS breakage shows only at T40. | T01, T03, T36, T38, T39 | **decided** 2026-11-25 |
+| P9 | **CI on GitHub Actions** (the owner, 2026-11-26). `ci.yml` runs `make verify` on Linux for every pull request and push to `main`. **macOS is checked by `release.yml`'s macOS `verify` job** at a `v*` tag, before any release is built; nothing checks it from Linux any more (T50 reversed). **Before:** no CI (2026-11-25), and macOS compile-checked from Linux through zig and cargo-zigbuild (T50). | The repository is public, and the release's macOS job stops a broken build before it ships. The cost: macOS breakage shows at the tag, not at the merge. | T01, T03, T36, T38, T39, T50 | **decided** 2026-11-25, changed 2026-11-26 |
 | P10 | **Small gaps in the specs, filled so tasks agree** (each is also a spec issue below): the order "of `pr`" is owner, repository (lower-cased), then number as a number; an event's `kinds` is a list of objects tagged `kind`; a `log_unwritable` warning code; `gh_path` as a key of `status`; `paths.state` is `state.json`'s path; `last_poll.outcome` uses API-16's words; an unlisted PR `state` from GitHub makes that node an error `UNLISTED_STATE` (and a node that can't be decoded `UNDECODABLE`, an error without a type `UNTYPED`); a review without `submittedAt` is ignored; `status` doesn't count as a client request for the idle exit; a "replaced" stop is logged like any shutdown request; the socket is bound under umask 0177; every request of a poll marks its PRs as sent at the poll's own send time (else each poll takes two requests for good); the fake GitHub's per-daemon rules hold per connection for real processes; log lines start with a fixed event word (`contracts/log.md`). | Each is the smallest reading that lets two tasks build one thing. | T02, T05, T07, T09, T15, T18, T20, T21, T22, T28 | **in the specs** since the hardening of commit 042dae6 (MOD-1, MOD-2, MOD-12, MOD-15, API-5, OPS-4, OPS-8, OPS-9, POL-13), all but two: the fake GitHub now tells real processes apart by TST-1's `x-circitor-test-pid` header, not per connection; and the log's event words stay this plan's (proposal) |
-| P11 | **Release tooling: D5 is decided, a formula written by `dist`** (owner, 2026-11-25; recorded in `specs/decisions.md` and OPS-10). Executors build the version stamp (T01), the release build of the four targets in CI (T03) and the README's install line (T19). The release workflow, the formula and the tap are the owner's (T39). | A release can't be tried from a worktree. | T01, T03, T19, T39 | **decided** 2026-11-25 |
+| P11 | **Release tooling: D5 is decided, a formula** (owner, 2026-11-25; recorded in `specs/decisions.md` and OPS-10). **Changed 2026-11-26: written by T03's `release.yml`, the pipeline of the owner's `lege`, not by `dist`.** Executors build the version stamp (T01), the release build of the four targets in CI (T03) and the README's install line (T19). The release workflow, the formula and the tap are the owner's (T39). | A release can't be tried from a worktree. | T01, T03, T19, T39 | **decided** 2026-11-25 |
 | P12 | **Platform differences are values, not `cfg`:** code takes a `config::Platform`, so macOS paths compile and are tested on Linux. The one `unsafe` is the spawner's `setsid` in `pre_exec`. | Written on Linux, shipped to macOS first. | T06, T24 | proposal |
 | P13 | **Logging is circitor's own `Logger` handle**, passed to each component; there's no global logger. | Several in-process daemons in one test each need their own log buffer (TST-5), and OPS-9's "never logged" rules need one narrow door. | T04, every daemon-side task | proposal |
 | P14 | **Four executors at once, one `target/` per worktree.** | See "Worktree setup and limits". | the orchestrator | **agreed** 2026-11-25 |
@@ -438,7 +442,7 @@ Choices the specs leave open, made so that work can start. All are proposals unt
 **Requirements marked (proposal)** (63): built as written unless the user decides otherwise: API-3, API-5, API-10, API-11, API-12, API-14, API-19, CLI-2, CLI-3, CLI-5, CLI-7, CLI-9, CLI-11, MOD-1, MOD-2, MOD-4, MOD-6, MOD-7, MOD-8, MOD-11, MOD-12, MOD-15, NTF-1, NTF-2, NTF-3, NTF-4, NTF-8, NTF-11, NTF-12, OPS-2, OPS-4, OPS-5, OPS-12, OPS-14, OPS-17, OPS-18, POL-2, POL-4, POL-5, POL-7, POL-8, POL-10, POL-11, POL-12, POL-13, POL-14, POL-15, POL-16, POL-17, POL-18, POL-20, POL-21, POL-22, POL-23, POL-24, POL-25, POL-26, STA-1, STA-2, STA-3, STA-10, TST-12, TST-14.
 <!-- /plan:open -->
 
-- **D5 is resolved: a formula written by `dist`** (`specs/decisions.md`, OPS-10). T19's install line and T39 follow it. Without CI (P9), `dist`'s release workflow is T39's first CI.
+- **D5 is resolved: a formula**, written since 2026-11-26 by T03's `release.yml` at a `v*` tag, not by `dist` (`specs/decisions.md`, OPS-10). T19's install line and T39 follow it.
 - **D6 is resolved: built as proposal for v1**, measured later on a small public repository. `blocked` and `behind` are built as MOD-9 and MOD-11 write them.
 - **D7 and D8 are resolved** (notify; `--kind` and `--fail-fast`). **Everything that posts is a (proposal)**: the session socket's message format is known from Claude Code's debug log only, and only Linux is measured (docs/07). The plan keeps the two lines in one function (`notify::RealPoster`), the words in one module (`notify::text`), and the fake session socket free of the poster's code, so a format change is one edit and shows in a test.
 - **55 requirements are proposals.** They're built as written, each value in one named constant, so a decision changes one line and a test.
@@ -516,7 +520,7 @@ One issue with the tool, not the specs: **`plan.py` never yields parts from a ta
 
 ### Changes waiting on running tasks
 
-None.
+- **T38** (in progress): its Context and Open questions say `make check-macos` builds for macOS from Linux. **Since 2026-11-26 nothing does** (T50 reversed): the first time the code compiles for macOS is `release.yml`'s macOS `verify` job. Read them that way; fold the change in when T38 is accepted.
 
 ## Outside the swarm
 
@@ -525,8 +529,8 @@ Four tasks are the owner's (`kind: manual`). No executor task waits for any of t
 | Task | What | When |
 |---|---|---|
 | T37 | Record real, scrubbed responses from `yachiko/experiment` into `testdata/github/recorded/` (TST-12). **The owner runs it by hand** (2026-11-25), under docs/05's rules. | Any time after T07 |
-| T38 | **Blocked: no CI for now (P9).** Put the repository on GitHub and get CI green on Linux and macOS (TST-14). | When CI is wanted, after T03 |
-| T39 | Set up `dist` (D5: a formula), publish to `yachiko/homebrew-tap` (OPS-10). `dist init` edits `Cargo.toml` and adds its own release workflow: the owner's own edits. | After T36 and T19 |
+| T38 | The first CI runs: `ci.yml` on Linux on the pull request that adds it; macOS in `release.yml`'s `verify`, at the first tag or its dry run (TST-14). | After T03 |
+| T39 | Set the tap App's two secrets, tag `v0.0.1`, and check `brew install yachiko/tap/circitor` (OPS-10, D5: a formula written by T03's `release.yml`). | After T36 and T19 |
 | T40 | TST-13's seven acceptance checks on a Mac and on Linux, the seventh `notify` in a real Claude Code session; results into docs/05. | After T39, with T47 and T48 in the release |
 
 Also the owner's: confirming the plan decisions above before T01 starts (P1 to P4 are the expensive ones), and every spec issue.
@@ -537,6 +541,8 @@ Also the owner's: confirming the plan decisions above before T01 starts (P1 to P
 - 2026-11-26: **M5 reached.** Every executor task is done (T01, T02, T04 to T36, T41 to T59; T50 and T53 the owner's and the orchestrator's). `make verify` on main: 936 tests pass, 0 fail; the only ignored ones are T07's `dump_queries` (a printer for T37, by design) and three rustdoc examples. Every TST-8 scenario (T30 to T33, T49), TST-6's figures (T34), TST-7's golden output (T35) and TST-9's real processes with OPS-17 (T36) pass. Left: the owner's T37, T39, T40, and T03/T38 (blocked, no CI). Decisions taken by the orchestrator under the owner's rule: D12 to D16 (`specs/decisions.md`), and the readings recorded in this log and in each task's Evidence.
 - 2026-11-26: **Main red after T56, test window at fault; follow-up T58.** `ops17_no_cpu_between_polls` started its 5 s after a poll's first answer; since D15 a 200-PR poll sends its second finding page a second later, inside the window (8 to 40 ticks). With T56's `poll.rs` reverted the test passed 3 times at the same load, and the daemon doesn't spin: T58 moves the window after the poll's last request. **T57** was allowed to fix T49's `scn_notify_session_gone_full_queue` assertion (it forgot the registration's confirmation). **T35 found** the `starting` line saying "try again in a few seconds (try again in a minute)": follow-up T59 (the route's message drops its own hint) after T35 merges.
 - 2026-11-26: **D16** (orchestrator, after T49): `FakeSession::queue_full` lowers the backlog of the same listening socket instead of binding a new one, so the notifier's `look` sees the same session and its post fails as `reason=failed` (NTF-6, TST-16). Follow-up **T57** in `src/testkit/session/`, which also lifts T49's ignore. **Readings kept** (TST-8: the requirement wins): `notify-ends`' expired notice reads the record's `status` (`it's ready`), not `it's open`; `notify-keeps-active`'s row can't read all its numbers in one run. **Watch:** T27's `cli10_no_daemon_back` failed once under load ("ended at 9.9") and passed after.
+- 2026-11-26: **T38's first run failed on one test; follow-up T60, done.** `ci.yml` on PR #1 ran 935 tests green on `ubuntu-24.04`, and `scn_notify_stop_ask_again_replacement` failed: it took `notices[3]` as `octo/app#1`'s `stopped` notice, but a stop posts them all at once (NTF-10), so their order isn't fixed. The test now finds the notice by its PR. The code is right. Fixed on `ci-release`, on the owner's OK.
+- 2026-11-26: **CI after all, and a release pipeline like `lege`'s (the owner).** P9 and P11 changed; D5's tool, OPS-10 and TST-14 updated. **T03 done** in its new scope: `ci.yml` (Linux on each pull request and push to `main`) and `release.yml` (at a `v*` tag: Linux and macOS `verify`, four native builds, release with checksums, cosign and SLSA, the formula to the tap through the App's token); `make dist`; `.github/scripts/homebrew_formula.py`. `Cargo.toml` at `0.0.1` for the first tag. `make dist`'s check found `CIRCITOR_TEST_GITHUB` in the release binary (T07's error messages); gated behind the test feature. T38 running: its first run is the pull request that adds the workflows. T39 rescoped: secrets, tag, install check.
 - 2026-11-26: **D15 revised** (orchestrator, after T56): stopping at the first page once every place was taken made a set of exactly 200 tracked PRs leave its second page unread every poll, so `pr_limit` never cleared. Now the finding stops at the first page holding a found PR with no place; a page of PRs all tracked doesn't stop it. STA-3 and `specs/decisions.md` updated; T56, then in review, was sent the change.
 - 2026-11-26: **OPS-17's timing tests under load (orchestrator's reading).** `ops17_list_from_memory_within_50_ms` can miss 50 ms when other worktrees build (median 62.9 ms at a load of 8.5). It stays in `make verify`, unchanged; while the swarm runs, a `make verify` that fails only on an `ops17_` test is run once more, and the rerun recorded.
 - 2026-11-26: **D15** (orchestrator's decision): a finding page left unread because every place is taken counts as PRs left out, so `pr_limit` is raised. Written into STA-3 and `specs/decisions.md`; follow-up **T56** in `src/poller/engine/`, which also lifts T32's ignore on `scn_many_prs_205_warning`. **Reading kept (orchestrator):** `untrack` of a `manual` PR already dropped answers with its last record (T15's `Untracked::record`, as T22 built), not `null`.
@@ -549,6 +555,7 @@ Also the owner's: confirming the plan decisions above before T01 starts (P1 to P
 - 2026-11-26: **D10, the socket's mode (contract change, daemon seam).** T18 found that binding under a umask of 0177 changes the whole process's umask, so a directory another thread made meanwhile came out 0600 (a config test failed with `PermissionDenied`). The owner chose: bind at a temporary name as long as the socket's own, `chmod` 0600, rename into place, never touching the umask. Written into OPS-4, STA-12, `specs/decisions.md` (D10) and `contracts/daemon.md`; T18, then in review, was sent the change. No task added.
 - 2026-11-26: **`check-macos` checks and no longer links.** After T02, the macOS binary links Apple's `Security` and `CoreFoundation` frameworks (through `rustls-platform-verifier`); zig doesn't ship them, so `cargo zigbuild` failed at the link. It's now `cargo check` with zig as the C compiler (T50's Evidence). P9 says compile-checked again.
 - 2026-11-26: **`check-macos` works from Linux, through zig and cargo-zigbuild, and is `make verify`'s last step** (the owner's choice, over swapping to `ring`, which fails the same way, or to the pure-Rust `rustls-graviola`). New follow-up T50, done; T01 points to it. P8 unchanged; P9, the conventions' "Toolchain and commands", T03 (the Linux job installs both tools), T19 (keeps the README's "Building") and T38 updated. **T02 is running:** its worktree's Makefile is T01's, so its `make verify` skips the macOS build; run `make verify` on main after merging it.
+- 2026-11-26: **T50 reversed: zig, cargo-zigbuild and `check-macos` are gone** (the owner). They were there only because there was no CI and the repository was private. **Both changed:** the repository is public, and `release.yml` runs `make verify` natively on `macos-15` before any release is built, so the cross-check was redundant. `make verify` now formats, lints and tests on the machine it runs on. Removed: the `check-macos` target, `aarch64-apple-darwin` from `rust-toolchain.toml`, the zig steps in `ci.yml` and `release.yml`, and README's install lines. P9 and the conventions updated; notes on T03 and T50; T38 is running, so its change waits (below). TST-14 unchanged: Linux on each pull request, macOS at a tag.
 - 2026-11-26: **the owner's answers to the open spec issues (D9).** Specs changed: API-10, CLI-3, CLI-6, CLI-11, TST-8 `clock-back`, TST-11, NTF-3, NTF-4, NTF-6, NTF-8, NTF-11; `docs/05` and `docs/07` record the full listen queue's `EAGAIN`; the root README's and docs/07's status lines are current. Plan: `render::changes` takes the PR, for `more events:` (`contracts/cli.md`, T10, T27); the guide's cap is 120 lines (T11); the fake GitHub marks every check name and login it makes up, and the sweep looks for `MARKER_CHECK` in the log and the state file (`contracts/testkit.md`, T14, T29, T35, T49); `fail_fast` cites API-10 (T30, T44); T46, T48 and T49 cite the spec where they cited P15 or a spec issue, and T49 no longer plays `clock-back`'s forward step. P15 shrinks to what the specs still leave to the plan. No task added, dropped or renumbered.
 - 2026-11-26: **updated for 08-notify's third hardening pass** (`specs/reviews/08-notify.md`, "Pass 3"). **No second try:** a post that fails or isn't done in 2 s ends its subscription, logged, at a stop too; `RETRY_AFTER` and the telling state's wait are gone (`contracts/notify.md`, T46, T49). **`problem`** is checked at each tick, its 10 minutes from `PollerStatus::problem_since`, a new field the engine publishes (`contracts/poller.md`, T21, T46). **The tier** follows the last client request once the last subscription on an open PR ends: `cadence::last_ask` loses its `last_ended`, `Store::open_subscriptions` returns a count (`contracts/poller.md`, `contracts/state.md`, T09, T15, T21). **Registration:** the socket's `stat` straight after the parameters, `auth` before the limit, every answer from the registration's view, `replaced: true` with `registered: false`, "the same request" compared as the daemon reads it (`contracts/notify.md`, `contracts/api.md`, T46, T47). **Words:** NTF-7's one rule in `text::watching`; NTF-11's line order (`replaced an earlier notify` in both cases, `again:` before `problem:`) and its exit-11 line (`contracts/cli.md`, T10, T35, T48). **Tests:** TST-4's settle counts notices being posted and the fake session's reads (`contracts/clock.md`, `contracts/testkit.md`, T04, T45); TST-16's fourth mode is `queue_full`, failing a connect at once (T45); T49 plays `notify-keeps-active` and the new `notify-keeps-ended`, `notify-problem` and `notify-register`, and the extended `notify-session-gone` and `notify-no-session` (now L). STA-1 is cited as the one place the notify routes' naming rule lives (T09, T15, T47). T28's notes name the new rows. No task added or dropped; all were `todo`, so every change is in place. P15 rewritten; spec issues 31, 34, 35, 36 and 40 answered, 42 added.
 - 2026-11-25: **updated for the specs' draft 0.2.** **Notify (D7):** a new seam (`contracts/notify.md`), six new tasks (T44 conditions, T45 the fake session socket, T46 the notifier, T47 its routes, T48 the command, T49 its scenarios), and edits in place to T02, T04, T07, T09, T10, T11, T15, T16, T19, T21, T22, T23, T24, T27, T28, T29, T33, T35, T36, T40, T41 and T43, and to the api, cli, daemon, log, model, poller, state and testkit contracts and the conventions. **Narrower conditions (D8):** `--kind` and `--fail-fast` in T44, T10, T11, T23, T27, with `fail-fast` in T30 and `changed-kind` in T31. **Commit 042dae6's hardening changes were taken into the snapshot**: they came from this plan's own findings, and the briefs that had built another reading were changed (T05, T07, T20, T22, T23, T36; T19 and T39 for D5; T32 and T33 for rows that now agree). **Both hardening passes on 08-notify (2026-11-25) are in**, with their edits to 02-polling, 03-state, 04-api, 05-cli and 07-testing: the socket checked by device and inode at each tick and before each post; `for` on a waiter's clock, an expiry held for a catch-up, the stale mark in `expired`; the end `problem`; NTF-2's order, a confirmation that fails taking out what it replaced, a too-old `since` let go, 32 per socket, `no_session` (exit 11); cancel by the registered name, never reading through; only a subscription on an open PR keeps the active tier, and its end keeps the PR 60 minutes; the second try's state; `stop(asked)` and `--no-spawn` waiting 8 s; the spawned daemon without the session's variables; the registered output's extra lines and `again:`. T46 now depends on T09 and T43. 49 tasks, the critical path unchanged at 23. Plan decisions P15 (extended) and P16 added; spec issues 30 to 41.

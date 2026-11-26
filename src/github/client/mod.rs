@@ -17,16 +17,20 @@ mod tests;
 /// POL-1, OPS-16: the one endpoint a release build talks to.
 pub const ENDPOINT: &str = "https://api.github.com/graphql";
 
-/// TST-1: the variable a test build takes its endpoint from.
+/// TST-1: the variable a test build takes its endpoint from. Not in a release
+/// build, whose binary holds no `CIRCITOR_TEST_` name.
+#[cfg(any(test, feature = "test-endpoint"))]
 pub const TEST_GITHUB_VAR: &str = "CIRCITOR_TEST_GITHUB";
 
 /// Why the endpoint can't be used: names the variable or the host. Never holds a token.
 #[derive(Debug, thiserror::Error)]
 pub enum EndpointError {
     /// TST-1: a test build without `CIRCITOR_TEST_GITHUB`.
+    #[cfg(any(test, feature = "test-endpoint"))]
     #[error("{TEST_GITHUB_VAR} isn't set; a test build needs http://127.0.0.1:<port>/graphql")]
     Unset,
     /// TST-1: anything but `http://127.0.0.1:<port>/graphql`.
+    #[cfg(any(test, feature = "test-endpoint"))]
     #[error("{TEST_GITHUB_VAR} must be http://127.0.0.1:<port>/graphql, not one on host {host}")]
     Refused { host: String },
     /// The HTTP client couldn't be built (its TLS setup).

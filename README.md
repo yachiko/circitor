@@ -195,14 +195,9 @@ Use the same command after you change `config.toml`: it is read at the daemon's 
 
 ## Building
 
-`make verify` formats, lints, tests, and checks that the code compiles for macOS. **From Linux, the macOS build needs zig and cargo-zigbuild:**
+`make verify` formats, lints and tests **on the machine it runs on**. It needs only the toolchain that `rust-toolchain.toml` pins.
 
-```sh
-sudo pacman -S zig    # or your system's package, or ziglang.org
-cargo install cargo-zigbuild --locked
-```
-
-On a Mac, plain cargo builds for macOS, so neither is needed.
+**macOS is verified in CI at a release tag:** `release.yml` runs `make verify` on a macOS runner before it builds the release. A pull request runs it on Linux only.
 
 ## Licence
 

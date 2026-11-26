@@ -168,7 +168,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | TST-5 |  | T29 |
 | TST-6 |  | T34 |
 | TST-7 |  | T10, T35, T46, T48 |
-| TST-8 |  | T30, T31, T32, T33, T49 |
+| TST-8 |  | T30, T31, T32, T33, T49, T60 |
 | TST-9 |  | T36 |
 | TST-10 |  | T16 |
 | TST-11 |  | T20, T29 |
@@ -191,6 +191,6 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | NTF-7 |  | T46 |
 | NTF-8 | proposal | T46 |
 | NTF-9 |  | T02, T22, T46, T49 |
-| NTF-10 |  | T28, T46, T49 |
+| NTF-10 |  | T28, T46, T49, T60 |
 | NTF-11 | proposal | T11, T48; parts: T10 (a-registered-answer-with-reset); T10 (otherwise-it-prints); T10 (when-already); T10 (when-the-answer-is-already-known) |
 | NTF-12 | proposal | T19 |

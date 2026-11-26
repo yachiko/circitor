@@ -1,6 +1,6 @@
 ---
 id: T39
-title: "Owner: set up the release tool, publish to the tap"
+title: "Owner: the first release, v0.0.1, to the tap"
 kind: manual
 milestone: M5
 size: M
@@ -11,7 +11,10 @@ owns: []
 shares: []
 ---
 
-# T39 · Owner: set up the release tool, publish to the tap
+# T39 · Owner: the first release, v0.0.1, to the tap
+
+
+> **Changed (2026-11-26, the owner):** no `dist`. The release workflow is T03's `release.yml`, the pipeline of the owner's `lege`, writing a formula to the tap (D5). The first tag is **`v0.0.1`** (`Cargo.toml` says `0.0.1`). What's left here: set the two App secrets, optionally run `release.yml` by hand as a dry run, tag, and check the install. Read "`dist`" below as "`release.yml`", and "`v0.1.0`" as "`v0.0.1`".
 
 ## Outcome
 Releases are built for the four targets by `dist`, which writes a formula (D5), and `brew install yachiko/tap/circitor` installs a binary that runs.
