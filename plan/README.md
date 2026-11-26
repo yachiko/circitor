@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **50 tasks:** 18 todo, 3 in-progress, 27 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **50 tasks:** 17 todo, 3 in-progress, 28 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -102,8 +102,8 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 5 | [T24](tasks/T24-cli-conn.md) | CLI and the daemon: connecting, starting, replacing, stopping, request limits | code | L | done | T06, T17, T18, T41 |
 | 5 | [T37](tasks/T37-record-fixtures.md) | Owner: record real responses from yachiko/experiment | manual | S | todo | T07 |
 | 5 | [T46](tasks/T46-notify-core.md) | Notify: subscriptions, the loop that evaluates them, the poster, and every notice's words | code | L | done | T09, T10, T15, T43, T44 |
-| 6 | [T25](tasks/T25-engine-demand.md) | Poller engine: hot PRs, forced refreshes, reading through, track, the mergeable follow-up | code | L | in-progress | T21 |
-| 6 | [T26](tasks/T26-m1-poll.md) | M1: the real client against the fake GitHub, polling end to end | integration | M | todo | T07, T20, T21 |
+| 6 | [T25](tasks/T25-engine-demand.md) | Poller engine: hot PRs, forced refreshes, reading through, track, the mergeable follow-up | code | L | done | T21 |
+| 6 | [T26](tasks/T26-m1-poll.md) | M1: the real client against the fake GitHub, polling end to end | integration | M | in-progress | T07, T20, T21 |
 | 6 | [T27](tasks/T27-cli-commands.md) | CLI commands: run, each command, the wait's deadline and reconnect, exit codes | code | L | in-progress | T10, T11, T24 |
 | 6 | [T28](tasks/T28-daemon-run.md) | M2: the daemon runs: start order, serving the socket, modes, signals, stop, idle exit | integration | L | in-progress | T06, T07, T12, T16, T17, T18, T21, T22, T23, T46 |
 | 6 | [T47](tasks/T47-api-notify.md) | Notify routes: registering a subscription and cancelling it | code | M | todo | T09, T41, T46 |
@@ -161,8 +161,8 @@ flowchart LR
   T22["T22 API routes: list, show, changes,…"]:::done
   T23["T23 Waiters: the wait route, its cond…"]:::done
   T24["T24 CLI and the daemon: connecting, s…"]:::done
-  T25["T25 Poller engine: hot PRs, forced re…"]:::active
-  T26["T26 M1: the real client against the f…"]
+  T25["T25 Poller engine: hot PRs, forced re…"]:::done
+  T26["T26 M1: the real client against the f…"]:::active
   T27["T27 CLI commands: run, each command,…"]:::active
   T28["T28 M2: the daemon runs: start order,…"]:::active
   T29["T29 M3: the harness, and the CLI agai…"]

@@ -4,7 +4,7 @@ title: "M1: the real client against the fake GitHub, polling end to end"
 kind: integration
 milestone: M1
 size: M
-status: todo
+status: in-progress
 depends_on: [T07, T20, T21]
 requirements: [POL-4, POL-6, POL-13, TST-12]
 owns: [tests/m1_poll.rs]

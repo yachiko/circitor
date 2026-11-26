@@ -4,7 +4,7 @@ title: "Poller engine: hot PRs, forced refreshes, reading through, track, the me
 kind: code
 milestone: M2
 size: L
-status: in-progress
+status: done
 depends_on: [T21]
 requirements: [POL-11, POL-14, POL-15, POL-16, API-13]
 owns: [src/poller/engine/]
@@ -90,3 +90,10 @@ Unit tests in `src/poller/engine/`, set up as T21's: `ScriptedGitHub`, the real 
 - **POL-11, POL-14, POL-15 and POL-16 are (proposal)**; how long `mergeable` stays `UNKNOWN` on a large PR isn't measured (docs/02 §6 item 7), nor what a rename does to a node ID (MOD-1). Build the spec as written.
 - **Readings this brief makes, to report if they don't fit:** the follow-up's 3 s count from the answer; PRs of one answer share one follow-up; a failed read-through in a backoff doesn't move its step; the 5 s window is looked at only after a request in flight that holds the PR.
 - If T21's code has no clean place for the demand queue or the apply hook, report it rather than restructuring the loop.
+
+## Evidence
+- **2026-11-26**, branch `t25-engine-demand`, executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- `src/poller/engine/` (`mod.rs`, `run.rs`, `poll.rs`, `gate.rs`, new `demand.rs`, `hot.rs`, `tests/demand.rs`, `tests/mod.rs`); no public signature changed. `cargo test --features test-endpoint --lib poller::engine::`: 55 passed (T21's 39 unchanged); run 10 times by the orchestrator after rebasing: 0 failures. `make verify` passes on main after the merge (485 lib tests), the macOS check included.
+- **Beyond the brief's hooks, reported and accepted** (inside T25's own directory; T21's tests all pass): `poll.rs`'s check-page and items loops became `pages_and_items`/`fetch_pages`/`fetch_items` for reuse; `PollState` gained `poll` and `every` (D11's flag), and outside a poll a step marks its own send time and skips `between_requests`; every `attempt_failed` goes through `failed_pr`, which also answers joined callers; `gate.rs` gained `flight_begin` (a `refresh_pr` arriving during the token read or the 1 s gap joins the request) and a `keep_backoff` guard; the loop's order is demand, `poll_now`, the poll, follow-ups, hot refreshes.
+- **Orchestrator decisions (by recommendation, owner's rule of 2026-11-26):** a read-through's whole-request failure maps as POL-16 reads (a 401 to `auth`, a rate limit to `rate_limited`, else `github_unavailable`), over the brief's "only `GithubUnavailable`"; `d11_forced_poll_refreshes_every_pr` uses `asked` PRs, `interval` 60 s and a client request after the forced poll, since the brief's "ordinary poll 60 s after, in the idle tier" can't happen with the defaults (the brief's slip).
+- Readings: the 3 s follow-up counts from when the read is applied (the items answer for a held read); PRs of one answer share one follow-up; a failed read-through in a backoff doesn't move it; the 5 s window is checked only after looking for the PR in flight; `refresh_pr` of an untracked ID is `NotSent`; after `stop`, `refresh_pr` is `Failed` and a read-through `GithubUnavailable`; a `track` joining another's read-through calls `set_manual` once it answers `Ok`.
