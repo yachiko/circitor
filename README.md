@@ -203,3 +203,7 @@ cargo install cargo-zigbuild --locked
 ```
 
 On a Mac, plain cargo builds for macOS, so neither is needed.
+
+## Licence
+
+**MIT.** See [LICENSE](LICENSE).
