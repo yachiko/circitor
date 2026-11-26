@@ -1,0 +1,14 @@
+version: 1.2.3+test
+mode: spawned
+started_at: 2026-11-24T22:00:00Z
+last_poll: 2026-11-24T22:00:00Z polled
+cost_last_hour: 2
+github: remaining 4998, reset_at 2026-11-24T23:00:00Z, login marker-login
+tracked: authored 1, manual 0, asked 0
+waiters: 0
+subscriptions: 0
+owners: none
+token_source: gh
+gh_path: gh
+paths: config <tmp>/config/circitor/config.toml, state <tmp>/state/circitor/state.json, socket <tmp>/state/circitor/circitor.sock, log <tmp>/state/circitor/circitor.log
+warnings: none

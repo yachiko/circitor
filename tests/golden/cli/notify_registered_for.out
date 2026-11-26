@@ -1,0 +1,4 @@
+registered: octo/app#1 until merged, for 1h
+octo/app#1  checks_pending  642b365  checks 0/1, 0 failed  review none  "MARKER-TITLE #1"
+a confirmation was posted to this session; if none arrives, notices are held or refused here: run circitor notify octo/app#1 --cancel, then use circitor wait
+cursor: uod7jj5t-2

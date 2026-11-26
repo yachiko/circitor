@@ -1,0 +1,15 @@
+version: 1.2.3+test
+mode: spawned
+started_at: 2026-11-24T22:00:00Z
+last_poll: 2026-11-24T22:06:00Z rate_limited
+cost_last_hour: 13
+github: remaining 0, reset_at 2026-11-24T22:15:50Z, login marker-login
+tracked: authored 2, manual 0, asked 0
+waiters: 0
+subscriptions: 0
+owners: none
+token_source: gh
+gh_path: gh
+paths: config <tmp>/config/circitor/config.toml, state <tmp>/state/circitor/state.json, socket <tmp>/state/circitor/circitor.sock, log <tmp>/state/circitor/circitor.log
+warnings: pr_failing since 2026-11-24T22:05:30Z: octo/app#2 has failed to refresh for 5 minutes: the latest error is FORBIDDEN, with the token from gh.; quota_reserve since 2026-11-24T22:06:10Z: GitHub reports 0 points left, under quota.reserve (500): circitor polls every 300 s.
+problem: rate_limited for 9m (until 22:15 local), GitHub's rate limit is reached: circitor will ask again at 2026-11-24T22:15:50Z.

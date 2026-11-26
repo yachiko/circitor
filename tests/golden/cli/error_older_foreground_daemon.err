@@ -1,0 +1,2 @@
+warning: the daemon on <tmp>/state/circitor/circitor.sock is version 1.0.0, older than this CLI's 1.2.3+test; it runs in mode "foreground", so it isn't replaced: restart it to update it
+unknown_route: No route GET /v1/unknown. (the daemon is older than this CLI: run circitor stop, or restart its service, to replace it)

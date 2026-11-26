@@ -1,0 +1,3 @@
+timeout after 100s: octo/app#1 checks_pending (0/2, 0 failed)
+again: circitor wait octo/app#1 --until checks-done --fail-fast --since uod7jj5t-1
+cursor: uod7jj5t-1

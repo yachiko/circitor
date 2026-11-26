@@ -1,0 +1,5 @@
+octo/app#1  status checks_pending -> checks_failing
+octo/app#1  checks failing (1 of 1): MARKER-CHECK test https://github.com/octo/app/actions/runs/1/job/1001
+octo/app#1  new review approved by marker-login-1  gh api repos/octo/app/pulls/1/reviews/1002
+already: checks failed (1 of 1) on 642b365
+cursor: uod7jj5t-3

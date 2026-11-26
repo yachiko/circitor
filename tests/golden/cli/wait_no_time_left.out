@@ -1,0 +1,3 @@
+timeout after 5s: octo/app#1 (no answer from the daemon)
+again: circitor wait octo/app#1 --until merged --timeout 5 --since k3x9q2mz-418
+cursor: k3x9q2mz-418

@@ -1,0 +1,2 @@
+the daemon exited with status 1 before answering on <tmp>/state/circitor/circitor.sock; its last lines in <tmp>/state/circitor/circitor.log:
+circitor: config.toml: unknown key `colour` (OPS-1)

@@ -1,0 +1,1 @@
+circitor: the daemon is stopping; notify for octo/app#1 is cancelled. Ask again: circitor notify octo/app#1 --until checks-done --sha 642b365 --since uod7jj5t-2 --no-spawn

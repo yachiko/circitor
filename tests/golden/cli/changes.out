@@ -1,0 +1,24 @@
+octo/lib#1  tracked (manual)
+octo/app#2  status ready -> merged
+octo/app#2  merged
+octo/app#3  status ready -> closed
+octo/app#3  closed
+octo/app#4  status ready -> closed
+octo/app#4  closed
+octo/app#1  status checks_pending -> conflict
+octo/app#1  head 642b365 -> bf24af5
+octo/app#1  checks none
+octo/app#1  draft true
+octo/app#1  mergeable no (dirty)
+octo/app#1  review changes_requested
+octo/app#1  new comment by marker-login-1  gh api repos/octo/app/issues/comments/1002
+octo/app#1  new review changes_requested by marker-login-2, 3 inline  gh api repos/octo/app/pulls/1/reviews/1003  gh api repos/octo/app/pulls/1/reviews/1003/comments
+octo/app#1  edited title, base
+octo/app#1  checks failing (1 of 1): MARKER-CHECK-3 https://github.com/octo/app/actions/runs/1/job/1007
+octo/app#4  status closed -> checks_pending
+octo/app#4  reopened
+octo/lib#1  untracked
+octo/app#4  status checks_pending -> ready
+octo/app#5  status ready -> gone
+octo/app#5  gone
+cursor: uod7jj5t-15

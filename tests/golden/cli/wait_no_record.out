@@ -1,0 +1,3 @@
+timeout after 30s: octo/app#1 no record yet
+again: circitor wait octo/app#1 --until merged --timeout 30 --since dkxd9amy-0
+cursor: dkxd9amy-0

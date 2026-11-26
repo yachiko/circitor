@@ -1,0 +1,3 @@
+octo/app#1  ready  642b365  checks 0/0, 0 failed  review none  "MARKER-TITLE #1" (stale, 4m59s old)
+problem: rate_limited for 12m (until 22:17 local), GitHub's rate limit is reached: circitor will ask again at 2026-11-24T22:17:00Z.
+cursor: uod7jj5t-1

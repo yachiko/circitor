@@ -1,0 +1,4 @@
+octo/app#1  status checks_pending -> checks_failing
+octo/app#1  checks failing (1 of 2): test https://github.com/octo/app/actions/runs/1/job/1002
+checks failed (1 of 2) on 642b365
+cursor: uod7jj5t-2

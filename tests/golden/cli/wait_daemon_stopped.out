@@ -1,0 +1,3 @@
+daemon stopped
+again: circitor wait octo/app#1 --until merged --since uod7jj5t-1
+cursor: uod7jj5t-1

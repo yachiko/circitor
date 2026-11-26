@@ -1,0 +1,3 @@
+daemon not answering on <tmp>/state/circitor/circitor.sock
+again: circitor wait octo/app#1 --until merged --timeout 20 --since k3x9q2mz-418
+cursor: k3x9q2mz-418

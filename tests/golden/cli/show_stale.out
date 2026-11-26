@@ -1,0 +1,4 @@
+octo/app#2  ready  c1787f8  checks 0/0, 0 failed  review none  "MARKER-TITLE #2" (stale, 4m29s old, error FORBIDDEN)
+passed checks: 0
+mergeable yes, merge_state clean
+counts: comments 0, reviews 0, review_threads 0
