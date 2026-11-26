@@ -4,7 +4,7 @@ title: "Follow-up to T28 and T51: an answer waiting for room in the socket is wo
 kind: code
 milestone: M5
 size: S
-status: done
+status: todo
 depends_on: [T28, T51]
 requirements: [TST-4]
 owns: [src/daemon/run/]
@@ -12,6 +12,9 @@ shares: []
 ---
 
 # T62 · Follow-up to T28 and T51: an answer waiting for room in the socket is work in flight
+
+
+> **Partly done (2026-11-26).** The `Writing` wrapper below is merged and fixes the gap reproduced on Linux. **It wasn't enough on macOS:** the fourth dry run ([run 45797842465](https://github.com/yachiko/circitor/actions/runs/45797842465)) failed the same two tests the same way. Both are ignored on macOS only (`cfg_attr(target_os = "macos", ignore = "T62: …")`), on the owner's fallback. **Left:** find the second gap, best on a Mac (T40's machine) or with a diagnostic CI run, then lift the two ignores.
 
 ## Outcome
 The test clock doesn't settle while the daemon is still writing an answer that the socket can't take yet. A large answer reaches the CLI before a test looks.
@@ -36,10 +39,11 @@ The test clock doesn't settle while the daemon is still writing an answer that t
 
 ## Acceptance
 - `make verify` passes on Linux.
-- Both tests pass on `release.yml`'s `verify (macos-26)`.
+- Both tests pass on `release.yml`'s `verify (macos-26)`, with the two macOS ignores lifted.
 
 ## Open questions
 - **A client that stops reading but keeps its end open** holds the guard, and in a test the clock wouldn't settle. Every client in the tests reads to the end or closes; a closed end fails the write, which drops the guard.
 
 ## Evidence
 - **2026-11-26**, by the orchestrator, on the owner's OK (option 1). Failing run: https://github.com/yachiko/circitor/actions/runs/45795604691.
+- **Fourth dry run, 2026-11-26:** with `Writing`, `tst6_200_prs_cost_at_most_600_and_end_slowed_or_capped` and `scn_many_checks_truncated_failing` still fail on `macos-26` with the same messages. Ignored on macOS; everything else passes there.

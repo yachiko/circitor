@@ -1580,7 +1580,7 @@
    "milestone": "M2",
    "size": "S",
    "wave": 7,
-   "remaining": 0,
+   "remaining": 1,
    "depends_on": [
     "T28"
    ],
@@ -1845,11 +1845,11 @@
    "id": "T62",
    "title": "Follow-up to T28 and T51: an answer waiting for room in the socket is work in flight",
    "kind": "code",
-   "status": "done",
+   "status": "todo",
    "milestone": "M5",
    "size": "S",
    "wave": 8,
-   "remaining": 0,
+   "remaining": 1,
    "depends_on": [
     "T28",
     "T51"

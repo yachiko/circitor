@@ -1407,6 +1407,10 @@ async fn scn_many_checks_truncated_passing() {
 // TST-8: many-checks
 // MOD-7, CLI-6: one unread check failed: `failing`, and `checks-done` exits 8 with the truncated mark.
 #[tokio::test]
+#[cfg_attr(
+    target_os = "macos",
+    ignore = "T62: on macOS the clock settles before a large answer reaches the CLI"
+)]
 async fn scn_many_checks_truncated_failing() {
     truncated(
         &[
