@@ -10,7 +10,8 @@ use crate::clock::{Clock, Mono, SharedClock, SleepWatch, TestClock, Time};
 use crate::config::Config;
 use crate::github::fake::{ScriptedGitHub, answers};
 use crate::github::{
-    Answer, Failure, Found, FoundPr, NodeAnswer, NodeQuery, Query, Rate, Unavailable, Want,
+    Answer, Failure, Found, FoundPr, LookupAnswer, NodeAnswer, NodeQuery, Query, Rate, Unavailable,
+    Want,
 };
 use crate::log::{BufferSink, Level, Logger};
 use crate::model::{
@@ -24,6 +25,7 @@ use crate::token::fake::FakeTokenSource;
 
 mod api;
 mod cadence;
+mod demand;
 mod errors;
 mod poll;
 
@@ -69,6 +71,12 @@ pub(super) struct World {
     /// One per request, from the front: `Some` fails it as a whole, `None` answers it.
     pub script: VecDeque<Option<Failure>>,
     pub rate: Option<Rate>,
+    /// T25: what a lookup of this name answers instead of the PR.
+    pub lookup_errors: HashMap<PrName, LookupAnswer>,
+    /// T25: a lookup of this name answers this PR, under this name (a renamed repository, MOD-1).
+    pub aliases: HashMap<PrName, NodeId>,
+    /// T25: PRs whose checks are pending.
+    pub pending: HashSet<NodeId>,
 }
 
 impl Default for World {
@@ -84,6 +92,9 @@ impl Default for World {
             item_errors: HashSet::new(),
             script: VecDeque::new(),
             rate: Some(answers::rate(1, 4_999)),
+            lookup_errors: HashMap::new(),
+            aliases: HashMap::new(),
+            pending: HashSet::new(),
         }
     }
 }
@@ -120,13 +131,37 @@ impl World {
         }
         let found = q.find.as_ref().map(|f| self.find(f.after.as_deref()));
         let nodes = q.nodes.iter().map(|n| self.node(n)).collect();
+        let lookup = q.lookup.as_ref().map(|n| self.lookup(n));
         Ok(Answer {
             rate: self.rate.clone(),
             date: None,
             found,
             nodes,
-            lookup: None,
+            lookup,
         })
+    }
+
+    /// POL-16: one PR by name, as `RecordAndItems`.
+    fn lookup(&self, name: &PrName) -> LookupAnswer {
+        if let Some(e) = self.lookup_errors.get(name) {
+            return e.clone();
+        }
+        let read = match self.aliases.get(name) {
+            Some(id) => self.prs.get(id).map(|r| {
+                let mut r = r.clone();
+                r.pr = name.clone();
+                r
+            }),
+            None => self.prs.values().find(|r| r.pr == *name).cloned(),
+        };
+        let Some(mut read) = read else {
+            return LookupAnswer::NotFound;
+        };
+        read.checks = self.checks_page(&read.id, 0);
+        LookupAnswer::Found {
+            items: self.items.get(&read.id).cloned().unwrap_or_default(),
+            read: Box::new(read),
+        }
     }
 
     fn find(&self, after: Option<&str>) -> Found {
@@ -153,7 +188,13 @@ impl World {
     }
 
     fn checks_page(&self, pr: &NodeId, from: u32) -> ChecksRead {
-        let total = self.checks.get(pr).copied().unwrap_or(0);
+        let pending = self.pending.contains(pr);
+        let total = self
+            .checks
+            .get(pr)
+            .copied()
+            .unwrap_or(0)
+            .max(u32::from(pending));
         let to = (from + 100).min(total);
         ChecksRead {
             items: (from..to)
@@ -161,13 +202,17 @@ impl World {
                     kind: CheckKind::Run,
                     id: Some(u64::from(i) + 1),
                     name: format!("check-{i}"),
-                    phase: Phase::Completed,
-                    result: Some("success".to_string()),
+                    phase: if pending {
+                        Phase::InProgress
+                    } else {
+                        Phase::Completed
+                    },
+                    result: (!pending).then(|| "success".to_string()),
                     url: None,
                 })
                 .collect(),
             total,
-            rollup: (total > 0).then(|| "success".to_string()),
+            rollup: (total > 0).then(|| if pending { "pending" } else { "success" }.to_string()),
             next_page: (to < total).then(|| format!("k{to}")),
         }
     }

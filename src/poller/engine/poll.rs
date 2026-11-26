@@ -6,7 +6,7 @@ use std::collections::{HashMap, HashSet};
 use crate::clock::{Mono, Time};
 use crate::github::{Answer, Find, Found, FoundPr, NodeAnswer, NodeQuery, Query, Want};
 use crate::model::{ItemsOutcome, ItemsRead, NodeId, PrRead, ReadMeta, ReadState, Source};
-use crate::poller::{FirstPoll, PollOutcome, PollReport, cadence};
+use crate::poller::{FirstPoll, PollOutcome, PollReport, Refreshed, cadence};
 use crate::state::{Applied, Class, MAX_PLACES, Target};
 use crate::status::WarningCode;
 
@@ -21,16 +21,22 @@ const MAX_CHECKS: usize = 300;
 const BATCH: usize = 40;
 
 /// A read in hand, waiting for its check pages or its items (POL-8, POL-12).
-struct Held {
-    id: NodeId,
-    read: PrRead,
-    items: Option<ItemsRead>,
-    meta: ReadMeta,
-    first: bool,
+pub(super) struct Held {
+    pub(super) id: NodeId,
+    pub(super) read: PrRead,
+    pub(super) items: Option<ItemsRead>,
+    pub(super) meta: ReadMeta,
+    pub(super) first: bool,
 }
 
+/// One poll's state, or one hot, forced or follow-up refresh's, or a read-through's check pages.
 #[derive(Default)]
-struct PollState {
+pub(super) struct PollState {
+    /// A poll: its later requests are marked with its send time (P10), demand goes between them
+    /// (POL-15), and its PRs not yet sent are stale when it's abandoned (POL-19).
+    poll: bool,
+    /// D11: a forced poll refreshes every tracked PR with a place, whatever its period.
+    every: bool,
     /// The poll's own send time: its first request's (P10).
     sent: Option<(Mono, Time)>,
     login: Option<String>,
@@ -47,12 +53,19 @@ struct PollState {
     found_new: Vec<NodeId>,
     /// The PRs a request of this poll was sent for.
     sent_ids: HashSet<NodeId>,
-    checks: Vec<Held>,
+    pub(super) checks: Vec<Held>,
     items: Vec<Held>,
     /// The PRs whose refresh this poll applied and read open (POL-5).
     applied_open: Vec<NodeId>,
     results: Vec<(NodeId, NodeOutcome)>,
-    stop: Option<PollOutcome>,
+    pub(super) stop: Option<PollOutcome>,
+}
+
+impl PollState {
+    /// A refresh outside a poll: hot, forced, a follow-up, or a read-through's pages (T25).
+    pub(super) fn refresh() -> PollState {
+        PollState::default()
+    }
 }
 
 fn outcome_of(f: &Fail) -> PollOutcome {
@@ -73,16 +86,23 @@ impl Run {
     pub(super) async fn poll(&mut self, forced: bool) -> PollReport {
         self.in_poll = true;
         lock(&self.shared.flight).polling = true;
-        let mut p = PollState::default();
+        let mut p = PollState {
+            poll: true,
+            every: forced,
+            ..PollState::default()
+        };
+        self.dm.poll_started();
         self.steps(&mut p).await;
         // A `poll_now` that reached the channel meanwhile joins this poll.
-        self.between_requests();
+        self.between_requests().await;
         let joined = {
             let mut flight = lock(&self.shared.flight);
             flight.polling = false;
             std::mem::take(&mut flight.joined)
         };
         self.in_poll = false;
+        // POL-15: whoever joined a PR of this poll that's neither applied nor failed: failed.
+        self.settle_rest();
         let report = self.finish(p, forced);
         for tx in joined {
             let _ = tx.send(PollReport {
@@ -96,7 +116,7 @@ impl Run {
     async fn steps(&mut self, p: &mut PollState) {
         // POL-4: the first request is the finding's first page and the first 40 due PRs.
         let targets = self.d.store.targets();
-        let due = cadence::in_poll(&targets, None, self.tier, &self.d.config, self.now());
+        let due = self.due_in_poll(p, &targets, None);
         let first: Vec<NodeId> = due.into_iter().take(BATCH).collect();
         let query = Query {
             find: Some(Find::default()),
@@ -139,12 +159,12 @@ impl Run {
             loop {
                 let targets = self.d.store.targets();
                 let set = listed.then_some(&p.listed);
-                let due: Vec<NodeId> =
-                    cadence::in_poll(&targets, set, self.tier, &self.d.config, self.now())
-                        .into_iter()
-                        .filter(|id| !p.sent_ids.contains(id))
-                        .take(BATCH)
-                        .collect();
+                let due: Vec<NodeId> = self
+                    .due_in_poll(p, &targets, set)
+                    .into_iter()
+                    .filter(|id| !p.sent_ids.contains(id))
+                    .take(BATCH)
+                    .collect();
                 if due.is_empty() {
                     break;
                 }
@@ -187,7 +207,25 @@ impl Run {
             }
         }
 
-        // Check pages (POL-8): a PR's pages are one read.
+        self.pages_and_items(p).await;
+    }
+
+    /// POL-8 then POL-12: check pages, the reads they held, then new items, straight after. Shared
+    /// by a poll and by hot, forced and follow-up refreshes (T25).
+    pub(super) async fn pages_and_items(&mut self, p: &mut PollState) {
+        if !self.fetch_pages(p).await {
+            return;
+        }
+        let mut done = std::mem::take(&mut p.checks);
+        by_name(&mut done);
+        for held in done {
+            self.finish_read(p, held);
+        }
+        self.fetch_items(p).await;
+    }
+
+    /// Check pages (POL-8): a PR's pages are one read. `false`: the run was abandoned.
+    pub(super) async fn fetch_pages(&mut self, p: &mut PollState) -> bool {
         loop {
             let need: Vec<usize> = (0..p.checks.len())
                 .filter(|&i| wants_page(&p.checks[i].read))
@@ -215,7 +253,7 @@ impl Run {
             };
             let Some((answer, meta)) = self.step(p, &query, "checks").await else {
                 self.abandon(p, &[]);
-                return;
+                return false;
             };
             let mut failed = Vec::new();
             let mut answers = answer.nodes.into_iter();
@@ -232,7 +270,7 @@ impl Run {
             // POL-8: a failed page applies nothing; the record keeps its values and `error`.
             for (i, outcome) in failed.into_iter().rev() {
                 let held = p.checks.remove(i);
-                self.d.store.attempt_failed(&held.id, None, self.wall());
+                self.failed_pr(&held.id, None);
                 self.d.store.release(&held.id);
                 if let Some(outcome) = outcome {
                     self.report_node(&held.id, &outcome, &meta);
@@ -240,16 +278,14 @@ impl Run {
                 }
             }
             if self.stopped(p) {
-                return;
+                return false;
             }
         }
-        let mut done = std::mem::take(&mut p.checks);
-        by_name(&mut done);
-        for held in done {
-            self.finish_read(p, held);
-        }
+        true
+    }
 
-        // New items (POL-12): straight after, in batches of 40; each PR's part on its own.
+    /// New items (POL-12): straight after, in batches of 40; each PR's part on its own.
+    async fn fetch_items(&mut self, p: &mut PollState) {
         while !p.items.is_empty() {
             let n = p.items.len().min(BATCH);
             let batch: Vec<Held> = p.items.drain(..n).collect();
@@ -310,17 +346,18 @@ impl Run {
     }
 
     /// One request of the poll, through the gate. `None`: it failed as a whole (`p.stop` says why).
-    async fn step(
+    pub(super) async fn step(
         &mut self,
         p: &mut PollState,
         query: &Query,
         kind: &'static str,
     ) -> Option<(Answer, ReadMeta)> {
-        if p.sent.is_some() {
-            // POL-15: demand goes next, between a poll's requests (T25).
-            self.between_requests();
+        if p.poll && p.sent.is_some() {
+            // POL-15: demand goes next, between a poll's requests.
+            self.between_requests().await;
         }
-        let mark_at = p.sent.map(|(m, _)| m);
+        // P10: a poll's later requests take its send time; any other refresh its own.
+        let mark_at = if p.poll { p.sent.map(|(m, _)| m) } else { None };
         let sent = self.request(query, kind, mark_at).await;
         p.cost += sent.cost;
         if let Some(meta) = &sent.meta {
@@ -345,7 +382,7 @@ impl Run {
     }
 
     /// After an answer was taken in: stop when it said `remaining: 0`.
-    fn stopped(&mut self, p: &mut PollState) -> bool {
+    pub(super) fn stopped(&mut self, p: &mut PollState) -> bool {
         if p.zero {
             p.stop = Some(PollOutcome::RateLimited);
             self.abandon(p, &[]);
@@ -401,7 +438,7 @@ impl Run {
     }
 
     /// The nodes of one answer, in the query's order.
-    fn take_nodes(
+    pub(super) fn take_nodes(
         &mut self,
         p: &mut PollState,
         nodes: &[NodeQuery],
@@ -431,7 +468,7 @@ impl Run {
                 }
                 _ => {
                     // Missing, or of another kind: not applied, and no type to name.
-                    self.d.store.attempt_failed(&nq.id, None, self.wall());
+                    self.failed_pr(&nq.id, None);
                     self.d.store.release(&nq.id);
                 }
             }
@@ -471,7 +508,7 @@ impl Run {
         p.results.push((held.id.clone(), NodeOutcome::Applied));
     }
 
-    /// The one place a read is applied (MOD-15: a response's PRs in the order of `pr`). T25 hooks the follow-up here.
+    /// The one place a read is applied (MOD-15: a response's PRs in the order of `pr`).
     pub(super) fn apply(
         &mut self,
         id: &NodeId,
@@ -482,7 +519,40 @@ impl Run {
     ) -> Applied {
         let applied = self.d.store.apply(id, read, items, meta, login);
         self.report_node(id, &NodeOutcome::Applied, meta);
+        // POL-15: whoever joined this PR's refresh gets its result.
+        self.settle(id, Refreshed::Applied);
+        if applied != Applied::Discarded {
+            // POL-11: an `UNKNOWN` read may get its one follow-up.
+            self.after_apply(id, read);
+        }
         applied
+    }
+
+    /// `store.attempt_failed`, and whoever joined this PR's refresh gets `Failed` (POL-15).
+    pub(super) fn failed_pr(&mut self, id: &NodeId, error_type: Option<&str>) {
+        self.d.store.attempt_failed(id, error_type, self.wall());
+        self.settle(id, Refreshed::Failed);
+    }
+
+    /// POL-4, POL-10, POL-13, D11: the PRs a poll refreshes. A forced poll takes every tracked PR
+    /// with a place but those whose first refresh is the engine's own, and those a demand refreshed
+    /// since it began (POL-15).
+    fn due_in_poll(
+        &self,
+        p: &PollState,
+        targets: &[Target],
+        listed: Option<&HashSet<NodeId>>,
+    ) -> Vec<NodeId> {
+        if p.every {
+            // D11: whatever its period.
+            targets
+                .iter()
+                .filter(|t| t.class != Class::First && !self.dm.sent_in_poll(&t.id))
+                .map(|t| t.id.clone())
+                .collect()
+        } else {
+            cadence::in_poll(targets, listed, self.tier, &self.d.config, self.now())
+        }
     }
 
     /// POL-21, POL-24: the other nodes are applied; this one keeps its values and is stale. Nothing more (T42).
@@ -498,7 +568,7 @@ impl Run {
             NodeOutcome::Error(t) => t.as_str(),
             NodeOutcome::Applied => "",
         };
-        self.d.store.attempt_failed(id, Some(type_), self.wall());
+        self.failed_pr(id, Some(type_));
         // STA-3: a first refresh that fails gives the place back.
         self.d.store.release(id);
         self.report_node(id, &outcome, meta);
@@ -508,7 +578,9 @@ impl Run {
     fn report_node(&mut self, id: &NodeId, outcome: &NodeOutcome, meta: &ReadMeta) {
         let result = NodeResult {
             id,
-            in_poll: self.in_poll,
+            // MOD-11: a hot, forced or follow-up refresh, or a read-through, isn't a poll, also
+            // when it's sent between a poll's requests (T42 keeps its `NOT_FOUND` out of a run).
+            in_poll: self.in_poll && !self.dm.not_poll,
             outcome,
             sent_wall: meta.sent_wall,
             sent_mono: meta.sent_mono,
@@ -518,38 +590,34 @@ impl Run {
 
     /// POL-19, POL-24: the poll is abandoned. The failed request's PRs, and those of the requests not
     /// yet sent, are stale; a first refresh gives its place back; what answered stays applied.
-    fn abandon(&mut self, p: &mut PollState, failed: &[NodeQuery]) {
-        let wall = self.wall();
+    pub(super) fn abandon(&mut self, p: &mut PollState, failed: &[NodeQuery]) {
         let store = self.d.store.clone();
         for nq in failed {
             if matches!(nq.want, Want::Record | Want::RecordAndItems) {
-                store.attempt_failed(&nq.id, None, wall);
+                self.failed_pr(&nq.id, None);
                 store.release(&nq.id);
             }
         }
-        let targets = store.targets();
-        for id in cadence::in_poll(
-            &targets,
-            Some(&p.listed),
-            self.tier,
-            &self.d.config,
-            self.now(),
-        ) {
-            if !p.sent_ids.contains(&id) {
-                store.attempt_failed(&id, None, wall);
+        if p.poll {
+            // POL-19: the PRs of the poll's requests not yet sent are stale too.
+            let targets = store.targets();
+            for id in self.due_in_poll(p, &targets, Some(&p.listed)) {
+                if !p.sent_ids.contains(&id) {
+                    self.failed_pr(&id, None);
+                }
             }
         }
         for id in p.found_new.drain(..) {
             store.release(&id);
         }
         for held in std::mem::take(&mut p.checks) {
-            store.attempt_failed(&held.id, None, wall);
+            self.failed_pr(&held.id, None);
             store.release(&held.id);
         }
         for held in std::mem::take(&mut p.items) {
             // POL-12: applied with the old counts, so the next refresh asks again; POL-19: stale.
             self.apply_held(p, &held, ItemsOutcome::Failed);
-            store.attempt_failed(&held.id, None, wall);
+            self.failed_pr(&held.id, None);
         }
     }
 
@@ -620,17 +688,18 @@ fn by_name(reads: &mut [Held]) {
 }
 
 /// POL-8: more pages while the read has `next_page` and fewer than 300 items.
-fn wants_page(read: &PrRead) -> bool {
+pub(super) fn wants_page(read: &PrRead) -> bool {
     read.checks.next_page.is_some() && read.checks.items.len() < MAX_CHECKS
 }
 
-/// A loaded PR has no record: it's asked as `RecordAndItems` (POL-4, STA-8).
-fn node_queries(ids: &[NodeId], targets: &[Target]) -> Vec<NodeQuery> {
+/// A loaded PR has no record: it's asked as `RecordAndItems` (POL-4, STA-8); so is a found PR
+/// whose first refresh a demand sends.
+pub(super) fn node_queries(ids: &[NodeId], targets: &[Target]) -> Vec<NodeQuery> {
     let class: HashMap<&NodeId, Class> = targets.iter().map(|t| (&t.id, t.class)).collect();
     ids.iter()
         .map(|id| NodeQuery {
             id: id.clone(),
-            want: if class.get(id) == Some(&Class::Loaded) {
+            want: if matches!(class.get(id), Some(Class::Loaded | Class::First)) {
                 Want::RecordAndItems
             } else {
                 Want::Record

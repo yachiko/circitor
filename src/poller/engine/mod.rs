@@ -3,6 +3,7 @@
 //! One task, `run::Run`, owns the gate, `Quota`, `Backoff` and `Auth`. The handle (`Engine`) talks to
 //! it over a channel and reads what it last published; it never waits for the loop (POL-2, OPS-5).
 
+use std::collections::HashMap;
 use std::sync::{Arc, Mutex, MutexGuard};
 use std::time::Duration;
 
@@ -18,11 +19,13 @@ use crate::poller::{
     FirstPoll, PollOutcome, PollReport, PollerHandle, PollerStatus, Refreshed, Refusal,
     RefusalCode, Tier, cadence,
 };
-use crate::state::Store;
+use crate::state::{Class, Store};
 use crate::status::Warnings;
 use crate::token::TokenSource;
 
+mod demand;
 mod gate;
+mod hot;
 mod poll;
 mod pr_errors;
 mod publish;
@@ -49,10 +52,35 @@ pub struct EngineDeps {
 enum Cmd {
     /// A client request arrived (POL-13, POL-20, POL-22).
     ClientRequest,
-    /// The hot set may have changed (T25).
+    /// The hot set may have changed: the loop looks again when it wakes (POL-14).
     Nudge,
     /// API-16.
     PollNow(oneshot::Sender<PollReport>),
+    /// POL-15: one PR's forced refresh.
+    Refresh(NodeId, oneshot::Sender<Refreshed>),
+    /// POL-16: a read-through; `manual` for `track` (API-15).
+    Lookup {
+        name: PrName,
+        manual: bool,
+        tx: LookupTx,
+    },
+}
+
+/// Where a read-through's answer goes.
+type LookupTx = oneshot::Sender<Result<NodeId, Refusal>>;
+
+/// A caller waiting for a PR's refresh in flight (POL-15: sharing is by PR, not by caller).
+enum Joiner {
+    /// `refresh_pr`.
+    Refresh(oneshot::Sender<Refreshed>),
+    /// `read_through` or `track` of a PR whose first refresh is in flight.
+    Lookup(LookupTx),
+}
+
+/// A read-through in hand: the callers sharing it, and whether one of them is a `track`.
+struct LookupFlight {
+    manual: bool,
+    txs: Vec<LookupTx>,
 }
 
 /// What `client_request` reads and sets, behind a short lock.
@@ -70,6 +98,10 @@ struct Hand {
 struct Flight {
     polling: bool,
     joined: Vec<oneshot::Sender<PollReport>>,
+    /// POL-15: the PRs whose refresh has been sent and isn't applied or failed yet, with who joined it.
+    prs: HashMap<NodeId, Vec<Joiner>>,
+    /// POL-16: the read-throughs the loop is working on, by name.
+    lookups: HashMap<PrName, LookupFlight>,
 }
 
 /// What the handle and the loop share. Every lock is taken and released inside one function.
@@ -158,8 +190,11 @@ impl Engine {
             task.abort();
             let _ = task.await;
         }
-        // A `poll_now` that joined a poll in flight answers now.
-        lock(&self.shared.flight).joined.clear();
+        // A `poll_now` that joined a poll in flight answers now; so does every demand that joined a request.
+        let mut flight = lock(&self.shared.flight);
+        flight.joined.clear();
+        flight.prs.clear();
+        flight.lookups.clear();
     }
 }
 
@@ -171,12 +206,45 @@ fn stopped_report() -> PollReport {
     }
 }
 
-/// T25 builds reading through, `track` and forced refreshes; until then they refuse.
-fn not_built() -> Refusal {
+/// What a read-through or a `track` answers when the engine is gone before it could.
+fn stopped_refusal() -> Refusal {
     Refusal {
         code: RefusalCode::GithubUnavailable,
-        message: "circitor couldn't read this PR from GitHub.".to_string(),
+        message: "circitor stopped before it could read this PR from GitHub.".to_string(),
         until: None,
+    }
+}
+
+/// `Open` and `Ended` have a record; `Loaded` and `First` don't (API-18's `pending`).
+fn has_record(class: Class) -> bool {
+    matches!(class, Class::Open | Class::Ended)
+}
+
+impl Engine {
+    /// POL-16: hands a read-through to the loop, or joins one that holds this name or this PR.
+    async fn lookup(&self, name: &PrName, manual: bool) -> Result<NodeId, Refusal> {
+        let s = &self.shared;
+        let tracked = s.store.lookup(name);
+        let (tx, rx) = oneshot::channel();
+        {
+            let mut flight = lock(&s.flight);
+            let flight = &mut *flight;
+            if let Some(f) = flight.lookups.get_mut(name) {
+                // POL-16: two calls for one name share one request.
+                f.manual |= manual;
+                f.txs.push(tx);
+            } else if let Some(joined) = tracked.and_then(|t| flight.prs.get_mut(&t.id)) {
+                // A `First` PR: its first refresh is in flight; this joins it.
+                joined.push(Joiner::Lookup(tx));
+            } else {
+                let _ = s.cmds.send(Cmd::Lookup {
+                    name: name.clone(),
+                    manual,
+                    tx,
+                });
+            }
+        }
+        rx.await.unwrap_or_else(|_| Err(stopped_refusal()))
     }
 }
 
@@ -216,19 +284,47 @@ impl PollerHandle for Engine {
         self.shared.last_request().unwrap_or(self.shared.started)
     }
 
-    async fn read_through(&self, _name: &PrName) -> Result<NodeId, Refusal> {
-        // T25
-        Err(not_built())
+    async fn read_through(&self, name: &PrName) -> Result<NodeId, Refusal> {
+        // POL-16: a PR with a record is answered from memory; nothing is sent.
+        if let Some(t) = self.shared.store.lookup(name)
+            && has_record(t.class)
+        {
+            return Ok(t.id);
+        }
+        self.lookup(name, false).await
     }
 
-    async fn track(&self, _name: &PrName) -> Result<NodeId, Refusal> {
-        // T25
-        Err(not_built())
+    async fn track(&self, name: &PrName) -> Result<NodeId, Refusal> {
+        let store = &self.shared.store;
+        if let Some(t) = store.lookup(name) {
+            // API-15: `manual` first, also at the limit; a loaded PR's saved source is set before
+            // its read-through, so it stays `manual` when that fails.
+            store.set_manual(&t.id);
+            if has_record(t.class) {
+                return Ok(t.id);
+            }
+        }
+        let read = self.lookup(name, true).await;
+        if let Ok(id) = &read {
+            // API-15: a `track` that joined a read-through is `manual` too.
+            store.set_manual(id);
+        }
+        read
     }
 
-    async fn refresh_pr(&self, _id: &NodeId) -> Refreshed {
-        // T25
-        Refreshed::NotSent
+    async fn refresh_pr(&self, id: &NodeId) -> Refreshed {
+        let (tx, rx) = oneshot::channel();
+        {
+            let mut flight = lock(&self.shared.flight);
+            match flight.prs.get_mut(id) {
+                // POL-15: a request in flight that holds the PR is joined, before any window.
+                Some(joined) => joined.push(Joiner::Refresh(tx)),
+                None => {
+                    let _ = self.shared.cmds.send(Cmd::Refresh(id.clone(), tx));
+                }
+            }
+        }
+        rx.await.unwrap_or(Refreshed::Failed)
     }
 
     async fn poll_now(&self) -> PollReport {
@@ -246,6 +342,7 @@ impl PollerHandle for Engine {
     }
 
     fn nudge(&self) {
+        // POL-14: the loop works out the hot set again when it wakes.
         let _ = self.shared.cmds.send(Cmd::Nudge);
     }
 

@@ -133,6 +133,8 @@ impl Run {
                 .store
                 .mark_sent(&ids, mark_at.unwrap_or(meta.sent_mono));
         }
+        // POL-15: from here a caller asking for one of these PRs joins this request.
+        self.flight_begin(&ids);
         // API-4: published before the await; the guard is kept across the request (clock.md).
         self.publish();
         let github = self.d.github.clone();
@@ -241,6 +243,10 @@ impl Run {
     /// POL-19: the backoff; the first failure is logged, not each retry (OPS-9).
     /// `what` is for API-3's message, `pair` for the log line.
     fn unreachable(&mut self, what: String, pair: String) {
+        if self.dm.keep_backoff && self.backoff.active() {
+            // POL-19: a read-through's failure during a backoff doesn't move it.
+            return;
+        }
         if !self.backoff.active() {
             self.d
                 .logger

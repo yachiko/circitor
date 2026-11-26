@@ -15,6 +15,7 @@ use crate::poller::{
 };
 use crate::status::WarningCode;
 
+use super::demand::Demand;
 use super::pr_errors::PrErrors;
 use super::{Cmd, EngineDeps, Shared, lock};
 
@@ -62,6 +63,8 @@ pub(super) struct Run {
     next_tick: Mono,
     sleep_seen: Duration,
     pub(super) pr_errors: PrErrors,
+    /// T25: the demand queue, the follow-ups, and what a refresh outside a poll needs.
+    pub(super) dm: Demand,
 }
 
 impl Run {
@@ -103,6 +106,7 @@ impl Run {
             next_tick,
             sleep_seen,
             pr_errors: PrErrors::default(),
+            dm: Demand::default(),
         }
     }
 
@@ -143,9 +147,18 @@ impl Run {
             if std::mem::take(&mut self.client_woke) {
                 self.demand_token().await;
             }
+            // POL-15: demand goes next, before a poll or a hot refresh that's due.
+            self.serve_demand().await;
             self.serve_poll_nows().await;
             if self.poll_is_due() {
                 self.poll(false).await;
+            }
+            // POL-11, then POL-14.
+            self.serve_follow_ups().await;
+            self.serve_hot().await;
+            if self.dm.has_queued() || !self.poll_nows.is_empty() {
+                // Taken in while a request was in flight: served before parking.
+                continue;
             }
             let at = self.next_wake();
             self.park();
@@ -173,8 +186,10 @@ impl Run {
     fn take(&mut self, cmd: Cmd) {
         match cmd {
             Cmd::ClientRequest => self.client_woke = true,
-            // T25: the hot set.
+            // POL-14: waking is enough; the hot set is worked out again before parking.
             Cmd::Nudge => {}
+            Cmd::Refresh(id, tx) => self.take_refresh(id, tx),
+            Cmd::Lookup { name, manual, tx } => self.take_lookup(name, manual, tx),
             Cmd::PollNow(tx) => {
                 if self.in_poll {
                     // API-16: it joins the poll in flight.
@@ -193,9 +208,15 @@ impl Run {
         }
     }
 
-    /// Between a poll's requests (POL-15: demand goes next; T25 sends it here).
-    pub(super) fn between_requests(&mut self) {
+    /// Between a poll's requests (POL-15: demand goes next).
+    pub(super) async fn between_requests(&mut self) {
         self.drain();
+        self.serve_demand_boxed().await;
+    }
+
+    /// A demand's refresh runs the poll's own steps: boxed, as the two call each other.
+    fn serve_demand_boxed(&mut self) -> futures::future::BoxFuture<'_, ()> {
+        Box::pin(self.serve_demand())
     }
 
     /// POL-13 with NTF-5; one `tier` line per change.
@@ -254,6 +275,10 @@ impl Run {
         if let Some(due) = self.poll_due_at() {
             at = at.min(due);
         }
+        // POL-11, POL-14.
+        if let Some(due) = self.hot_wake() {
+            at = at.min(due);
+        }
         at
     }
 
@@ -303,7 +328,7 @@ impl Run {
     }
 
     /// What `client_request` reads of `Auth`, published at once.
-    fn after_auth_read(&mut self) {
+    pub(super) fn after_auth_read(&mut self) {
         let mut hand = lock(&self.shared.hand);
         hand.in_auth = self.auth.problem().is_some();
         hand.last_read_ended = self.auth.last_read_ended();
