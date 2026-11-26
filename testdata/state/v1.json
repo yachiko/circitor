@@ -1,0 +1,16 @@
+{"version": 1, "written_by": "a later 1.x binary", "prs": [
+  {"pr": "o/r#12", "id": "PR_kwDOAbc123", "source": "manual", "login": "octocat",
+   "ended": {"state": "merged", "seen_at": "2026-11-24T22:09:23Z"},
+   "seen": {"comment": {"at": "2026-11-24T21:00:00Z", "ids": [918273]},
+            "review": {"at": null, "ids": []}}},
+  {"pr": "o/r#13", "id": "PR_kwDOAbc124", "source": "authored", "login": "octocat",
+   "ended": null, "note": "an unknown key in an entry",
+   "seen": {"comment": {"at": "2026-11-24T20:00:00Z", "ids": [1, 2], "extra": true},
+            "review": {"at": "2026-11-24T20:30:00Z", "ids": [77]}}},
+  {"pr": "o/r#14", "id": "PR_kwDOAbc125", "source": "manual", "login": null,
+   "ended": {"state": "closed", "seen_at": "2026-11-24T19:00:00Z"},
+   "seen": {"comment": {"at": null, "ids": []}, "review": {"at": null, "ids": []}}},
+  {"pr": "o/r#15", "id": "PR_kwDOAbc126", "source": "authored", "login": "octocat",
+   "ended": {"state": "gone", "seen_at": "2026-11-24T18:00:00Z"},
+   "seen": {"comment": {"at": null, "ids": []}, "review": {"at": null, "ids": []}}}
+]}
