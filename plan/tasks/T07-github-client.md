@@ -4,7 +4,7 @@ title: "GitHub client: queries, the HTTP request, decoding, error classes, synth
 kind: code
 milestone: M1
 size: L
-status: in-progress
+status: done
 depends_on: [T02, T41]
 requirements: [POL-1, POL-6, POL-25, POL-24, MOD-3, MOD-2:a-value-github-sends-that, OPS-16, TST-12, TST-1]
 owns: [src/github/client/, testdata/github/responses/]
@@ -96,3 +96,11 @@ Unit tests in `src/github/client/`. `send` is tested against a few lines of axum
 - **Proxies** (review H2-13, parked): the daemon's client keeps reqwest's default; OPS-16 doesn't say. `for_tests` uses none.
 - **`UNLISTED_STATE`, `UNDECODABLE` and `UNTYPED`** are MOD-2's words; docs/02 §5 records no such answer. Say in your report if a fixture needs another word.
 - MOD-2's pass-through rule and MOD-3's `EXPECTED` are (proposal): built as written.
+
+## Evidence
+- **2026-11-26**, branch `t07-github-client`, executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- Changed: `src/github/client/` (`mod.rs`, new `query.rs`, `decode.rs`, `tests.rs`) and 22 `synthetic-*.json` in `testdata/github/responses/`. Public additions: `client::ENDPOINT`, `client::TEST_GITHUB_VAR`, and `EndpointError`'s variants (`Unset`, `Refused { host }`, `Build`). Every test the Acceptance names exists.
+- **Checked by the orchestrator:** the token goes only into a temporary `format!` turned into the `Authorization` header, marked sensitive; `api.github.com` appears only in the release constant and in tests asserting it's refused; tests talk to a raw-TCP stub on loopback.
+- `cargo test --features test-endpoint --lib github::client::`: 23 passed, 1 ignored (`dump_queries`, by design; runs with `--ignored --nocapture`). `make verify` passes on main after the merge (240 lib tests, 1 ignored), the macOS check included; `cargo build --release` passes.
+- Choices: the stub is raw tokio TCP, not axum (a body cut before its `Content-Length`); **a `ChecksPage` is `checksN: node(id: $checksN)`** with its own cursor variable; with several errors on one node, `NOT_FOUND` wins on a `null` node; a non-null node with `NOT_FOUND` inside is `Error { "NOT_FOUND" }`; `found` is `None` if any finding entry can't be decoded; a token that can't be a header value is `Unauthorized`; a non-JSON 403 is searched for the secondary phrase. Fixtures name `yachiko/experiment` and `yachiko`, as the measurement logs do.
+- **Open, for the owner:** a check context of an unknown `__typename` is skipped while `ChecksRead.total` stays GitHub's `totalCount`, so T05 reads the record `truncated` (MOD-7). Whether that's intended isn't in the spec.
