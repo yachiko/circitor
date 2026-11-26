@@ -17,7 +17,7 @@ shares: []
 > **Changed (2026-11-26, the owner):** no `dist`. The release workflow is T03's `release.yml`, the pipeline of the owner's `lege`, writing a formula to the tap (D5). The first tag is **`v0.0.1`** (`Cargo.toml` says `0.0.1`). What's left here: set the two App secrets, optionally run `release.yml` by hand as a dry run, tag, and check the install. Read "`dist`" below as "`release.yml`", and "`v0.1.0`" as "`v0.0.1`".
 
 ## Outcome
-Releases are built for the four targets by `dist`, which writes a formula (D5), and `brew install yachiko/tap/circitor` installs a binary that runs.
+Releases are built for the three targets by `dist`, which writes a formula (D5), and `brew install yachiko/tap/circitor` installs a binary that runs.
 
 ## Context
 circitor ships through the owner's Homebrew tap, with prebuilt binaries from GitHub releases (OPS-10, U12). How was D5, resolved on 2026-11-25: **a formula written by `dist`** (`specs/decisions.md`, OPS-10). This task is **the owner's**: set the tool up, cut the first release, and see `brew install yachiko/tap/circitor` give a binary that runs. T19 wrote the README's install line for it; T40's acceptance checks install what this task publishes.
@@ -34,14 +34,14 @@ circitor ships through the owner's Homebrew tap, with prebuilt binaries from Git
 **OPS-10 is shared with T19.** T19's share: the README's `brew install yachiko/tap/circitor` line. **This task's share: the release tool, the first release and the tap's entry.** **U12's share here:** shipping through Homebrew, macOS first, with the Linux archives built too; T01 has "Rust, one binary".
 
 - **D5 is decided: a formula written by `dist`** (the maintained path for Rust, and a formula isn't quarantined, so the binary needn't be notarised: docs/04 §2, §3). Whether GoReleaser builds Rust (docs/04 §8 item 7) wasn't checked and no longer decides anything; close the item by reading only if the owner wants one tool across the tap.
-- **Set up the tool** for OPS-13's four targets: `aarch64-apple-darwin`, `x86_64-apple-darwin`, `x86_64-unknown-linux-gnu`, `aarch64-unknown-linux-gnu`. The release binary is built **without** `test-endpoint` (TST-1). The workflow publishes on a version tag only.
+- **Set up the tool** for OPS-13's three targets (D17: no Intel Mac): `aarch64-apple-darwin`, `x86_64-unknown-linux-gnu`, `aarch64-unknown-linux-gnu`. The release binary is built **without** `test-endpoint` (TST-1). The workflow publishes on a version tag only.
 - **The tap:** the release writes circitor's formula to `yachiko/homebrew-tap`. Its credential is a repository secret, set by the owner, as the tap's other tools do it. **No `service do` block** and nothing for `brew services` (OPS-10).
 - **The first release:** tag `v0.1.0` (OPS-11: `MAJOR.MINOR.PATCH`, with `+<commit>` as build metadata in what `circitor version` prints).
 - **Check it:** on the Mac, `brew install yachiko/tap/circitor`, then `circitor version`. On Linux, the archive's binary runs.
 
 ## Interfaces
 - **Consumes:** the remote, T36's suite passing on the commit to be tagged (with M5 reached, so the release holds every feature, `notify` among them), T19's README. A green CI on Linux and macOS (T38) once there is one (P9).
-- **Provides:** the release workflow and its configuration, GitHub releases with four archives and their checksums, and `circitor` in the tap. T40 step 1 installs it.
+- **Provides:** the release workflow and its configuration, GitHub releases with three archives and their checksums, and `circitor` in the tap. T40 step 1 installs it.
 
 ## Out of scope
 - The README's other sections, the plist and the systemd unit: T19.
@@ -54,11 +54,11 @@ circitor ships through the owner's Homebrew tap, with prebuilt binaries from Git
 The owner ticks each line.
 
 - [ ] **The repository's releases are downloadable without a login** (it's public, or the decision says how the tap reaches a private one).
-- [ ] **The tool is set up.** For `dist`: `dist init` with the four targets and the Homebrew installer pointing at `yachiko/homebrew-tap`; `dist plan` lists four archives and a formula. The files it wrote are committed.
+- [ ] **The tool is set up.** For `dist`: `dist init` with the three targets and the Homebrew installer pointing at `yachiko/homebrew-tap`; `dist plan` lists three archives and a formula. The files it wrote are committed.
 - [ ] **The release build has no test code:** `cargo build --release && strings target/release/circitor | grep -c CIRCITOR_TEST_` prints 0.
 - [ ] **The tap's secret is set** in the repository's settings, never in a file: `gh secret list` names it.
-- [ ] **A dry run passed** before the tag: the tool's own check on a pull request or a pre-release tag builds all four targets.
-- [ ] **Tagged and released:** `git tag v0.1.0 && git push origin v0.1.0`; `gh run watch`; `gh release view v0.1.0` lists four archives and checksums.
+- [ ] **A dry run passed** before the tag: the tool's own check on a pull request or a pre-release tag builds all three targets.
+- [ ] **Tagged and released:** `git tag v0.1.0 && git push origin v0.1.0`; `gh run watch`; `gh release view v0.1.0` lists three archives and checksums.
 - [ ] **The tap has it:** `gh api repos/yachiko/homebrew-tap/contents/Formula/circitor.rb --jq .name` (or `Casks/`), and its commit is signed as the tap's others are.
 - [ ] **No `service` block:** `grep -c 'service do' Formula/circitor.rb` in the tap prints 0.
 - [ ] **On the Mac:** `brew install yachiko/tap/circitor` succeeds with the full name and no `brew trust` step; `circitor version` prints `0.1.0+<the tag's short commit>`; `codesign -dv "$(which circitor)"` is noted (signed ad hoc, or not at all); no Gatekeeper prompt appeared, or its text is noted.

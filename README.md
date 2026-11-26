@@ -91,7 +91,7 @@ A service keeps the daemon running without a first command to start it. Both fil
 
 ### macOS
 
-Save as `~/Library/LaunchAgents/dev.circitor.daemon.plist`, and replace `USERNAME` with yours: launchd doesn't expand `~`. On an Intel Mac, Homebrew's prefix is `/usr/local`, so use `/usr/local/bin/circitor`.
+Save as `~/Library/LaunchAgents/dev.circitor.daemon.plist`, and replace `USERNAME` with yours: launchd doesn't expand `~`.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>

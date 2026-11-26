@@ -74,7 +74,7 @@ Run as a CLI, it's what coding agents call instead of `gh`. One poller serves ev
 |---|---|
 | Language | **Rust**, one binary that is both the CLI and the daemon |
 | Libraries (proposal) | `tokio`, `axum` (the server, on a `UnixListener`), `hyper` (the CLI's client over the socket), `reqwest` with rustls (GitHub), `serde`/`serde_json`, `toml`, `clap`. The plan confirms the list. |
-| Targets | macOS arm64 and x86-64; Linux x86-64 and arm64 (OPS-13) |
+| Targets | macOS arm64; Linux x86-64 and arm64 (OPS-13) |
 | Developed on | Linux. Anything macOS-specific is checked by the owner on a Mac ([07-testing](07-testing.md)). |
 
 ## Repo layout (proposal)

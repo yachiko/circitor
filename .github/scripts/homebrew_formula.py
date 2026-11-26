@@ -17,12 +17,10 @@ import sys
 
 REPO = "https://github.com/yachiko/circitor"
 
-# (OS block, CPU block): the archive's suffix.
+# OS block: its CPU blocks and each archive's suffix. macOS is arm64 only (D17, OPS-13).
 PLATFORMS = {
-    ("on_macos", "on_arm"): "darwin_arm64",
-    ("on_macos", "on_intel"): "darwin_amd64",
-    ("on_linux", "on_arm"): "linux_arm64",
-    ("on_linux", "on_intel"): "linux_amd64",
+    "on_macos": {"on_arm": "darwin_arm64"},
+    "on_linux": {"on_arm": "linux_arm64", "on_intel": "linux_amd64"},
 }
 
 TEMPLATE = """\
@@ -57,10 +55,12 @@ def read_checksums(path):
 
 def platform_blocks(version, sums):
     lines = []
-    for os_block in ("on_macos", "on_linux"):
+    for os_block, cpus in PLATFORMS.items():
         lines.append(f"  {os_block} do")
-        for cpu_block in ("on_arm", "on_intel"):
-            suffix = PLATFORMS[(os_block, cpu_block)]
+        if os_block == "on_macos":
+            # An Intel Mac gets a clear refusal, not a formula without a URL.
+            lines.append("    depends_on arch: :arm64")
+        for cpu_block, suffix in cpus.items():
             archive = f"circitor_{version}_{suffix}.tar.gz"
             if archive not in sums:
                 sys.exit(f"homebrew_formula: {archive} is missing from the checksums")
