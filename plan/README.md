@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **50 tasks:** 33 todo, 3 in-progress, 12 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **50 tasks:** 32 todo, 3 in-progress, 13 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -87,7 +87,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 4 | [T07](tasks/T07-github-client.md) | GitHub client: queries, the HTTP request, decoding, error classes, synthetic fixtures | code | L | in-progress | T02, T41 |
 | 4 | [T10](tasks/T10-cli-render.md) | CLI text output: every line of list, show, changes, wait, status, refresh and stop, with golden files | code | L | done | T02, T41 |
 | 4 | [T12](tasks/T12-token-source.md) | Token source: running gh auth token | code | M | todo | T04 |
-| 4 | [T13](tasks/T13-poller-auth.md) | Poller auth: when the token is read, and the auth state | code | M | todo | T04, T43 |
+| 4 | [T13](tasks/T13-poller-auth.md) | Poller auth: when the token is read, and the auth state | code | M | done | T04, T43 |
 | 4 | [T14](tasks/T14-fake-github-engine.md) | Fake GitHub: the scripted world and the GraphQL engine that answers from it | test | L | in-progress | T02, T41 |
 | 4 | [T15](tasks/T15-state-store.md) | State store: the tracked set, applying refreshes, revisions and events, retention, cursors | code | L | in-progress | T04, T05, T43 |
 | 4 | [T16](tasks/T16-state-file.md) | State file: the format, atomic writes through a fakeable file system, loading, the saver | code | M | todo | T04 |
@@ -149,7 +149,7 @@ flowchart LR
   T10["T10 CLI text output: every line of li…"]:::done
   T11["T11 CLI arguments, naming a PR, and t…"]
   T12["T12 Token source: running gh auth tok…"]
-  T13["T13 Poller auth: when the token is re…"]
+  T13["T13 Poller auth: when the token is re…"]:::done
   T14["T14 Fake GitHub: the scripted world a…"]:::active
   T15["T15 State store: the tracked set, app…"]:::active
   T16["T16 State file: the format, atomic wr…"]

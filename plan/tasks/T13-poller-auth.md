@@ -4,7 +4,7 @@ title: "Poller auth: when the token is read, and the auth state"
 kind: code
 milestone: M1
 size: M
-status: todo
+status: done
 depends_on: [T04, T43]
 requirements: [POL-3, POL-20, OPS-5:the-token-is-read-after, OPS-5:a-read-that-ends-without]
 owns: [src/poller/auth/]
@@ -82,3 +82,8 @@ Unit tests in `src/poller/auth/`, on `TestClock` with `token::fake::FakeTokenSou
 ## Open questions
 - **POL-20 is a (proposal)**; the answer to an expired token is `assumed` (docs/02 §5), and `gh auth token` from a service on macOS isn't checked (docs/04 §8 item 4). Build the spec as written.
 - **Readings this brief makes, to report if they don't fit:** a failed re-read after a 401 repeats with the kept token; the message for a refused token from gh's login; `due()` before any read is `Mono::ZERO`, so the engine's first `periodic()` or `token()` is the first read.
+
+## Evidence
+- **2026-11-26**, branch `t13-poller-auth`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `src/poller/auth/mod.rs` and a new `tests.rs`; no public signature changed; every test the Acceptance names exists; `expose()` appears only in test comparisons; the log words are `contracts/log.md`'s. `cargo test --features test-endpoint --lib poller::auth::`: 13 passed. `make verify` passes on main after the merge, the macOS check included.
+- Choices: `api3_message_per_source` uses T43's `FakeTokenSource::set_kind` (the brief's "kind() is fixed" predates it); two tests move `Auth` into a spawned task to see a pending read; `token read failed cause=<word>` once per run of failures of any read; `accepted(used)` also sets the token in hand; `NoLogin` clears the refused token; `token(true)` during an open try still reads after 5 s, and a same-token read during a try is ignored. The refused token from gh's login reads "GitHub refused the token from gh's login: run `gh auth login`."

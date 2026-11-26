@@ -418,11 +418,11 @@
    "id": "T13",
    "title": "Poller auth: when the token is read, and the auth state",
    "kind": "code",
-   "status": "todo",
+   "status": "done",
    "milestone": "M1",
    "size": "M",
    "wave": 4,
-   "remaining": 15,
+   "remaining": 13,
    "depends_on": [
     "T04",
     "T43"
