@@ -1,0 +1,168 @@
+{
+  "request": {
+    "find": false,
+    "nodes": [
+      "record",
+      "record"
+    ],
+    "lookup": false
+  },
+  "status": 200,
+  "headers": {
+    "date": "Tue, 24 Nov 2026 22:20:00 GMT",
+    "x-ratelimit-limit": "5000",
+    "x-ratelimit-remaining": "4990",
+    "x-ratelimit-used": "10",
+    "x-ratelimit-reset": "1795561200",
+    "x-ratelimit-resource": "graphql"
+  },
+  "body": {
+    "data": {
+      "rateLimit": {
+        "cost": 1,
+        "remaining": 4989,
+        "resetAt": "2026-11-24T23:00:00Z"
+      },
+      "record": [
+        {
+          "__typename": "PullRequest",
+          "id": "PR_kwDOexperiment0001",
+          "number": 1,
+          "url": "https://github.com/yachiko/experiment/pull/1",
+          "title": "PR A",
+          "state": "OPEN",
+          "isDraft": false,
+          "createdAt": "2026-11-24T22:09:23Z",
+          "updatedAt": "2026-11-24T22:13:51Z",
+          "mergedAt": null,
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "yachiko/experiment"
+          },
+          "author": {
+            "login": "yachiko"
+          },
+          "baseRefName": "main",
+          "headRefName": "pr-a",
+          "headRefOid": "cf54ec4111111111111111111111111111111111",
+          "mergeable": "MERGEABLE",
+          "mergeStateStatus": "CLEAN",
+          "reviewDecision": null,
+          "commentCount": {
+            "totalCount": 0
+          },
+          "reviewCount": {
+            "totalCount": 0
+          },
+          "reviewThreads": {
+            "totalCount": 0
+          },
+          "commits": null
+        },
+        {
+          "__typename": "PullRequest",
+          "id": "PR_kwDOexperiment0003",
+          "number": 3,
+          "url": "https://github.com/yachiko/experiment/pull/3",
+          "title": "PR C",
+          "state": "OPEN",
+          "isDraft": false,
+          "createdAt": "2026-11-24T22:25:51Z",
+          "updatedAt": "2026-11-24T22:25:51Z",
+          "mergedAt": null,
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "yachiko/experiment"
+          },
+          "author": {
+            "login": "yachiko"
+          },
+          "baseRefName": "main",
+          "headRefName": "pr-c",
+          "headRefOid": "180b372333333333333333333333333333333333",
+          "mergeable": "MERGEABLE",
+          "mergeStateStatus": "UNSTABLE",
+          "reviewDecision": null,
+          "commentCount": {
+            "totalCount": 0
+          },
+          "reviewCount": {
+            "totalCount": 0
+          },
+          "reviewThreads": {
+            "totalCount": 0
+          },
+          "commits": {
+            "nodes": [
+              {
+                "commit": {
+                  "statusCheckRollup": {
+                    "state": "FAILURE",
+                    "contexts": {
+                      "totalCount": 5,
+                      "pageInfo": {
+                        "hasNextPage": false,
+                        "endCursor": null
+                      },
+                      "nodes": [
+                        {
+                          "__typename": "CheckRun",
+                          "databaseId": 301,
+                          "name": "pass",
+                          "status": "COMPLETED",
+                          "conclusion": "SUCCESS",
+                          "detailsUrl": "https://github.com/yachiko/experiment/actions/runs/1/job/301"
+                        },
+                        {
+                          "__typename": "CheckRun",
+                          "databaseId": 302,
+                          "name": "fail",
+                          "status": "COMPLETED",
+                          "conclusion": "FAILURE",
+                          "detailsUrl": "https://github.com/yachiko/experiment/actions/runs/1/job/302"
+                        },
+                        {
+                          "__typename": "CheckRun",
+                          "databaseId": 303,
+                          "name": "skipped",
+                          "status": "COMPLETED",
+                          "conclusion": "SKIPPED",
+                          "detailsUrl": "https://github.com/yachiko/experiment/actions/runs/1/job/303"
+                        },
+                        {
+                          "__typename": "CheckRun",
+                          "databaseId": 304,
+                          "name": "slow",
+                          "status": "IN_PROGRESS",
+                          "conclusion": null,
+                          "detailsUrl": "https://github.com/yachiko/experiment/actions/runs/1/job/304"
+                        },
+                        {
+                          "__typename": "StatusContext",
+                          "context": "circitor/manual",
+                          "state": "PENDING",
+                          "targetUrl": null
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "errors": [
+      {
+        "type": "FORBIDDEN",
+        "path": [
+          "record",
+          0,
+          "commits"
+        ],
+        "message": "Resource not accessible by integration"
+      }
+    ]
+  }
+}

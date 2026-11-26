@@ -1,0 +1,35 @@
+{
+  "request": {
+    "find": false,
+    "nodes": [],
+    "lookup": true
+  },
+  "status": 200,
+  "headers": {
+    "date": "Tue, 24 Nov 2026 22:20:00 GMT",
+    "x-ratelimit-limit": "5000",
+    "x-ratelimit-remaining": "4990",
+    "x-ratelimit-used": "10",
+    "x-ratelimit-reset": "1795561200",
+    "x-ratelimit-resource": "graphql"
+  },
+  "body": {
+    "data": {
+      "rateLimit": {
+        "cost": 1,
+        "remaining": 4989,
+        "resetAt": "2026-11-24T23:00:00Z"
+      },
+      "repository": null
+    },
+    "errors": [
+      {
+        "type": "FORBIDDEN",
+        "path": [
+          "repository"
+        ],
+        "message": "Resource not accessible"
+      }
+    ]
+  }
+}

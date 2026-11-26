@@ -1,0 +1,17 @@
+{
+  "request": {
+    "find": true,
+    "nodes": [],
+    "lookup": false
+  },
+  "status": 200,
+  "headers": {
+    "date": "Tue, 24 Nov 2026 22:20:00 GMT",
+    "x-ratelimit-limit": "5000",
+    "x-ratelimit-remaining": "4990",
+    "x-ratelimit-used": "10",
+    "x-ratelimit-reset": "1795561200",
+    "x-ratelimit-resource": "graphql"
+  },
+  "body": "not json"
+}

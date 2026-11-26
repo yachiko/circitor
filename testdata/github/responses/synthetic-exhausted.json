@@ -1,0 +1,20 @@
+{
+  "request": {
+    "find": true,
+    "nodes": [],
+    "lookup": false
+  },
+  "status": 403,
+  "headers": {
+    "date": "Tue, 24 Nov 2026 22:20:00 GMT",
+    "x-ratelimit-limit": "5000",
+    "x-ratelimit-remaining": "0",
+    "x-ratelimit-used": "5000",
+    "x-ratelimit-reset": "1795561200",
+    "x-ratelimit-resource": "graphql"
+  },
+  "body": {
+    "documentation_url": "https://docs.github.com/graphql/overview/rate-limits-and-node-limits-for-the-graphql-api",
+    "message": "API rate limit exceeded for user ID 1."
+  }
+}

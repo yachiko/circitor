@@ -1,0 +1,72 @@
+{
+  "request": {
+    "find": false,
+    "nodes": [
+      "record"
+    ],
+    "lookup": false
+  },
+  "status": 200,
+  "headers": {
+    "date": "Tue, 24 Nov 2026 22:16:54 GMT",
+    "x-ratelimit-limit": "5000",
+    "x-ratelimit-remaining": "4990",
+    "x-ratelimit-used": "10",
+    "x-ratelimit-reset": "1795561200",
+    "x-ratelimit-resource": "graphql"
+  },
+  "body": {
+    "data": {
+      "rateLimit": {
+        "cost": 1,
+        "remaining": 4989,
+        "resetAt": "2026-11-24T23:00:00Z"
+      },
+      "record": [
+        {
+          "__typename": "PullRequest",
+          "id": "PR_kwDOexperiment0002",
+          "number": 2,
+          "url": "https://github.com/yachiko/experiment/pull/2",
+          "title": "PR B",
+          "state": "MERGED",
+          "isDraft": false,
+          "createdAt": "2026-11-24T22:16:37Z",
+          "updatedAt": "2026-11-24T22:16:53Z",
+          "mergedAt": "2026-11-24T22:16:53Z",
+          "closedAt": "2026-11-24T22:16:53Z",
+          "repository": {
+            "nameWithOwner": "yachiko/experiment"
+          },
+          "author": {
+            "login": "yachiko"
+          },
+          "baseRefName": "main",
+          "headRefName": "pr-b",
+          "headRefOid": "c071ce0222222222222222222222222222222222",
+          "mergeable": "UNKNOWN",
+          "mergeStateStatus": "UNKNOWN",
+          "reviewDecision": null,
+          "commentCount": {
+            "totalCount": 0
+          },
+          "reviewCount": {
+            "totalCount": 0
+          },
+          "reviewThreads": {
+            "totalCount": 0
+          },
+          "commits": {
+            "nodes": [
+              {
+                "commit": {
+                  "statusCheckRollup": null
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

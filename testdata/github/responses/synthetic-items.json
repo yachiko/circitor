@@ -1,0 +1,69 @@
+{
+  "request": {
+    "find": false,
+    "nodes": [
+      "items"
+    ],
+    "lookup": false
+  },
+  "status": 200,
+  "headers": {
+    "date": "Tue, 24 Nov 2026 22:32:00 GMT",
+    "x-ratelimit-limit": "5000",
+    "x-ratelimit-remaining": "4990",
+    "x-ratelimit-used": "10",
+    "x-ratelimit-reset": "1795561200",
+    "x-ratelimit-resource": "graphql"
+  },
+  "body": {
+    "data": {
+      "rateLimit": {
+        "cost": 1,
+        "remaining": 4989,
+        "resetAt": "2026-11-24T23:00:00Z"
+      },
+      "items": [
+        {
+          "__typename": "PullRequest",
+          "lastComments": {
+            "nodes": [
+              {
+                "databaseId": 3601,
+                "author": {
+                  "login": "yachiko"
+                },
+                "createdAt": "2026-11-24T22:30:02Z"
+              }
+            ]
+          },
+          "lastReviews": {
+            "nodes": [
+              {
+                "databaseId": 3701,
+                "author": {
+                  "login": "yachiko"
+                },
+                "state": "COMMENTED",
+                "submittedAt": "2026-11-24T22:31:29Z",
+                "comments": {
+                  "totalCount": 1
+                }
+              },
+              {
+                "databaseId": 3702,
+                "author": {
+                  "login": "yachiko"
+                },
+                "state": "PENDING",
+                "submittedAt": null,
+                "comments": {
+                  "totalCount": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
