@@ -4,7 +4,7 @@ title: "Notify routes: registering a subscription and cancelling it"
 kind: code
 milestone: M2
 size: M
-status: todo
+status: in-progress
 depends_on: [T09, T41, T46]
 requirements: [NTF-2, NTF-3, NTF-5, API-3]
 owns: [src/api/notify/]

@@ -4,7 +4,7 @@ title: "CLI: the notify command"
 kind: code
 milestone: M3
 size: M
-status: todo
+status: in-progress
 depends_on: [T27, T46]
 requirements: [NTF-11, U14, CLI-5:notify-exits-0-once-it-s, TST-7]
 owns: [src/cli/notify/, tests/golden/notify_cmd/]

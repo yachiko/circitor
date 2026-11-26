@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **52 tasks:** 17 todo, 2 in-progress, 31 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **52 tasks:** 15 todo, 3 in-progress, 32 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -107,11 +107,11 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 6 | [T26](tasks/T26-m1-poll.md) | M1: the real client against the fake GitHub, polling end to end | integration | M | done | T07, T20, T21 |
 | 6 | [T27](tasks/T27-cli-commands.md) | CLI commands: run, each command, the wait's deadline and reconnect, exit codes | code | L | done | T10, T11, T24 |
 | 6 | [T28](tasks/T28-daemon-run.md) | M2: the daemon runs: start order, serving the socket, modes, signals, stop, idle exit | integration | L | done | T06, T07, T12, T16, T17, T18, T21, T22, T23, T46 |
-| 6 | [T47](tasks/T47-api-notify.md) | Notify routes: registering a subscription and cancelling it | code | M | todo | T09, T41, T46 |
+| 6 | [T47](tasks/T47-api-notify.md) | Notify routes: registering a subscription and cancelling it | code | M | in-progress | T09, T41, T46 |
 | 7 | [T29](tasks/T29-harness.md) | M3: the harness, and the CLI against a running daemon | integration | L | todo | T07, T20, T25, T26, T27, T28, T45 |
 | 7 | [T36](tasks/T36-real-processes.md) | M4: real processes: spawning, two CLIs, upgrades, signals, files and permissions | integration | L | todo | T20, T27, T28 |
-| 7 | [T42](tasks/T42-engine-pr-errors.md) | Poller engine: a PR's errors: gone, pr_failing, and its one log line | code | M | in-progress | T25 |
-| 7 | [T48](tasks/T48-cli-notify.md) | CLI: the notify command | code | M | todo | T27, T46 |
+| 7 | [T42](tasks/T42-engine-pr-errors.md) | Poller engine: a PR's errors: gone, pr_failing, and its one log line | code | M | done | T25 |
+| 7 | [T48](tasks/T48-cli-notify.md) | CLI: the notify command | code | M | in-progress | T27, T46 |
 | 7 | [T51](tasks/T51-second-shutdown.md) | Follow-up to T28: a second shutdown request during a stop ends it at once | code | S | todo | T28 |
 | 8 | [T30](tasks/T30-scenarios-checks.md) | Scenarios: checks and settling | test | L | todo | T29 |
 | 8 | [T31](tasks/T31-scenarios-waits.md) | Scenarios: a PR's life and waits | test | L | todo | T29, T42 |
@@ -180,13 +180,13 @@ flowchart LR
   T39["T39 Owner: set up the release tool, p…"]:::manual
   T40["T40 Owner: the acceptance checks on a…"]:::manual
   T41["T41 Golden files: the API's and the m…"]:::done
-  T42["T42 Poller engine: a PR's errors: gon…"]:::active
+  T42["T42 Poller engine: a PR's errors: gon…"]:::done
   T43["T43 The API's shared parts and the si…"]:::done
   T44["T44 Conditions: checking and evaluati…"]:::done
   T45["T45 Fake session socket: what a Claud…"]:::active
   T46["T46 Notify: subscriptions, the loop t…"]:::done
-  T47["T47 Notify routes: registering a subs…"]
-  T48["T48 CLI: the notify command"]
+  T47["T47 Notify routes: registering a subs…"]:::active
+  T48["T48 CLI: the notify command"]:::active
   T49["T49 Scenarios: notify"]
   T50["T50 Follow-up to T01: check-macos fro…"]:::done
   T51["T51 Follow-up to T28: a second shutdo…"]

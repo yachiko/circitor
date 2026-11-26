@@ -4,7 +4,7 @@ title: "Poller engine: a PR's errors: gone, pr_failing, and its one log line"
 kind: code
 milestone: M2
 size: M
-status: in-progress
+status: done
 depends_on: [T25]
 requirements: [POL-21, POL-24, MOD-11]
 owns: [src/poller/engine/]
@@ -88,3 +88,10 @@ Unit tests in `src/poller/engine/`, set up as T21's (`ScriptedGitHub`, the real 
 - **POL-21 and MOD-11's `gone` rule are (proposal)**, and that lost access answers `NOT_FOUND` is `assumed` (docs/02 §5). Build the spec as written.
 - **Readings this brief makes, to report if they don't fit:** a `NOT_FOUND` that doesn't count (wrong login, every PR missing, no login) leaves the run as it was, as POL-21 says of a hot one; another error `type` in a poll ends it; the 5 minutes span the first counted `NOT_FOUND`'s send to the latest one's; `pr_failing` counts a PR's own errors from any kind of refresh, not whole-request failures; a check page whose node answers an error counts as that PR's error.
 - **`contracts/log.md`'s table still names T21 for `pr error`**; the line is built here, with that word.
+
+## Evidence
+- **2026-11-26**, branch `t42-engine-pr-errors`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `src/poller/engine/pr_errors.rs`, new `tests/pr_errors.rs`, one line in `tests/mod.rs`. **T21's `pol21_node_errors_stay_with_the_pr`:** its ending had pinned the pre-T42 engine on purpose ("that's T42"); the executor first ignored it, and on the orchestrator's instruction changed only its final assertion (the lone `NOT_FOUND` PR `gone`, the `FORBIDDEN` one open with its error, one `pr_failing`), with a comment. No test ignored.
+- `cargo test --features test-endpoint --lib poller::engine::`: 70 passed, 0 ignored. `make verify` passes on main after the merge (530 lib tests), the macOS check included.
+- **Watch:** `transport::tests::no_daemon` failed once in one of the executor's `make verify` runs, under load, and passed alone and in 5 more runs of `transport::`. Not reproduced; T17's to look at if it shows again.
+- Choices: a PR no longer tracked when its error arrives starts no run; PRs made `gone` here sit in an engine-side set (a `Loaded` entry has no status), cleared by an applied refresh or by the tick once untracked.
