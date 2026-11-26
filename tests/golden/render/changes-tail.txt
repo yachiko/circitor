@@ -1,0 +1,20 @@
+octo/app#12  tracked (authored)
+octo/app#12  status checks_pending -> checks_failing
+octo/app#12  head a1b2c3d -> e4f5a6b
+octo/app#12  checks failing (1 of 3): test https://ci.example.test/octo/runs/41002
+octo/app#12  draft false
+octo/app#12  mergeable yes (unstable)
+octo/app#12  review changes_requested
+octo/app#12  new comment by ben  gh api repos/octo/app/issues/comments/5001001
+octo/app#12  new review commented by cara, 1 inline  gh api repos/octo/app/pulls/12/reviews/7001002  gh api repos/octo/app/pulls/12/reviews/7001002/comments
+octo/app#12  edited title, base
+octo/app#9  status ready -> merged
+octo/app#9  merged
+octo/lib#3  closed
+octo/lib#3  reopened
+octo/lib#4  gone
+octo/lib#6  untracked
+pending octo/lib#31
+more events: circitor changes --since k3x9q2ab-28
+problem: auth, Run gh auth login.
+cursor: k3x9q2ab-28

@@ -1,0 +1,17 @@
+yachiko/circitor#12  status checks_pending -> checks_failing
+yachiko/circitor#12  head 1a2b3c4 -> 9f8e7d6
+yachiko/circitor#12  checks pending (3 of 5, 1 failed)
+yachiko/circitor#12  checks failing (1 of 5): build https://github.com/yachiko/circitor/runs/1
+yachiko/circitor#12  merged
+yachiko/circitor#12  draft false
+yachiko/circitor#12  mergeable no (dirty)
+yachiko/circitor#12  review changes_requested
+yachiko/circitor#12  new review changes_requested by octocat, 3 inline  gh api repos/yachiko/circitor/pulls/12/reviews/604123  gh api repos/yachiko/circitor/pulls/12/reviews/604123/comments
+yachiko/circitor#12  new comment by octocat  gh api repos/yachiko/circitor/issues/comments/918273
+yachiko/circitor#12  edited title, base
+yachiko/circitor#12  tracked (manual)
+yachiko/circitor#12  closed
+yachiko/circitor#12  reopened
+yachiko/circitor#12  gone
+yachiko/circitor#12  untracked
+cursor: k3x9q2ab-28

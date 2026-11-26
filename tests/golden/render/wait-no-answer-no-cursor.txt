@@ -1,0 +1,2 @@
+daemon stopped
+again: circitor wait yachiko/circitor#12 --until checks-done --sha 1a2b3c4

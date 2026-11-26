@@ -1,0 +1,11 @@
+bad_request: The parameter until is missing.
+not_found: GitHub has no pull request octo/app#99, or the token can't see it.
+unknown_route: No route GET /v1/unknown.
+auth: There is no usable token. The token comes from gh: run gh auth login.
+starting: The first poll hasn't finished. (try again in a minute)
+github_unavailable: GitHub can't be reached (RequestError) and octo/app#12 has no record. The token comes from gh. (try again in 2m30s, until 23:02 local)
+rate_limited: GitHub's rate limit is used up. Circitor asks again at 2026-11-24T22:42:00Z. (try again in 42m, until 23:42 local)
+limit: Too many waiters: 64 are held.
+no_session: The session socket can't be used: No such file or directory (os error 2).
+bad_request: The parameter until is missing. (the daemon is older than this CLI: run circitor stop, or restart its service, to replace it)
+unknown_route: No route GET /v1/unknown. (the daemon is older than this CLI: run circitor stop, or restart its service, to replace it)

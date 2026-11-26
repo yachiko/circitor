@@ -1,0 +1,8 @@
+reset: cursor too old, current state follows
+octo/lib#8  checks_failing  3c4d5e6  checks 1/1, 1 failed  review none  "Fix the date rounding"
+octo/lib#8  status checks_pending -> checks_failing
+octo/lib#8  checks failing (1 of 1): build https://ci.example.test/octo/runs/41030
+already: checks failed (1 of 1) on 3c4d5e6
+again: circitor notify octo/lib#8 --until checks-done --since k3x9q2ab-28
+problem: github_unavailable, GitHub can't be reached.
+cursor: k3x9q2ab-28

@@ -1,0 +1,6 @@
+octo/lib#8  status checks_pending -> checks_failing
+octo/lib#8  checks failing (1 of 1): build https://ci.example.test/octo/runs/41030
+already: checks failed (1 of 1) on 3c4d5e6
+replaced an earlier notify
+more events: circitor changes octo/lib#8 --since k3x9q2ab-28
+cursor: k3x9q2ab-28

@@ -1,0 +1,3 @@
+timeout after 100s: yachiko/circitor#12 checks_pending (3/5, 0 failed)
+again: circitor wait yachiko/circitor#12 --until checks-done --rerun-since k3x9q2mz-400 --fail-fast --timeout 100 --json --since k3x9q2mz-418
+cursor: k3x9q2mz-418

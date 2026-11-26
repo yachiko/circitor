@@ -1,0 +1,9 @@
+timeout after 100s: yachiko/circitor#12 (no answer from the daemon)
+again: circitor wait yachiko/circitor#12 --until checks-done --sha 1a2b3c4 --since k3x9q2mz-418
+cursor: k3x9q2mz-418
+daemon stopped
+again: circitor wait yachiko/circitor#12 --until checks-done --sha 1a2b3c4 --since k3x9q2mz-418
+cursor: k3x9q2mz-418
+daemon not answering on /tmp/c/circitor.sock
+again: circitor wait yachiko/circitor#12 --until checks-done --sha 1a2b3c4 --since k3x9q2mz-418
+cursor: k3x9q2mz-418

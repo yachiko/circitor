@@ -1,0 +1,8 @@
+octo/app#12  checks_failing  e4f5a6b  checks 3/3, 1 failed  review none  "Add retry to the sync job"
+check failure: test https://ci.example.test/octo/runs/41002
+check running: deploy https://ci.example.test/octo/runs/9
+passed checks: 2
+mergeable unknown, merge_state unstable
+counts: comments 2, reviews 1, review_threads 0
+mergeable unknown: GitHub is computing it; circitor wait octo/app#12 --until changed
+problem: github_unavailable, GitHub can't be reached.

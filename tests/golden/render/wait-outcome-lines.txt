@@ -1,0 +1,22 @@
+checks passed (5/5) on 1a2b3c4
+cursor: k3x9q2mz-418
+checks failed (1 of 5) on 1a2b3c4
+cursor: k3x9q2mz-418
+checks failing (1 failed, 3 of 5 done) on 1a2b3c4
+cursor: k3x9q2mz-418
+no checks reported on 1a2b3c4
+cursor: k3x9q2mz-418
+ended: merged
+cursor: k3x9q2mz-418
+ended: closed
+cursor: k3x9q2mz-418
+ended: gone
+cursor: k3x9q2mz-418
+checks passed (5/5) on 1a2b3c4 (stale, 4m old)
+cursor: k3x9q2mz-418
+checks failed (1 of 5) on 1a2b3c4 (truncated: unread checks may still run) (stale, 4m old)
+cursor: k3x9q2mz-418
+merged
+cursor: k3x9q2mz-418
+ended: head moved to 9f8e7d6, expected 1a2b3c4
+cursor: k3x9q2mz-418

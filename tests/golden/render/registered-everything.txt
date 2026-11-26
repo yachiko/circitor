@@ -1,0 +1,10 @@
+reset: cursor too old, current state follows
+yachiko/circitor#12  checks_pending  1a2b3c4  checks 3/5, 0 failed  review none  "Add the poller"
+yachiko/circitor#12  merged
+registered: yachiko/circitor#12 until checks-done on 1a2b3c4, for 1d
+yachiko/circitor#12  checks_pending  1a2b3c4  checks 3/5, 0 failed  review none  "Add the poller"
+a confirmation was posted to this session; if none arrives, notices are held or refused here: run circitor notify yachiko/circitor#12 --cancel, then use circitor wait
+replaced an earlier notify
+more events: circitor changes yachiko/circitor#12 --since k3x9q2mz-418
+problem: auth, Run gh auth login.
+cursor: k3x9q2mz-418
