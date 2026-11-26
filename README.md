@@ -1,6 +1,9 @@
 # circitor
 
-*circitor* (Latin): in the late Roman army, the soldier who went round the sentry posts and reported what he found.
+<table align="center"><tr><td>
+<strong>circitor</strong> · <em>Latin, noun</em><br>
+in the late Roman army, the soldier who went round the sentry posts and reported what he found.
+</td></tr></table>
 
 A small local daemon that watches your GitHub pull requests, so coding agents can ask it instead of GitHub. One poller serves every agent session, which keeps them off your API quota.
 
