@@ -645,19 +645,20 @@ async fn m1_one_bad_answer() {
     assert_eq!(retry.mono.as_duration(), s(35), "the next try 5 s later");
     assert_eq!(retry.fault, None);
     assert!(retry.finding.is_some(), "the try is a poll");
-    // POL-13: the failed request counts as sent at 30 s, so the try at 35 s asks no node and the
-    // records stay stale until the poll after it, the next poll due (30 s after the try).
-    assert!(retry.nodes.is_empty(), "{retry:?}");
-    assert!(rig.stale("o/r#1") && rig.stale("o/r#2"));
+    // POL-19, D12 (updated for D12 (T52)): a PR whose last refresh failed is due at the next poll, so
+    // the try asks both and clears their staleness.
+    assert_eq!(retry.nodes.len(), 2, "{retry:?}");
+    assert!(!rig.stale("o/r#1") && !rig.stale("o/r#2"));
 
     rig.advance(s(30)).await;
     let reqs = rig.gh.requests();
     let after = reqs.last().unwrap();
     assert_eq!(after.mono.as_duration(), s(65), "{reqs:?}");
+    // The PRs were refreshed at 35 s, so the poll at 65 s asks them by period (30 s), as it would.
     assert_eq!(after.nodes.len(), 2, "{after:?}");
     assert!(
         !rig.stale("o/r#1") && !rig.stale("o/r#2"),
-        "the poll after it clears them"
+        "they stay fresh"
     );
     rig.finish().await;
 }

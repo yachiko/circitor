@@ -399,3 +399,22 @@ fn pol7_batches() {
     assert_eq!(batches(&v(200)).len(), 5);
     assert_eq!(batches(&v(41)).concat(), v(41));
 }
+
+// POL-19, D12
+#[test]
+fn d12_a_failed_pr_is_due_at_the_next_poll() {
+    let c = Config::default();
+    let now = at(1000);
+    let ids = |t: Target| in_poll(&[t], None, Tier::Active, &c, now);
+    let failed = |mut t: Target| {
+        t.timing.attempt_failed = true;
+        t
+    };
+    let open = || sent(target("p", Class::Open, Source::Authored), 999);
+    assert_eq!(ids(failed(open())), vec![id("p")]);
+    assert!(ids(open()).is_empty());
+    let merged = || sent(target("p", Class::Ended, Source::Authored), 999);
+    assert_eq!(ids(failed(merged())), vec![id("p")]);
+    let first = sent(target("p", Class::First, Source::Authored), 999);
+    assert!(ids(failed(first)).is_empty());
+}

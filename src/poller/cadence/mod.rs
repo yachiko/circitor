@@ -131,6 +131,10 @@ pub fn in_poll(
             if t.class == Class::Loaded {
                 return true;
             }
+            // POL-19, D12: a PR whose last refresh failed is due at the next poll, whatever its period.
+            if t.timing.attempt_failed {
+                return true;
+            }
             let Some(last) = t.timing.last_sent else {
                 return true;
             };
