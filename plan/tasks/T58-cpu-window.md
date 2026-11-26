@@ -4,7 +4,7 @@ title: "Follow-up to T36: OPS-17's CPU window starts after the poll's last reque
 kind: test
 milestone: M4
 size: S
-status: todo
+status: done
 depends_on: [T36, T56]
 requirements: [OPS-17]
 owns: [tests/real/]
@@ -32,3 +32,7 @@ shares: []
 
 ## Open questions
 - None: decided by the orchestrator (owner's rule of 2026-11-26).
+
+## Evidence
+- **2026-11-26**, branch `t58-cpu-window`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `tests/real/perf.rs` only: a `quiet()` helper (no request at the fake for 1.5 s); `ops17_no_cpu_between_polls` measures 5 s after the first poll's last request and asserts no new poll, **no request at all** in the window, and at most 2 ticks. **Deviation, accepted:** with `interval` 10 a 200-PR poll (about 7 requests over 6.5 s) leaves under 4 s before the next, so the test has its own `CONFIG_CPU` with `interval` 20 and measures after the first poll (a second would pass the fixture's 30 s limit). 5 runs of the test and the whole `--test real` (29) passed. `make verify` passes on main after the merge, first try.

@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **58 tasks:** 4 todo, 3 in-progress, 49 done, 2 blocked. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **58 tasks:** 3 todo, 53 done, 2 blocked. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -120,14 +120,14 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 8 | [T31](tasks/T31-scenarios-waits.md) | Scenarios: a PR's life and waits | test | L | done | T29, T42 |
 | 8 | [T32](tasks/T32-scenarios-tracking.md) | Scenarios: tracking and polling | test | L | done | T29, T42 |
 | 8 | [T33](tasks/T33-scenarios-daemon.md) | Scenarios: the daemon's life and failures | test | L | done | T29 |
-| 8 | [T34](tasks/T34-quota-tests.md) | Quota tests: what an hour costs in each tier and state | test | M | in-progress | T29 |
-| 8 | [T35](tasks/T35-golden-cli.md) | Golden output end to end: every command's text and JSON, every exit code | test | L | in-progress | T29, T42, T47, T48 |
+| 8 | [T34](tasks/T34-quota-tests.md) | Quota tests: what an hour costs in each tier and state | test | M | done | T29 |
+| 8 | [T35](tasks/T35-golden-cli.md) | Golden output end to end: every command's text and JSON, every exit code | test | L | done | T29, T42, T47, T48 |
 | 8 | [T39](tasks/T39-release.md) | Owner: set up the release tool, publish to the tap | manual | M | todo | T19, T36 |
 | 8 | [T49](tasks/T49-scenarios-notify.md) | Scenarios: notify | test | L | done | T29, T42, T47, T48 |
 | 9 | [T40](tasks/T40-acceptance.md) | Owner: the acceptance checks on a Mac and on Linux | manual | M | todo | T19, T36, T39, T47, T48 |
 | 9 | [T56](tasks/T56-limit-warning.md) | Follow-up to T21: a finding page left unread at the limit raises pr_limit (D15) | code | S | done | T42, T32 |
-| 9 | [T57](tasks/T57-queue-full-inode.md) | Follow-up to T45: queue_full keeps the socket's inode (D16) | test | S | in-progress | T45, T49 |
-| 10 | [T58](tasks/T58-cpu-window.md) | Follow-up to T36: OPS-17's CPU window starts after the poll's last request | test | S | todo | T36, T56 |
+| 9 | [T57](tasks/T57-queue-full-inode.md) | Follow-up to T45: queue_full keeps the socket's inode (D16) | test | S | done | T45, T49 |
+| 10 | [T58](tasks/T58-cpu-window.md) | Follow-up to T36: OPS-17's CPU window starts after the poll's last request | test | S | done | T36, T56 |
 <!-- /plan:waves -->
 
 ## Critical path
@@ -178,8 +178,8 @@ flowchart LR
   T31["T31 Scenarios: a PR's life and waits"]:::done
   T32["T32 Scenarios: tracking and polling"]:::done
   T33["T33 Scenarios: the daemon's life and…"]:::done
-  T34["T34 Quota tests: what an hour costs i…"]:::active
-  T35["T35 Golden output end to end: every c…"]:::active
+  T34["T34 Quota tests: what an hour costs i…"]:::done
+  T35["T35 Golden output end to end: every c…"]:::done
   T36["T36 M4: real processes: spawning, two…"]:::done
   T37["T37 Owner: record real responses from…"]:::manual
   T38["T38 Owner: the first CI run, on Linux…"]:::blocked
@@ -201,8 +201,8 @@ flowchart LR
   T54["T54 Follow-up to T16: the saver spins…"]:::done
   T55["T55 Follow-up to T09: a record marked…"]:::done
   T56["T56 Follow-up to T21: a finding page…"]:::done
-  T57["T57 Follow-up to T45: queue_full keep…"]:::active
-  T58["T58 Follow-up to T36: OPS-17's CPU wi…"]
+  T57["T57 Follow-up to T45: queue_full keep…"]:::done
+  T58["T58 Follow-up to T36: OPS-17's CPU wi…"]:::done
   T01 --> T02
   T01 --> T03
   T02 --> T04

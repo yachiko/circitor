@@ -4,7 +4,7 @@ title: "Golden output end to end: every command's text and JSON, every exit code
 kind: test
 milestone: M5
 size: L
-status: in-progress
+status: done
 depends_on: [T29, T42, T47, T48]
 requirements: [TST-7]
 owns: [tests/golden_cli.rs, tests/golden/cli/]
@@ -83,3 +83,9 @@ The CLI's text and exit codes are circitor's contract with agents (CLI-3, CLI-5)
 - **`testdata/api/` is T41's** (it was T02's when `plan/contracts/api.md` was written): the stub for code 1 reads `error-unknown_route.json` from there and changes nothing in it.
 - **A denied socket (CLI-7's sandbox line)** can't be staged portably: a test run as root isn't denied. It stays with T24's unit tests; say so in the report.
 - D5 and D6 don't touch this task.
+
+## Evidence
+- **2026-11-26**, branch `t35-golden-cli`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `tests/golden_cli.rs` and 118 files in `tests/golden/cli/` (`.out`, `.err`, `.json`, `.notice`), written twice from empty with identical results and read by the executor against CLI-3 and CLI-6; the orchestrator checked none holds a token marker, a `gho_` value or a real `/tmp` path. 59 tests, none ignored; every exit code 0 to 11 from its own cause; `--json` equal byte for byte to `api_raw`'s body; notices checked against T46's by shape. `make verify` passes on main after the merge, first try.
+- **Findings:** `error_starting.err` reads "…try again in a few seconds (try again in a minute)", two hints: follow-up **T59** (T22's message drops its own). Kept as spec'd: `wait_truncated.out`'s "checks failed (0 of 400)" (MOD-7: the failed check is unread); `notify_already.out` printing events since the arrival cursor (API-9).
+- Choices: `already:` after a replacement staged with a held `changed --kind activity`; a stub daemon inside the test file for code 1; the `--json` files hold the fake's 40-character SHAs; a denied socket isn't staged (T24's unit tests).

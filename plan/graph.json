@@ -826,7 +826,7 @@
    "milestone": "M2",
    "size": "L",
    "wave": 6,
-   "remaining": 3,
+   "remaining": 0,
    "depends_on": [
     "T21"
    ],
@@ -855,7 +855,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 6,
-   "remaining": 3,
+   "remaining": 0,
    "depends_on": [
     "T07",
     "T20",
@@ -968,7 +968,7 @@
    "milestone": "M3",
    "size": "L",
    "wave": 7,
-   "remaining": 3,
+   "remaining": 0,
    "depends_on": [
     "T07",
     "T20",
@@ -1052,7 +1052,7 @@
    "milestone": "M5",
    "size": "L",
    "wave": 8,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T29",
     "T42"
@@ -1095,11 +1095,11 @@
    "id": "T34",
    "title": "Quota tests: what an hour costs in each tier and state",
    "kind": "test",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M5",
    "size": "M",
    "wave": 8,
-   "remaining": 2,
+   "remaining": 0,
    "depends_on": [
     "T29"
    ],
@@ -1118,11 +1118,11 @@
    "id": "T35",
    "title": "Golden output end to end: every command's text and JSON, every exit code",
    "kind": "test",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M5",
    "size": "L",
    "wave": 8,
-   "remaining": 3,
+   "remaining": 0,
    "depends_on": [
     "T29",
     "T42",
@@ -1300,7 +1300,7 @@
    "milestone": "M2",
    "size": "M",
    "wave": 7,
-   "remaining": 3,
+   "remaining": 0,
    "depends_on": [
     "T25"
    ],
@@ -1392,7 +1392,7 @@
    "milestone": "M3",
    "size": "S",
    "wave": 4,
-   "remaining": 3,
+   "remaining": 0,
    "depends_on": [
     "T04"
    ],
@@ -1459,7 +1459,7 @@
    "milestone": "M2",
    "size": "M",
    "wave": 6,
-   "remaining": 3,
+   "remaining": 2,
    "depends_on": [
     "T09",
     "T41",
@@ -1490,7 +1490,7 @@
    "milestone": "M3",
    "size": "M",
    "wave": 7,
-   "remaining": 3,
+   "remaining": 2,
    "depends_on": [
     "T27",
     "T46"
@@ -1521,7 +1521,7 @@
    "milestone": "M5",
    "size": "L",
    "wave": 8,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T29",
     "T42",
@@ -1688,7 +1688,7 @@
    "milestone": "M5",
    "size": "S",
    "wave": 9,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T42",
     "T32"
@@ -1712,11 +1712,11 @@
    "id": "T57",
    "title": "Follow-up to T45: queue_full keeps the socket's inode (D16)",
    "kind": "test",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M5",
    "size": "S",
    "wave": 9,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T45",
     "T49"
@@ -1738,11 +1738,11 @@
    "id": "T58",
    "title": "Follow-up to T36: OPS-17's CPU window starts after the poll's last request",
    "kind": "test",
-   "status": "todo",
+   "status": "done",
    "milestone": "M4",
    "size": "S",
    "wave": 10,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T36",
     "T56"

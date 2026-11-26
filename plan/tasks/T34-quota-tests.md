@@ -4,7 +4,7 @@ title: "Quota tests: what an hour costs in each tier and state"
 kind: test
 milestone: M5
 size: M
-status: in-progress
+status: done
 depends_on: [T29]
 requirements: [TST-6, U1]
 owns: [tests/quota.rs]
@@ -98,3 +98,8 @@ Interpretations: "an hour" is 3 600 s of the test clock from a poll's send time.
 - **The exhausted and secondary-limit answers are assumed** (docs/02 §2, §6 item 6; POL-25 is a proposal). The fake plays POL-25; a measurement may change both.
 - **Every value is (proposal):** OPS-2's defaults, POL-17's 80 % and 100 %, POL-23's table, STA-3's 200. Keep the figures as constants named after TST-6's bullets.
 - D5 and D6 don't touch this task.
+
+## Evidence
+- **2026-11-26**, branch `t34-quota-tests`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `tests/quota.rs` only: 26 tests, none ignored, every figure inside TST-6: active hour 120 points and 120 polls (limit 130), idle 12 and 12 (15); one hot PR +240 in the active hour (250), 300 over the idle 3 000 s against 301 allowed (291 + a 10-point baseline: tight); a waited-on PR every 10 to 12 s; 200 PRs 535 points (600); secondary waits 60, 120, 240, 300, 300 s; many clients cost as one (U1). P10 holds (the second poll is one request). `make verify` passes on main after the merge, first try.
+- Choices: quota warnings read after a 10 s tick (POL-26: raised at the tick); scaled budgets (12, 60) where TST-6 allows; the idle hot figure measured as a rate over one wait's idle part, as the brief anticipated.
