@@ -100,8 +100,8 @@ pub fn is_held(path: &Path) -> std::io::Result<bool>;
 /// OPS-4, with the lock held: removes the file only if it's a socket that refuses a connection.
 pub async fn clear_socket(path: &Path, probe: &dyn SocketProbe) -> std::io::Result<SocketFile>;
 pub struct Bound { pub listener: tokio::net::UnixListener, /* device and inode */ }
-/// Binds so that the socket's mode is 0600 (OPS-4): under a umask of **0177** (077 gives 0700 on Linux;
-/// macOS isn't checked). Checks the path's length first.
+/// Binds so that the socket's mode is 0600 before it's at its path (OPS-4, D10): at a temporary name in the
+/// same directory, set to 0600, then renamed over `path`. The umask is never touched. Checks the length first.
 pub fn bind(path: &Path) -> std::io::Result<Bound>;
 impl Bound {
     pub fn still_own(&self) -> bool;
@@ -117,7 +117,7 @@ impl Bound {
 - **The stop's order (OPS-7, NTF-10).** Stop accepting and remove the socket if it's its own; `Engine::stop`; **`Notifier::stop(asked)`**, `asked` false only for `StopCause::NotOwnFiles` (NTF-10: a stop the daemon chose itself posts the command without `--no-spawn`); abort every connection; `Saver::shutdown`; drop the lock. So each session is told `stopped` before any connection is closed, and a waiter that reconnects finds no socket. `Notifier::stop` posts to all sessions together and takes at most 1 s of the clock (`notify::STOP_LIMIT`), inside the stop's 5 s.
 - **The idle exit (OPS-8, NTF-5)** needs all three to have been quiet for `exit_after`: no client request (`poller.idle_since()`), no waiter (`view.waiters`, `store.last_waiter_ended()`) and no open subscription (`view.subscriptions`, `store.last_subscription_ended()`).
 - **`clear_socket` looks before it connects:** `lstat` first, since connecting to a regular file is refused just like a dead socket. Only a socket is ever removed.
-- **The umask is the process's.** `bind` holds a process-wide mutex around setting the umask, binding and restoring it, because tests start several daemons in one process.
+- **`bind` never touches the umask** (D10): the umask is the whole process's, and tests start several daemons and make directories in one process. It binds at a temporary name **as long as the socket's file name** (`.` and random `[a-z0-9]`; one random character for a one-byte name), so the 103 bytes hold for it too; a name already taken is tried again with another, a few times. Then `chmod` 0600 on that path and `rename` over the socket's path, which keeps the socket's inode and mode. On any error the temporary name is removed. `Bound` records the device and inode after the rename.
 - **A lock held by this same process** (a test restarting in-process) behaves like any holder: `flock` locks belong to the open file description, so a second descriptor in one process is refused too.
 - **`main` builds its own runtime.** `cli::main` calls it for `circitor daemon` before any runtime exists.
 - **`crash`** aborts every task and drops the listener without removing the socket file, so the next `start` meets a stale socket and an unsaved state (TST-8 `crash`). It calls `Notifier::abort`: **a crash tells nobody** (NTF-10), and the next daemon has no subscription.
