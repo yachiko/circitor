@@ -183,7 +183,7 @@
    "id": "T06",
    "title": "Config file, environment and paths",
    "kind": "code",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M2",
    "size": "M",
    "wave": 3,
@@ -315,11 +315,11 @@
    "id": "T10",
    "title": "CLI text output: every line of list, show, changes, wait, status, refresh and stop, with golden files",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M3",
    "size": "L",
    "wave": 4,
-   "remaining": 16,
+   "remaining": 13,
    "depends_on": [
     "T02",
     "T41"
@@ -446,7 +446,7 @@
    "id": "T14",
    "title": "Fake GitHub: the scripted world and the GraphQL engine that answers from it",
    "kind": "test",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M1",
    "size": "L",
    "wave": 4,
@@ -1260,7 +1260,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 16,
+   "remaining": 14,
    "depends_on": [
     "T02"
    ],

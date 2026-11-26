@@ -4,7 +4,7 @@ title: "CLI text output: every line of list, show, changes, wait, status, refres
 kind: code
 milestone: M3
 size: L
-status: in-progress
+status: done
 depends_on: [T02, T41]
 requirements: [CLI-3, CLI-6:the-outcome-line-says-what-the-wait-found, CLI-6:with-sha, CLI-6:a-wait-answered-before-its, CLI-6:a-truncated-failing-adds, CLI-6:on-a-timeout-it-prints, CLI-6:a-wait-that-ends-without, CLI-9:a-bad-request-or-unknown-route-from, CLI-5, TST-7, NTF-11:when-the-answer-is-already-known, NTF-11:otherwise-it-prints, NTF-11:a-registered-answer-with-reset, NTF-11:when-already]
 owns: [src/cli/render/, tests/golden/render/]
@@ -101,3 +101,10 @@ Unit tests in `src/cli/render/`. Each text is compared with `tests/golden/render
 - CLI-3's layout, the 50 and CLI-5's code 8 are (proposal): build them as written, the numbers as constants.
 - **`more events:` names the PR after an answer about one PR** (CLI-3, D9): `wait`, `already` and `registered` take it from their PR, `changes` from its `pr` argument; `changes` over every PR (`None`) prints it without one.
 - Not said by the specs, built as Scope says: an `activity` with no items, `refresh` with a problem outcome, `again:` without a cursor, and that `status` prints no `tier` line (it isn't a key of API-5).
+
+## Evidence
+- **2026-11-26**, branch `t10-cli-render`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `src/cli/render/` (`mod.rs`, new `parts.rs` and `tests.rs`) and 33 golden files in `tests/golden/render/`. `duration`, `stale_mark` and `LIST_MAX` moved to `parts.rs` and are re-exported from `cli::render` with the contract's signatures. Every test the Acceptance names exists.
+- **Golden files read against the spec by the orchestrator:** CLI-3's twelve event lines (`changes-every-kind.txt`, with the whole URL for the spec's `…`), CLI-3's record line, CLI-6's timeout block and NTF-11's four registered lines are byte for byte the spec's examples.
+- `make verify` passes in the worktree after rebasing and on main after the merge (150 lib tests, 9 golden), the macOS check included.
+- Wording chosen where CLI-3 gives none (fixed by the golden files): `N more PR(s) (all are in circitor list --json)`; `show`'s `check <result|running|queued>: <name> <url>`, `passed checks: N`, `mergeable X, merge_state Y`, `counts: comments N, reviews N, review_threads N`; `checks passing (5/5)` and `checks none` events; `status`'s nested values on one line each (`last_poll`, `github`, `tracked`, `paths`, `warnings`); exit-9 errors end `(try again in 12m, until 23:12 local)` or `(try again in a minute)`; the older-daemon hint `(the daemon is older than this CLI: run circitor stop, or restart its service, to replace it)`; `expected <sha>` lower-cased; the truncated mark on `checks failed`/`checks failing` only; `checks done` for a `checks-done` with no record; `pending` lines before `untracked`.

@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **50 tasks:** 37 todo, 2 in-progress, 9 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **50 tasks:** 35 todo, 3 in-progress, 10 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -76,7 +76,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 2 | [T50](tasks/T50-check-macos-zig.md) | Follow-up to T01: check-macos from Linux through cargo-zigbuild, last step of make verify | infra | S | done | T01 |
 | 3 | [T04](tasks/T04-clock-log.md) | Clock, test clock, work in flight, sleep detection, logger and warnings | code | M | in-progress | T02 |
 | 3 | [T05](tasks/T05-model.md) | Model: checks summary, status, settling, kept mergeability, new items, and the merge that says what changed | code | L | done | T02 |
-| 3 | [T06](tasks/T06-config-paths.md) | Config file, environment and paths | code | M | todo | T02 |
+| 3 | [T06](tasks/T06-config-paths.md) | Config file, environment and paths | code | M | in-progress | T02 |
 | 3 | [T08](tasks/T08-poller-limits.md) | Poller limits: the quota count, the quota states and the backoff | code | M | done | T02 |
 | 3 | [T09](tasks/T09-poller-cadence.md) | Poller cadence: tiers, periods, hot PRs, the forced-refresh windows and staleness | code | M | done | T02 |
 | 3 | [T11](tasks/T11-cli-args-naming-guide.md) | CLI arguments, naming a PR, and the guide for agents | code | M | todo | T02 |
@@ -85,10 +85,10 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 3 | [T43](tasks/T43-api-shared-fakes.md) | The API's shared parts and the simple fakes | infra | M | done | T02 |
 | 3 | [T44](tasks/T44-conditions.md) | Conditions: checking and evaluating a wait's or a subscription's condition, once | code | M | done | T02 |
 | 4 | [T07](tasks/T07-github-client.md) | GitHub client: queries, the HTTP request, decoding, error classes, synthetic fixtures | code | L | todo | T02, T41 |
-| 4 | [T10](tasks/T10-cli-render.md) | CLI text output: every line of list, show, changes, wait, status, refresh and stop, with golden files | code | L | in-progress | T02, T41 |
+| 4 | [T10](tasks/T10-cli-render.md) | CLI text output: every line of list, show, changes, wait, status, refresh and stop, with golden files | code | L | done | T02, T41 |
 | 4 | [T12](tasks/T12-token-source.md) | Token source: running gh auth token | code | M | todo | T04 |
 | 4 | [T13](tasks/T13-poller-auth.md) | Poller auth: when the token is read, and the auth state | code | M | todo | T04, T43 |
-| 4 | [T14](tasks/T14-fake-github-engine.md) | Fake GitHub: the scripted world and the GraphQL engine that answers from it | test | L | todo | T02, T41 |
+| 4 | [T14](tasks/T14-fake-github-engine.md) | Fake GitHub: the scripted world and the GraphQL engine that answers from it | test | L | in-progress | T02, T41 |
 | 4 | [T15](tasks/T15-state-store.md) | State store: the tracked set, applying refreshes, revisions and events, retention, cursors | code | L | todo | T04, T05, T43 |
 | 4 | [T16](tasks/T16-state-file.md) | State file: the format, atomic writes through a fakeable file system, loading, the saver | code | M | todo | T04 |
 | 4 | [T17](tasks/T17-transport.md) | Transport: the HTTP client over the Unix socket, and the socket probe | code | S | todo | T04, T43 |
@@ -142,15 +142,15 @@ flowchart LR
   T03["T03 CI: format, lints and every test…"]:::blocked
   T04["T04 Clock, test clock, work in flight…"]:::active
   T05["T05 Model: checks summary, status, se…"]:::done
-  T06["T06 Config file, environment and paths"]
+  T06["T06 Config file, environment and paths"]:::active
   T07["T07 GitHub client: queries, the HTTP…"]
   T08["T08 Poller limits: the quota count, t…"]:::done
   T09["T09 Poller cadence: tiers, periods, h…"]:::done
-  T10["T10 CLI text output: every line of li…"]:::active
+  T10["T10 CLI text output: every line of li…"]:::done
   T11["T11 CLI arguments, naming a PR, and t…"]
   T12["T12 Token source: running gh auth tok…"]
   T13["T13 Poller auth: when the token is re…"]
-  T14["T14 Fake GitHub: the scripted world a…"]
+  T14["T14 Fake GitHub: the scripted world a…"]:::active
   T15["T15 State store: the tracked set, app…"]
   T16["T16 State file: the format, atomic wr…"]
   T17["T17 Transport: the HTTP client over t…"]

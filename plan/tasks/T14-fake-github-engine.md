@@ -4,7 +4,7 @@ title: "Fake GitHub: the scripted world and the GraphQL engine that answers from
 kind: test
 milestone: M1
 size: L
-status: todo
+status: in-progress
 depends_on: [T02, T41]
 requirements: [TST-3:it-answers-the-queries-circitor-sends, TST-3:by-default-its-world-behaves, TST-3:it-parses-each-query-and]
 owns: [src/testkit/github/, tests/cost/]

@@ -4,7 +4,7 @@ title: "Config file, environment and paths"
 kind: code
 milestone: M2
 size: M
-status: todo
+status: in-progress
 depends_on: [T02]
 requirements: [OPS-1, OPS-2, OPS-3, OPS-4:linux, OPS-4:macos, OPS-4:circitor-socket-overrides-the-path, OPS-4:a-path-over-103-bytes]
 owns: [src/config/, testdata/config/]
