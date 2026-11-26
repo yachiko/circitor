@@ -92,3 +92,5 @@ No Rust changes, so no new tests. Run these and paste the results in the report:
 - **2026-11-26**, branch `t19-readme-service-files`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
 - `README.md` (first paragraph, folder table and "Building" kept; rows added for `src/`, `skills/`, `packaging/`; sections Install, First use, For agents, Notices in Claude Code, Under Claude Code's sandbox, As a service, Upgrades, Files and environment), `packaging/launchd/dev.circitor.daemon.plist` (`KeepAlive` with `SuccessfulExit` false), `packaging/systemd/circitor.service` (`Restart=on-failure`, Homebrew's `bin`, no versioned path).
 - The executor checked the plist with `plistlib`, the unit with `configparser` and `systemd-analyze verify --user` (only complaint: the binary path doesn't exist here), and that the README's two blocks equal the files. `make verify` passes on main after the merge. Unrun here: the service files, the sandbox settings and macOS (T40).
+
+Follow-ups: T63 (D18), T65 (D19)

@@ -34,6 +34,7 @@ pub struct Deps {
     pub seed: u64,
     pub signals: bool,                                           // install handlers for SIGTERM, SIGINT, SIGHUP; `false` in-process
     pub stop_delay: Option<Duration>,                            // `CIRCITOR_TEST_STOP_DELAY` (TST-1)
+    pub spawner: Option<String>,                                 // `CIRCITOR_SPAWNER` (CLI-7, OPS-9, D19; T65): logged in the `start` line; `None` in the foreground
 }
 /// Why it didn't start. `Display` is the one line for stderr; `code()` the exit status (0 only for
 /// a spawned daemon whose lock's holder answers, STA-11).

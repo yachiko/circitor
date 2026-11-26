@@ -88,3 +88,5 @@ Unit tests in `src/cli/notify/`, on `TestClock`, a `ShortDir`, `FakeSpawner` and
 - **2026-11-26**, branch `t48-cli-notify`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
 - `src/cli/notify/` (`mod.rs`, new `stub.rs` and `tests.rs`, test-only) and 13 golden files in `tests/golden/notify_cmd/`, read by the executor against NTF-11. **Checked by the orchestrator:** no `CliEnv::real`, `Env::from_process` or `std::env::var` in the module; the exit-11 lines carry the condition's flags and `--since`, never `--for` or `--timeout`, and the PR as typed; `registered.txt` is NTF-11's block. `cargo test --features test-endpoint --lib cli::notify::`: 15 passed. `make verify` passes on main after the merge, the macOS check included.
 - Choices: its own stub daemon (records request bodies and routes `notify`); `--cancel --json` with no daemon prints `{"cancelled":0}`; `--cancel`'s no-socket line is `no session here: there is no session's notify to cancel`; `name_offline` runs before `conn::existing`, so a bad PR argument is exit 2 even with no daemon.
+
+Follow-ups: T63 (D18: a subagent's notify, in words).

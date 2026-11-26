@@ -86,3 +86,5 @@ Unit tests beside the code.
 - **2026-11-26**, branch `t11-cli-args-naming-guide`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
 - Changed: `src/cli/args/`, `src/cli/naming/`, `src/cli/guide/` (with `guide.md`, **63 lines**), `skills/circitor/SKILL.md`, `AGENTS.section.md`. Only `GUIDE`'s value changed among public items. `cargo test --features test-endpoint --lib -- cli::args:: cli::naming:: cli::guide::`: 11 passed. `make verify` passes on main after the merge (353 lib tests), the macOS check included.
 - Choices: a clap usage error is cut to its first line (so its wording is clap's); `--version` exists only to map `DisplayVersion` to `Command::Version`; the example test strips a trailing ` # comment`; exit codes in the guide are lines starting `N `; `untrack` without a PR is a usage error too. `Command::Help(text)` is clap's rendered help (T27 prints it).
+
+Follow-ups: T63 (D18), T65 (D19)

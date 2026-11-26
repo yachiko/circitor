@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **62 tasks:** 3 todo, 1 in-progress, 58 done. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **65 tasks:** 6 todo, 1 in-progress, 58 done. **12 waves**, critical path weight 27. **Coverage:** 147 of 147 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -71,6 +71,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | Wave | Task | Title | Kind | Size | Status | Depends on |
 |---|---|---|---|---|---|---|
 | 1 | [T01](tasks/T01-scaffold.md) | Scaffold: the package, every dependency, the toolchain, make verify | infra | S | done | – |
+| 1 | [T64](tasks/T64-owner-subagent-environment.md) | Owner: record a subagent's environment, and check where its notify lands | manual | S | todo | – |
 | 2 | [T02](tasks/T02-contracts.md) | Contracts as code: the module tree, every seam's declarations, and the small shared types | infra | L | done | T01 |
 | 2 | [T03](tasks/T03-ci.md) | CI: make verify on Linux for each pull request; at a tag, Linux and macOS, the four targets, the release and the tap | infra | S | done | T01 |
 | 2 | [T50](tasks/T50-check-macos-zig.md) | Follow-up to T01: check-macos from Linux through cargo-zigbuild, last step of make verify | infra | S | done | T01 |
@@ -132,14 +133,16 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 10 | [T58](tasks/T58-cpu-window.md) | Follow-up to T36: OPS-17's CPU window starts after the poll's last request | test | S | done | T36, T56 |
 | 10 | [T60](tasks/T60-stop-notice-order.md) | Follow-up to T49: find a stop's notice by its PR, not its place | test | S | done | T49, T57 |
 | 10 | [T61](tasks/T61-session-socket-macos.md) | Follow-up to T45 and T57: the fake session socket compiles on macOS | test | S | done | T45, T57 |
+| 11 | [T63](tasks/T63-subagent-notify-text.md) | Follow-up to T10, T11, T19, T46 and T48: a subagent's notify, in words (D18) | code | S | todo | T10, T11, T19, T35, T46, T48, T49, T57, T59, T60 |
+| 12 | [T65](tasks/T65-spawner-and-stop-words.md) | Follow-up to T24, T27, T28 and T46: who started the daemon, and what a stop means (D19) | code | M | todo | T24, T27, T28, T29, T46, T49, T62, T63 |
 <!-- /plan:waves -->
 
 ## Critical path
 
 <!-- plan:critical -->
-T01 (S) → T02 (L) → T05 (L) → T15 (L) → T21 (L) → T25 (L) → T29 (L) → T32 (L) → T56 (S) → T58 (S)
+T01 (S) → T02 (L) → T05 (L) → T15 (L) → T21 (L) → T25 (L) → T29 (L) → T49 (L) → T57 (S) → T60 (S) → T63 (S) → T65 (M)
 
-Weight 24 of 127 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
+Weight 27 of 131 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
 <!-- /plan:critical -->
 
 The path runs through the model, the store and the engine's poll, each an L task that the next needs for real, then the daemon's wiring and the real-process tests. The engine's demand side (T25, T42), the routes and waiters (T22, T23), the CLI (T10, T11, T24, T27) and the fake GitHub (T14, T20) run beside it. **Notify adds no weight to it:** T28 needs the notifier (T46), which is as long as the engine's poll and runs beside it, on T15, T10 and T44; the notify routes, the command and the scenarios (T47, T48, T49) are off the path. That's why the conditions are a task of their own (P16): had the notifier waited for the wait route, the path would be three longer. The harness (T29) and the scenarios end one L task later than T36; the owner's T39 and T40 close the path. Nothing on it waits for an implementation where a contract would do.
@@ -211,6 +214,9 @@ flowchart LR
   T60["T60 Follow-up to T49: find a stop's n…"]:::done
   T61["T61 Follow-up to T45 and T57: the fak…"]:::done
   T62["T62 Follow-up to T28 and T51: an answ…"]
+  T63["T63 Follow-up to T10, T11, T19, T46 a…"]
+  T64["T64 Owner: record a subagent's enviro…"]:::manual
+  T65["T65 Follow-up to T24, T27, T28 and T4…"]
   T01 --> T02
   T01 --> T03
   T02 --> T04
@@ -323,6 +329,11 @@ flowchart LR
   T57 --> T60
   T57 --> T61
   T51 --> T62
+  T19 --> T63
+  T59 --> T63
+  T60 --> T63
+  T62 --> T65
+  T63 --> T65
   classDef done fill:#d8f0dc,stroke:#2f7d3b
   classDef active fill:#fff1c2,stroke:#a07800
   classDef blocked fill:#f8d7da,stroke:#a12a35
@@ -339,19 +350,22 @@ Files that several tasks touch (`shares`). The owner creates the file; sharers a
 
 | Path | Owner | Shared by |
 |---|---|---|
-| `tests/golden/cli/error_starting.err` | T35 | T59 |
-| `tests/scn_notify.rs` | T49, T60 | T57 |
+| `tests/golden/cli/error_starting.err` | T35, T63, T65 | T59 |
+| `tests/scn_notify.rs` | T49, T60, T63, T65 | T57 |
 | `tests/scn_tracking.rs` | T32 | T56 |
 
 Paths that pass from one task to a later one (`owns` of ordered tasks):
 
 | Path | Tasks, in order |
 |---|---|
+| `AGENTS.section.md` | T11 → T63 → T65 |
 | `Cargo.lock` | T01 → T53 |
 | `Cargo.toml` | T01 → T53 |
 | `Makefile` | T01 → T50 |
+| `README.md` | T19 → T63 → T65 |
 | `rust-toolchain.toml` | T01 → T50 |
-| `src/` | T01 → T02 → T04 → T05 → T06 → T07 → T08 → T09 → T10 → T11 → T12 → T43 → T13 → T14 → T15 → T16 → T17 → T18 → T20 → T21 → T22 → T44 → T23 → T24 → T25 → T27 → T46 → T28 → T45 → T29 → T42 → T47 → T48 → T51 → T52 → T54 → T55 → T56 → T57 → T59 → T61 → T62 |
+| `skills/` | T11 → T63 → T65 |
+| `src/` | T01 → T02 → T04 → T05 → T06 → T07 → T08 → T09 → T10 → T11 → T12 → T43 → T13 → T14 → T15 → T16 → T17 → T18 → T20 → T21 → T22 → T44 → T23 → T24 → T25 → T27 → T46 → T28 → T45 → T29 → T42 → T47 → T48 → T51 → T52 → T54 → T55 → T56 → T57 → T59 → T61 → T62 → T63 → T65 |
 | `src/api/condition.rs` | T02 → T44 |
 | `src/api/notify/` | T02 → T47 |
 | `src/api/params.rs` | T02 → T43 |
@@ -361,24 +375,27 @@ Paths that pass from one task to a later one (`owns` of ordered tasks):
 | `src/api/server/` | T02 → T22 → T59 |
 | `src/api/wait/` | T02 → T23 |
 | `src/cli/args/` | T02 → T11 |
-| `src/cli/commands/` | T02 → T27 |
-| `src/cli/conn/` | T02 → T24 |
+| `src/cli/commands/` | T02 → T27 → T65 |
+| `src/cli/conn/` | T02 → T24 → T65 |
 | `src/cli/fake.rs` | T02 → T43 |
-| `src/cli/guide/` | T02 → T11 |
+| `src/cli/guide/` | T02 → T11 → T63 → T65 |
 | `src/cli/naming/` | T02 → T11 |
-| `src/cli/notify/` | T02 → T48 |
-| `src/cli/render/` | T02 → T10 |
+| `src/cli/notify/` | T02 → T48 → T63 |
+| `src/cli/render/` | T02 → T10 → T63 → T65 |
 | `src/clock/` | T02 → T04 |
 | `src/config/` | T02 → T06 |
-| `src/daemon/instance/` | T02 → T18 |
-| `src/daemon/run/` | T02 → T28 → T51 → T62 |
+| `src/daemon/` | T02 → T18 → T28 → T51 → T62 → T65 |
+| `src/daemon/instance/` | T02 → T18 → T65 |
+| `src/daemon/run/` | T02 → T28 → T51 → T62 → T65 |
 | `src/github/client/` | T02 → T07 |
 | `src/github/fake.rs` | T02 → T43 |
 | `src/lib.rs` | T01 → T02 |
 | `src/log/` | T02 → T04 |
 | `src/main.rs` | T01 → T02 |
 | `src/model/` | T02 → T05 |
-| `src/notify/` | T02 → T46 |
+| `src/notify/` | T02 → T46 → T63 → T65 |
+| `src/notify/text.rs` | T02 → T46 → T63 → T65 |
+| `src/notify/text/` | T02 → T46 → T63 → T65 |
 | `src/poller/auth/` | T02 → T13 |
 | `src/poller/cadence/` | T02 → T09 → T52 → T55 |
 | `src/poller/engine/` | T02 → T21 → T25 → T42 → T56 |
@@ -388,15 +405,20 @@ Paths that pass from one task to a later one (`owns` of ordered tasks):
 | `src/state/store/` | T02 → T15 |
 | `src/status/` | T02 → T04 |
 | `src/testkit/github/` | T02 → T14 |
-| `src/testkit/harness/` | T02 → T29 |
+| `src/testkit/harness/` | T02 → T29 → T65 |
 | `src/testkit/server/` | T02 → T20 |
 | `src/testkit/session/` | T02 → T45 → T57 → T61 |
 | `src/token/fake.rs` | T02 → T43 |
 | `src/token/gh/` | T02 → T12 |
 | `src/transport/` | T02 → T17 |
 | `src/version.rs` | T01 → T02 |
+| `tests/golden/cli/` | T35 → T63 → T65 |
+| `tests/golden/notify/` | T46 → T63 → T65 |
+| `tests/golden/notify_cmd/` | T48 → T63 |
+| `tests/golden/render/` | T10 → T63 → T65 |
+| `tests/golden_cli.rs` | T35 → T65 |
 | `tests/real/` | T01 → T36 → T58 |
-| `tests/scn_notify.rs` | T49 → T60 |
+| `tests/scn_notify.rs` | T49 → T60 → T63 → T65 |
 <!-- /plan:hotspots -->
 
 There are no shared files by design: T01 declares every dependency and test target, T02 writes every parent `mod.rs`, T43 the router and the fakes, and each later task owns leaf directories or files. Notify follows it: `src/notify/` is one leaf (T46), `src/api/condition.rs` one file (T44), and `src/api/notify/`, `src/cli/notify/` and `src/testkit/session/` a leaf each (T47, T48, T45). Places where tasks follow each other in one directory:
@@ -531,7 +553,7 @@ One issue with the tool, not the specs: **`plan.py` never yields parts from a ta
 
 ## Outside the swarm
 
-Four tasks are the owner's (`kind: manual`). No executor task waits for any of them.
+Five tasks are the owner's (`kind: manual`). No executor task waits for any of them.
 
 | Task | What | When |
 |---|---|---|
@@ -539,11 +561,14 @@ Four tasks are the owner's (`kind: manual`). No executor task waits for any of t
 | T38 | The first CI runs: `ci.yml` on Linux on the pull request that adds it; macOS in `release.yml`'s `verify`, at the first tag or its dry run (TST-14). | After T03 |
 | T39 | Set the tap App's two secrets, tag `v0.0.1`, and check `brew install yachiko/tap/circitor` (OPS-10, D5: a formula written by T03's `release.yml`). | After T36 and T19 |
 | T40 | TST-13's seven acceptance checks on a Mac and on Linux, the seventh `notify` in a real Claude Code session; results into docs/05. | After T39, with T47 and T48 in the release |
+| T64 | Record a subagent's environment and `CLAUDE_CODE_SESSION_ID` in docs/05 and docs/07 (D18, D19), and, once T63 is released, check on `yachiko/experiment` that a subagent's notify lands in the main conversation (TST-17). | Steps 1 and 2 any time; step 3 after T63 is released |
 
 Also the owner's: confirming the plan decisions above before T01 starts (P1 to P4 are the expensive ones), and every spec issue.
 
 ## Change log
 
+- 2026-11-26: **D19, what a stop means and who started the daemon (the owner, from `notify-findings.md` issue 2).** A stop stops the running daemon, and the next command without `--no-spawn` starts one, as D1 has it. `stop` now says so, and the guide and README tell pollers, hooks and mods to pass `--no-spawn`. The CLI hands the daemon `CIRCITOR_SPAWNER` (its pid, command, directory and `CLAUDE_CODE_SESSION_ID`), logged in the `start` line. The `stopped` notice writes `--since` only for `changed`. Specs: CLI-3, CLI-7, CLI-8, CLI-11, OPS-7, OPS-9, NTF-8, NTF-10, TST-8, new TST-18. Contracts: `Deps::spawner` (`contracts/daemon.md`) and `CIRCITOR_SPAWNER` (`contracts/cli.md`). New follow-up **T65** (M, after T62 and T63, which own its paths). Follow-up lines on T10, T11, T19, T24, T27, T28, T29, T35, T46 and T49. T64 also records `CLAUDE_CODE_SESSION_ID`. The 8.9 s re-ask (issue 2.3) isn't a spec change: D19's note.
+- 2026-11-26: **D18, a subagent's notify (the owner, from `notify-findings.md` issue 1).** A subagent's shell has its session's socket, so its confirmation and notice go to the main conversation, and the CLI's line told it to `--cancel`, which drops the main conversation's notifies too (NTF-3). circitor can't tell a subagent apart, so only the words change. Specs: NTF-7 (the confirmation adds `asked here or by a subagent`), NTF-11 (a new part and a new third line), NTF-12, CLI-11, new TST-17. New follow-up **T63** (S, depends on the done T10, T11, T19, T35, T46, T48, T49, and on T57, T59 and T60 for shared paths). Follow-up lines added to those seven. New owner task **T64**: record the subagent measurement in docs/05 and docs/07, then a check by hand. Rendered with `--accept-spec-changes`, which also takes D10 to D17's changes into the snapshot: their follow-ups are logged below.
 - 2026-11-26: **T37 done** (the owner's, with the OK on the day). Ten real, scrubbed answers in `testdata/github/recorded/`, all decoding; 10 points spent; dated entry in docs/05. No follow-up to T07. For docs/02, on the owner's say: every answer carried a `Date` header (MOD-6), an error's `path` names the query's alias, and the rate-limit counters alternated between two windows. Left: the owner's T39 and T40, and T03/T38 (blocked, no CI).
 - 2026-11-26: **M5 reached.** Every executor task is done (T01, T02, T04 to T36, T41 to T59; T50 and T53 the owner's and the orchestrator's). `make verify` on main: 936 tests pass, 0 fail; the only ignored ones are T07's `dump_queries` (a printer for T37, by design) and three rustdoc examples. Every TST-8 scenario (T30 to T33, T49), TST-6's figures (T34), TST-7's golden output (T35) and TST-9's real processes with OPS-17 (T36) pass. Left: the owner's T37, T39, T40, and T03/T38 (blocked, no CI). Decisions taken by the orchestrator under the owner's rule: D12 to D16 (`specs/decisions.md`), and the readings recorded in this log and in each task's Evidence.
 - 2026-11-26: **Main red after T56, test window at fault; follow-up T58.** `ops17_no_cpu_between_polls` started its 5 s after a poll's first answer; since D15 a 200-PR poll sends its second finding page a second later, inside the window (8 to 40 ticks). With T56's `poll.rs` reverted the test passed 3 times at the same load, and the daemon doesn't spin: T58 moves the window after the poll's last request. **T57** was allowed to fix T49's `scn_notify_session_gone_full_queue` assertion (it forgot the registration's confirmation). **T35 found** the `starting` line saying "try again in a few seconds (try again in a minute)": follow-up T59 (the route's message drops its own hint) after T35 merges.
