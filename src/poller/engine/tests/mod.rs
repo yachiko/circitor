@@ -28,6 +28,7 @@ mod cadence;
 mod demand;
 mod errors;
 mod poll;
+mod pr_errors;
 
 pub(super) fn s(n: u64) -> Duration {
     Duration::from_secs(n)

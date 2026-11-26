@@ -237,11 +237,19 @@ async fn pol21_node_errors_stay_with_the_pr() {
             r.now()
         ));
     }
-    // Neither becomes `gone` here, however long it lasts (T42).
+    // This ending was updated by T42: a lone `NOT_FOUND` PR becomes `gone`; a `FORBIDDEN` one never does.
     r.advance(3_600).await;
-    for n in ["o/r#1", "o/r#2"] {
-        assert_eq!(r.record(n).unwrap().state, PrState::Open);
-    }
+    assert_eq!(r.record("o/r#1").unwrap().state, PrState::Gone);
+    let rec = r.record("o/r#2").unwrap();
+    assert_eq!(rec.state, PrState::Open);
+    assert_eq!(rec.error.as_ref().unwrap().type_, "FORBIDDEN");
+    let failing: Vec<_> = r
+        .warnings
+        .list()
+        .into_iter()
+        .filter(|w| w.code == WarningCode::PrFailing)
+        .collect();
+    assert_eq!(failing.len(), 1);
 }
 
 // POL-25: exhausted, nothing is sent until the reset; `remaining: 0` is applied first.
