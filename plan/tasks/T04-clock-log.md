@@ -4,7 +4,7 @@ title: "Clock, test clock, work in flight, sleep detection, logger and warnings"
 kind: code
 milestone: M1
 size: M
-status: in-progress
+status: done
 depends_on: [T02]
 requirements: [TST-4, TST-2, OPS-9, POL-26, POL-22]
 owns: [src/clock/, src/log/, src/status/]
@@ -97,3 +97,11 @@ Unit tests beside the code, on `#[tokio::test]`, the clock starting at 2026-11-2
 ## Open questions
 - **POL-22 and POL-26 are (proposal)**, and whether tokio's timers and the monotonic clock count a suspend isn't checked on either system (docs/04 §8 item 6). Build as written: the 30 s gap in one constant, and nothing that assumes `mono()` stops or runs during a suspend. TST-13 step 6 checks it on real machines.
 - D5 and D6 don't touch this task.
+
+## Evidence
+- **2026-11-26**, branch `t04-clock-log`, executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- Changed: `src/clock/` (`mod.rs`, `system.rs`, `test_clock.rs`, `sleep_watch.rs`, new `guard.rs`), `src/log/mod.rs`, `src/status/mod.rs`. No public signature changed; one constant added, `clock::SLEEP_GAP` (30 s). Every test the Acceptance names exists; `tst4_an_excused_hang_does_not_hold_the_clock` catches `settle()`'s panic alone (`catch_unwind`), with no `#[should_panic]` in `src/clock/`.
+- **Settle stress (the plan's named risk):** `cargo test --features test-endpoint --lib clock::` run 25 times in a row by the orchestrator, after rebasing onto main, with three executors building beside it: 0 failures (the executor ran clock, log and status 15 times: 0 failures).
+- `make verify` passes in the worktree and on main after the merge (188 lib tests, 9 golden), the macOS check included.
+- **Choices:** `sleep_wall_only`, `sleep_both` and `set_wall_back` settle first like `advance`, and a second move during any of the four panics; **a timer enters the heap at its first poll**, so "the order set" is the order of first poll (a future created and never polled can't hang the clock); `set_settle_limit` is `#[cfg(test)]`, crate-private; the warning lines read `warning raised code=<code>` (warn) and `warning cleared code=<code>` (info), with neither key nor message.
+- **Open, for T29:** a `SettleProbe` is named in the settle panic by index only (`probes not settled: #0`); naming them needs a `name()` on the trait, a contract change touching T20 and T45. Not made.

@@ -10,7 +10,7 @@
    "milestone": "M1",
    "size": "S",
    "wave": 1,
-   "remaining": 18,
+   "remaining": 16,
    "depends_on": [],
    "dependents": [
     "T02",
@@ -47,7 +47,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 2,
-   "remaining": 18,
+   "remaining": 16,
    "depends_on": [
     "T01"
    ],
@@ -105,11 +105,11 @@
    "id": "T04",
    "title": "Clock, test clock, work in flight, sleep detection, logger and warnings",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 18,
+   "remaining": 16,
    "depends_on": [
     "T02"
    ],
@@ -215,7 +215,7 @@
    "id": "T07",
    "title": "GitHub client: queries, the HTTP request, decoding, error classes, synthetic fixtures",
    "kind": "code",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M1",
    "size": "L",
    "wave": 4,

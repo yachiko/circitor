@@ -4,7 +4,7 @@ title: "GitHub client: queries, the HTTP request, decoding, error classes, synth
 kind: code
 milestone: M1
 size: L
-status: todo
+status: in-progress
 depends_on: [T02, T41]
 requirements: [POL-1, POL-6, POL-25, POL-24, MOD-3, MOD-2:a-value-github-sends-that, OPS-16, TST-12, TST-1]
 owns: [src/github/client/, testdata/github/responses/]
