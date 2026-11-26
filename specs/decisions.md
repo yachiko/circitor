@@ -1,6 +1,6 @@
 # Decisions
 
-**Status:** draft 0.2, 2026-11-25: notify and narrower conditions (D7, D8); the owner's answers to the planning questions (D9, 2026-11-26). Draft 0.1, 2026-11-24.
+**Status:** draft 0.4, 2026-11-26: what a stop means, and who started the daemon (D19). Draft 0.3, 2026-11-26: a subagent's notify (D18). Draft 0.2, 2026-11-25: notify and narrower conditions (D7, D8); the owner's answers to the planning questions (D9, 2026-11-26). Draft 0.1, 2026-11-24.
 
 The spec's decisions, numbered D1, D2, … in the order they were raised. [docs/06 decision log](../docs/06-decision-log.md) is the project's history up to the first spec draft. It uses its own numbers, so cite those as "log D5". New decisions go here.
 
@@ -27,12 +27,27 @@ Decided before the spec and binding on it: one local poller (log D1), polling wi
 | D14 | Refreshing after a sleep | **A record marked slept is due at the next poll**, whatever its period (POL-22): the poll that starts on waking otherwise sent only the finding, the monotonic clock having hardly moved, and left every record stale for one more period (found by T31, 2026-11-26). Decided by the orchestrator under the owner's rule of 2026-11-26. |
 | D15 | The limit's warning when paging stops | **The finding stops paging at the first page that holds a found PR with no place left for it; that PR and any page left unread count as PRs left out**, so `pr_limit` is raised (STA-3, POL-7, API-5); it clears at a poll whose finding is read to its end with none left out. A page of PRs all tracked doesn't stop the paging, so a full set reads what a smaller one does and the warning can clear (found by T32, revised after T56, 2026-11-26). Decided by the orchestrator under the owner's rule of 2026-11-26. |
 | D17 | Intel Macs | **Not built: macOS is arm64 only** (OPS-13). The release builds and verifies on `macos-26`. Decided by the owner 2026-11-26. |
+| D18 | A subagent's notify | **circitor doesn't tell a subagent from its session; the text tells the agent** (NTF-7, NTF-11, NTF-12, CLI-11, TST-17). The confirmation says it was asked here or by a subagent, `registered`'s third line says it goes to the main conversation, and the guide sends a subagent to `wait` and tells it never to cancel. `notify --cancel` stays as NTF-3 has it. Found in the owner's field test, 2026-11-26. Decided 2026-11-26. See below. |
+| D19 | What a stop means, and who started the daemon | **A stop stops the daemon that runs; the next command without `--no-spawn` starts one** (D1 unchanged). `stop` says so, and the README and the guide tell pollers, hooks and mods to pass `--no-spawn` (CLI-8, CLI-11, OPS-7). The daemon's `start` line names the CLI that started it (CLI-7, OPS-9, TST-18). The `stopped` notice leaves out `--since` except for `changed` (NTF-8). Found in the owner's field test, 2026-11-26. Decided 2026-11-26. See below. |
 
 ## Open
 
 None.
 
 ## Notes on resolved decisions
+
+**D19: what a stop means, and who started the daemon** (resolved 2026-11-26)
+- The owner's field test: a mod polling `show` every 20 s without `--no-spawn` restarted the daemon 4 s after a `stop`. The `stopped` notice's re-ask, waiting its 8 s as NTF-10 allows, registered with that daemon. Nothing in the log said who had started it.
+- **A stop that sticks was left out:** a `stop --hold` marker, or one on every stop, would break D1's "starts itself on the first command" for every agent, with an exit 6 whose cause it can't see. Words in `stop`, the README and the guide do the job, with `--no-spawn` and `CIRCITOR_NO_SPAWN=1`, which already exist.
+- **`CIRCITOR_SPAWNER` is a variable, not an argument:** `ps` shows a process's arguments to every user, and not its environment. It never carries a session's socket or token (NTF-9).
+- **The re-ask carried a dead `--since`.** A new daemon's history starts empty (OPS-8), so a cursor from the stopped one can't be honoured. For `merged` and `checks-done` it only bought a `reset: true`, so the `stopped` notice leaves it out.
+- **The 8.9 s re-ask isn't a spec change.** `--no-spawn` returns as soon as any daemon answers. The rest was probably the new daemon's token read, a read-through of a PR loaded with no record (STA-8) and the confirmation. `CIRCITOR_LOG=debug` in the shell that starts the daemon logs each GitHub request with its duration (OPS-9).
+
+**D18: a subagent's notify** (resolved 2026-11-26)
+- The owner's field test on macOS: a subagent's `notify` registered the main conversation. Its confirmation and its notice arrived there, as docs/07 says. The subagent saw neither, and the CLI's own line told it to cancel. A cancel would have dropped every notify of the session on that PR, the main conversation's included (NTF-3).
+- **Refusing a subagent isn't possible:** on Linux (Claude Code 2.1.332, 2026-11-26) a subagent's shell had the same socket, token, `CLAUDE_CODE_SESSION_ID`, `CLAUDE_PID` and parent process as its session. This isn't yet in docs/07: the owner records it.
+- **The owner chose text over code:** a subagent uses `wait`. A narrower `--cancel`, one subscription picked by its parameters, was left out.
+- **The confirmation's clause costs a few words in every confirmation**, and spares the main conversation a watch it doesn't recognise.
 
 **D9: gaps found while planning** (resolved 2026-11-26)
 - Raised as spec issues in `plan/README.md` (numbers 23, 24, 30, 32, 33, 38, 39, 41, and two readings of 08-notify's third pass). The owner took the recommended answer each time.
