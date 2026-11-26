@@ -1,7 +1,10 @@
 //! The clock, work in flight, sleep detection (`plan/contracts/clock.md`).
 //!
-//! T02 builds `Time`, `Mono`, `sleep`, `timeout` and `Activity`; T04 builds `SystemClock`,
-//! `TestClock` and `SleepWatch`, and takes the module over.
+//! T02 built `Time`, `Mono`, `sleep`, `timeout` and `Activity`; T04 built `SystemClock`,
+//! `TestClock` and `SleepWatch`, and owns the module.
+//!
+//! POL-26: wall time (`Time`) and monotonic time (`Mono`) are kept apart: no function turns one
+//! into the other.
 
 use std::future::Future;
 use std::sync::Arc;
@@ -12,6 +15,8 @@ use chrono::{DateTime, TimeDelta, Utc};
 use futures::future::{BoxFuture, Either};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
+#[cfg(test)]
+mod guard;
 mod sleep_watch;
 mod system;
 #[cfg(any(test, feature = "test-endpoint"))]
@@ -75,6 +80,7 @@ impl Time {
     }
 
     /// `self - earlier`, zero when `earlier` is later (POL-26: a wall time ahead of now counts as now).
+    // POL-26: never negative.
     pub fn since(self, earlier: Time) -> Duration {
         (self.0 - earlier.0).to_std().unwrap_or(Duration::ZERO)
     }
@@ -175,10 +181,22 @@ impl Activity {
     }
 
     /// The work begun and not yet dropped, less what is excused.
+    // TST-4: what a held `Excused` covers isn't counted, and the count never goes below zero.
     pub fn in_flight(&self) -> usize {
         let busy = self.0.busy.load(Ordering::SeqCst);
         let excused = self.0.excused.load(Ordering::SeqCst);
         busy.saturating_sub(excused)
+    }
+}
+
+impl Activity {
+    /// Begun and excused, for the test clock's account of what is in flight.
+    #[cfg_attr(not(any(test, feature = "test-endpoint")), allow(dead_code))]
+    fn counts(&self) -> (usize, usize) {
+        (
+            self.0.busy.load(Ordering::SeqCst),
+            self.0.excused.load(Ordering::SeqCst),
+        )
     }
 }
 
@@ -255,6 +273,24 @@ mod tests {
         assert_eq!(later.since(t), Duration::from_secs(5));
         assert_eq!(t.since(later), Duration::ZERO);
         assert_eq!(later.minus(Duration::from_secs(5)), t);
+    }
+
+    // POL-26: a wall time ahead of now (after the clock was set back) counts as now.
+    #[test]
+    fn pol26_time_since_never_goes_negative() {
+        let now = Time::parse("2026-11-24T22:00:00Z").unwrap();
+        let ahead = now.plus(Duration::from_secs(3600));
+        assert_eq!(now.since(ahead), Duration::ZERO);
+        assert_eq!(now.since(now), Duration::ZERO);
+        assert_eq!(ahead.since(now), Duration::from_secs(3600));
+        assert_eq!(
+            Time::from_unix_millis(i64::MIN).since(Time::from_unix_millis(i64::MAX)),
+            Duration::ZERO
+        );
+        assert_eq!(
+            Mono::ZERO.since(Mono::ZERO.plus(Duration::from_secs(1))),
+            Duration::ZERO
+        );
     }
 
     #[test]
