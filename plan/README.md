@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **59 tasks:** 4 todo, 53 done, 2 blocked. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **59 tasks:** 3 todo, 54 done, 2 blocked. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -127,7 +127,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 9 | [T40](tasks/T40-acceptance.md) | Owner: the acceptance checks on a Mac and on Linux | manual | M | todo | T19, T36, T39, T47, T48 |
 | 9 | [T56](tasks/T56-limit-warning.md) | Follow-up to T21: a finding page left unread at the limit raises pr_limit (D15) | code | S | done | T42, T32 |
 | 9 | [T57](tasks/T57-queue-full-inode.md) | Follow-up to T45: queue_full keeps the socket's inode (D16) | test | S | done | T45, T49 |
-| 9 | [T59](tasks/T59-starting-message.md) | Follow-up to T22: the starting error gives one retry hint | code | S | todo | T22, T35 |
+| 9 | [T59](tasks/T59-starting-message.md) | Follow-up to T22: the starting error gives one retry hint | code | S | done | T22, T35 |
 | 10 | [T58](tasks/T58-cpu-window.md) | Follow-up to T36: OPS-17's CPU window starts after the poll's last request | test | S | done | T36, T56 |
 <!-- /plan:waves -->
 
@@ -204,7 +204,7 @@ flowchart LR
   T56["T56 Follow-up to T21: a finding page…"]:::done
   T57["T57 Follow-up to T45: queue_full keep…"]:::done
   T58["T58 Follow-up to T36: OPS-17's CPU wi…"]:::done
-  T59["T59 Follow-up to T22: the starting er…"]
+  T59["T59 Follow-up to T22: the starting er…"]:::done
   T01 --> T02
   T01 --> T03
   T02 --> T04
@@ -533,6 +533,7 @@ Also the owner's: confirming the plan decisions above before T01 starts (P1 to P
 
 ## Change log
 
+- 2026-11-26: **M5 reached.** Every executor task is done (T01, T02, T04 to T36, T41 to T59; T50 and T53 the owner's and the orchestrator's). `make verify` on main: 936 tests pass, 0 fail; the only ignored ones are T07's `dump_queries` (a printer for T37, by design) and three rustdoc examples. Every TST-8 scenario (T30 to T33, T49), TST-6's figures (T34), TST-7's golden output (T35) and TST-9's real processes with OPS-17 (T36) pass. Left: the owner's T37, T39, T40, and T03/T38 (blocked, no CI). Decisions taken by the orchestrator under the owner's rule: D12 to D16 (`specs/decisions.md`), and the readings recorded in this log and in each task's Evidence.
 - 2026-11-26: **Main red after T56, test window at fault; follow-up T58.** `ops17_no_cpu_between_polls` started its 5 s after a poll's first answer; since D15 a 200-PR poll sends its second finding page a second later, inside the window (8 to 40 ticks). With T56's `poll.rs` reverted the test passed 3 times at the same load, and the daemon doesn't spin: T58 moves the window after the poll's last request. **T57** was allowed to fix T49's `scn_notify_session_gone_full_queue` assertion (it forgot the registration's confirmation). **T35 found** the `starting` line saying "try again in a few seconds (try again in a minute)": follow-up T59 (the route's message drops its own hint) after T35 merges.
 - 2026-11-26: **D16** (orchestrator, after T49): `FakeSession::queue_full` lowers the backlog of the same listening socket instead of binding a new one, so the notifier's `look` sees the same session and its post fails as `reason=failed` (NTF-6, TST-16). Follow-up **T57** in `src/testkit/session/`, which also lifts T49's ignore. **Readings kept** (TST-8: the requirement wins): `notify-ends`' expired notice reads the record's `status` (`it's ready`), not `it's open`; `notify-keeps-active`'s row can't read all its numbers in one run. **Watch:** T27's `cli10_no_daemon_back` failed once under load ("ended at 9.9") and passed after.
 - 2026-11-26: **D15 revised** (orchestrator, after T56): stopping at the first page once every place was taken made a set of exactly 200 tracked PRs leave its second page unread every poll, so `pr_limit` never cleared. Now the finding stops at the first page holding a found PR with no place; a page of PRs all tracked doesn't stop it. STA-3 and `specs/decisions.md` updated; T56, then in review, was sent the change.

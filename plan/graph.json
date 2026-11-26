@@ -827,7 +827,7 @@
    "milestone": "M2",
    "size": "L",
    "wave": 6,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T21"
    ],
@@ -856,7 +856,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 6,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T07",
     "T20",
@@ -969,7 +969,7 @@
    "milestone": "M3",
    "size": "L",
    "wave": 7,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T07",
     "T20",
@@ -1123,7 +1123,7 @@
    "milestone": "M5",
    "size": "L",
    "wave": 8,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T29",
     "T42",
@@ -1303,7 +1303,7 @@
    "milestone": "M2",
    "size": "M",
    "wave": 7,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T25"
    ],
@@ -1395,7 +1395,7 @@
    "milestone": "M3",
    "size": "S",
    "wave": 4,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T04"
    ],
@@ -1764,11 +1764,11 @@
    "id": "T59",
    "title": "Follow-up to T22: the starting error gives one retry hint",
    "kind": "code",
-   "status": "todo",
+   "status": "done",
    "milestone": "M5",
    "size": "S",
    "wave": 9,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T22",
     "T35"

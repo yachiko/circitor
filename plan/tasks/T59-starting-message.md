@@ -4,7 +4,7 @@ title: "Follow-up to T22: the starting error gives one retry hint"
 kind: code
 milestone: M5
 size: S
-status: todo
+status: done
 depends_on: [T22, T35]
 requirements: [API-18, CLI-5]
 owns: [src/api/server/]
@@ -34,3 +34,7 @@ T35's `tests/golden/cli/error_starting.err` reads `starting: the first poll hasn
 
 ## Open questions
 - None: decided by the orchestrator (owner's rule of 2026-11-26).
+
+## Evidence
+- **2026-11-26**, branch `t59-starting-message`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `src/api/server/mod.rs`: the `starting` message is "the first poll hasn't finished after 10 s", and, on the orchestrator's follow-up, the `no_record` `github_unavailable` message lost its "; try again" too (the same doubled hint). `tests/golden/cli/error_starting.err` regenerated alone: `starting: the first poll hasn't finished after 10 s (try again in a minute)`. No route message holds a retry hint now. The executor's second report didn't arrive; the orchestrator checked the worktree's diff itself. `make verify` passes on main after the merge, first try.
