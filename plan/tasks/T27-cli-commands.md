@@ -4,7 +4,7 @@ title: "CLI commands: run, each command, the wait's deadline and reconnect, exit
 kind: code
 milestone: M3
 size: L
-status: in-progress
+status: done
 depends_on: [T10, T11, T24]
 requirements: [CLI-4, CLI-5, CLI-6:without-timeout, CLI-6:one-deadline-for-the-whole-command, CLI-6:sigint-and-sigterm-end-it-at-once, CLI-7:every-request-has-a-limit, CLI-8, CLI-9:a-bad-request-or-unknown-route-from, CLI-10, CLI-2, U10]
 owns: [src/cli/commands/]
@@ -86,3 +86,9 @@ Unit tests in `src/cli/commands/`, on `TestClock`, a `ShortDir`, `FakeSpawner` a
 - CLI-2's short forms, CLI-5's code 8 and CLI-7's limits are (proposal): build them as written.
 - **Not said by the specs, built as Scope says, and reported to the planner:** the exit code of a `PathError`; `--json` with an error or an ending without an answer; which stream the three endings use; the wording of CLI-2's own lines (T35's golden files fix them).
 - docs/03 §6 item 2 (a killed `wait` leaves nothing in the daemon) is unverified: nothing here rests on it.
+
+## Evidence
+- **2026-11-26**, branch `t27-cli-commands`, executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- `src/cli/commands/` (`mod.rs`, new `wait.rs`, `git.rs`, `stub.rs` and `tests.rs` under `cfg(test)`); `RealGit` moved to `git.rs`. Nothing reads the session variables or the system clocks; output is written with `write_all`, a closed pipe ignored. `cargo test --features test-endpoint --lib cli::commands::`: 24 passed, 5 runs, no flake; `git::tests::cli2_real_git` runs a real `git` in a `ShortDir`. `make verify` passes on main after the merge (515 lib tests), the macOS check included. The executor ran the debug binary: `version` prints `circitor 0.1.0+<commit>`, an unknown command exits 2, `status` with no daemon exits 6 and creates no directory.
+- **Orchestrator decisions (owner's rule of 2026-11-26):** `track` and `untrack` go through `conn::ensure` and may start or replace a daemon: CLI-8 doesn't list them, and the brief's parenthetical ("these two never start…") was a slip meant for `status` and `stop`. A bare-name `wait` whose `ensure` fails during naming with under 1 s left exits with the `ConnError` (6), as no PR is named yet for a timeout line.
+- Choices: its own stub daemon (errors, cursor headers, delays, drops, per-route scripts) over T24's; a bare name runs `git` twice (`name_offline`, then `find_bare`); `find_bare`'s requests inside a wait are limited by `Link::request`'s 90 s, their time counting against the deadline. Wording fixed by T35's golden files: CLI-2's lines, a `PathError`'s exit 6, `daemon` inside `run` (exit 1), `--json`'s three endings on stderr.

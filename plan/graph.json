@@ -10,7 +10,7 @@
    "milestone": "M1",
    "size": "S",
    "wave": 1,
-   "remaining": 10,
+   "remaining": 7,
    "depends_on": [],
    "dependents": [
     "T02",
@@ -47,7 +47,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 2,
-   "remaining": 10,
+   "remaining": 7,
    "depends_on": [
     "T01"
    ],
@@ -109,7 +109,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 10,
+   "remaining": 7,
    "depends_on": [
     "T02"
    ],
@@ -187,7 +187,7 @@
    "milestone": "M2",
    "size": "M",
    "wave": 3,
-   "remaining": 10,
+   "remaining": 7,
    "depends_on": [
     "T02"
    ],
@@ -320,7 +320,7 @@
    "milestone": "M3",
    "size": "L",
    "wave": 4,
-   "remaining": 10,
+   "remaining": 7,
    "depends_on": [
     "T02",
     "T41"
@@ -360,7 +360,7 @@
    "milestone": "M3",
    "size": "M",
    "wave": 3,
-   "remaining": 10,
+   "remaining": 7,
    "depends_on": [
     "T02"
    ],
@@ -551,7 +551,7 @@
    "milestone": "M2",
    "size": "S",
    "wave": 4,
-   "remaining": 10,
+   "remaining": 7,
    "depends_on": [
     "T04",
     "T43"
@@ -577,7 +577,7 @@
    "milestone": "M2",
    "size": "M",
    "wave": 4,
-   "remaining": 10,
+   "remaining": 7,
    "depends_on": [
     "T04"
    ],
@@ -790,7 +790,7 @@
    "milestone": "M3",
    "size": "L",
    "wave": 5,
-   "remaining": 10,
+   "remaining": 7,
    "depends_on": [
     "T06",
     "T17",
@@ -878,11 +878,11 @@
    "id": "T27",
    "title": "CLI commands: run, each command, the wait's deadline and reconnect, exit codes",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M3",
    "size": "L",
    "wave": 6,
-   "remaining": 10,
+   "remaining": 7,
    "depends_on": [
     "T10",
     "T11",
@@ -1262,7 +1262,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 10,
+   "remaining": 7,
    "depends_on": [
     "T02"
    ],
@@ -1324,7 +1324,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 10,
+   "remaining": 7,
    "depends_on": [
     "T02"
    ],
