@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **54 tasks:** 11 todo, 1 review, 40 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **54 tasks:** 7 todo, 3 in-progress, 42 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -104,20 +104,20 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 5 | [T24](tasks/T24-cli-conn.md) | CLI and the daemon: connecting, starting, replacing, stopping, request limits | code | L | done | T06, T17, T18, T41 |
 | 5 | [T37](tasks/T37-record-fixtures.md) | Owner: record real responses from yachiko/experiment | manual | S | todo | T07 |
 | 5 | [T46](tasks/T46-notify-core.md) | Notify: subscriptions, the loop that evaluates them, the poster, and every notice's words | code | L | done | T09, T10, T15, T43, T44 |
-| 5 | [T54](tasks/T54-saver-spin.md) | Follow-up to T16: the saver spins on a moving clock and never writes | code | S | todo | T16 |
+| 5 | [T54](tasks/T54-saver-spin.md) | Follow-up to T16: the saver spins on a moving clock and never writes | code | S | done | T16 |
 | 6 | [T25](tasks/T25-engine-demand.md) | Poller engine: hot PRs, forced refreshes, reading through, track, the mergeable follow-up | code | L | done | T21 |
 | 6 | [T26](tasks/T26-m1-poll.md) | M1: the real client against the fake GitHub, polling end to end | integration | M | done | T07, T20, T21 |
 | 6 | [T27](tasks/T27-cli-commands.md) | CLI commands: run, each command, the wait's deadline and reconnect, exit codes | code | L | done | T10, T11, T24 |
 | 6 | [T28](tasks/T28-daemon-run.md) | M2: the daemon runs: start order, serving the socket, modes, signals, stop, idle exit | integration | L | done | T06, T07, T12, T16, T17, T18, T21, T22, T23, T46 |
 | 6 | [T47](tasks/T47-api-notify.md) | Notify routes: registering a subscription and cancelling it | code | M | done | T09, T41, T46 |
 | 7 | [T29](tasks/T29-harness.md) | M3: the harness, and the CLI against a running daemon | integration | L | done | T07, T20, T25, T26, T27, T28, T45 |
-| 7 | [T36](tasks/T36-real-processes.md) | M4: real processes: spawning, two CLIs, upgrades, signals, files and permissions | integration | L | review | T20, T27, T28 |
+| 7 | [T36](tasks/T36-real-processes.md) | M4: real processes: spawning, two CLIs, upgrades, signals, files and permissions | integration | L | done | T20, T27, T28 |
 | 7 | [T42](tasks/T42-engine-pr-errors.md) | Poller engine: a PR's errors: gone, pr_failing, and its one log line | code | M | done | T25 |
 | 7 | [T48](tasks/T48-cli-notify.md) | CLI: the notify command | code | M | done | T27, T46 |
 | 7 | [T51](tasks/T51-second-shutdown.md) | Follow-up to T28: a second shutdown request during a stop ends it at once | code | S | done | T28 |
-| 8 | [T30](tasks/T30-scenarios-checks.md) | Scenarios: checks and settling | test | L | todo | T29 |
-| 8 | [T31](tasks/T31-scenarios-waits.md) | Scenarios: a PR's life and waits | test | L | todo | T29, T42 |
-| 8 | [T32](tasks/T32-scenarios-tracking.md) | Scenarios: tracking and polling | test | L | todo | T29, T42 |
+| 8 | [T30](tasks/T30-scenarios-checks.md) | Scenarios: checks and settling | test | L | in-progress | T29 |
+| 8 | [T31](tasks/T31-scenarios-waits.md) | Scenarios: a PR's life and waits | test | L | in-progress | T29, T42 |
+| 8 | [T32](tasks/T32-scenarios-tracking.md) | Scenarios: tracking and polling | test | L | in-progress | T29, T42 |
 | 8 | [T33](tasks/T33-scenarios-daemon.md) | Scenarios: the daemon's life and failures | test | L | todo | T29 |
 | 8 | [T34](tasks/T34-quota-tests.md) | Quota tests: what an hour costs in each tier and state | test | M | todo | T29 |
 | 8 | [T35](tasks/T35-golden-cli.md) | Golden output end to end: every command's text and JSON, every exit code | test | L | todo | T29, T42, T47, T48 |
@@ -170,13 +170,13 @@ flowchart LR
   T27["T27 CLI commands: run, each command,…"]:::done
   T28["T28 M2: the daemon runs: start order,…"]:::done
   T29["T29 M3: the harness, and the CLI agai…"]:::done
-  T30["T30 Scenarios: checks and settling"]
-  T31["T31 Scenarios: a PR's life and waits"]
-  T32["T32 Scenarios: tracking and polling"]
+  T30["T30 Scenarios: checks and settling"]:::active
+  T31["T31 Scenarios: a PR's life and waits"]:::active
+  T32["T32 Scenarios: tracking and polling"]:::active
   T33["T33 Scenarios: the daemon's life and…"]
   T34["T34 Quota tests: what an hour costs i…"]
   T35["T35 Golden output end to end: every c…"]
-  T36["T36 M4: real processes: spawning, two…"]:::active
+  T36["T36 M4: real processes: spawning, two…"]:::done
   T37["T37 Owner: record real responses from…"]:::manual
   T38["T38 Owner: the first CI run, on Linux…"]:::blocked
   T39["T39 Owner: set up the release tool, p…"]:::manual
@@ -194,7 +194,7 @@ flowchart LR
   T51["T51 Follow-up to T28: a second shutdo…"]:::done
   T52["T52 Follow-up to T09: a PR whose last…"]:::done
   T53["T53 Follow-up to T01: nix's socket fe…"]:::done
-  T54["T54 Follow-up to T16: the saver spins…"]
+  T54["T54 Follow-up to T16: the saver spins…"]:::done
   T01 --> T02
   T01 --> T03
   T02 --> T04

@@ -4,7 +4,7 @@ title: "Scenarios: tracking and polling"
 kind: test
 milestone: M5
 size: L
-status: todo
+status: in-progress
 depends_on: [T29, T42]
 requirements: [TST-8]
 owns: [tests/scn_tracking.rs]

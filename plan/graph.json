@@ -10,7 +10,7 @@
    "milestone": "M1",
    "size": "S",
    "wave": 1,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [],
    "dependents": [
     "T02",
@@ -48,7 +48,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 2,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T01"
    ],
@@ -110,7 +110,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T02"
    ],
@@ -147,7 +147,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 3,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T02"
    ],
@@ -188,7 +188,7 @@
    "milestone": "M2",
    "size": "M",
    "wave": 3,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T02"
    ],
@@ -220,7 +220,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 4,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T02",
     "T41"
@@ -257,7 +257,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T02"
    ],
@@ -286,7 +286,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T02"
    ],
@@ -321,7 +321,7 @@
    "milestone": "M3",
    "size": "L",
    "wave": 4,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T02",
     "T41"
@@ -361,7 +361,7 @@
    "milestone": "M3",
    "size": "M",
    "wave": 3,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T02"
    ],
@@ -396,7 +396,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 4,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T04"
    ],
@@ -424,7 +424,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 4,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T04",
     "T43"
@@ -452,7 +452,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 4,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T02",
     "T41"
@@ -480,7 +480,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 4,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T04",
     "T05",
@@ -521,7 +521,7 @@
    "milestone": "M2",
    "size": "M",
    "wave": 4,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T04"
    ],
@@ -553,7 +553,7 @@
    "milestone": "M2",
    "size": "S",
    "wave": 4,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T04",
     "T43"
@@ -579,7 +579,7 @@
    "milestone": "M2",
    "size": "M",
    "wave": 4,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T04"
    ],
@@ -637,7 +637,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 5,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T04",
     "T14"
@@ -669,7 +669,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 5,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T08",
     "T09",
@@ -721,7 +721,7 @@
    "milestone": "M2",
    "size": "L",
    "wave": 5,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T09",
     "T15",
@@ -759,7 +759,7 @@
    "milestone": "M2",
    "size": "L",
    "wave": 5,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T09",
     "T15",
@@ -792,7 +792,7 @@
    "milestone": "M3",
    "size": "L",
    "wave": 5,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T06",
     "T17",
@@ -884,7 +884,7 @@
    "milestone": "M3",
    "size": "L",
    "wave": 6,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T10",
     "T11",
@@ -922,7 +922,7 @@
    "milestone": "M2",
    "size": "L",
    "wave": 6,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T06",
     "T07",
@@ -1003,7 +1003,7 @@
    "id": "T30",
    "title": "Scenarios: checks and settling",
    "kind": "test",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M5",
    "size": "L",
    "wave": 8,
@@ -1025,7 +1025,7 @@
    "id": "T31",
    "title": "Scenarios: a PR's life and waits",
    "kind": "test",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M5",
    "size": "L",
    "wave": 8,
@@ -1048,7 +1048,7 @@
    "id": "T32",
    "title": "Scenarios: tracking and polling",
    "kind": "test",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M5",
    "size": "L",
    "wave": 8,
@@ -1142,11 +1142,11 @@
    "id": "T36",
    "title": "M4: real processes: spawning, two CLIs, upgrades, signals, files and permissions",
    "kind": "integration",
-   "status": "review",
+   "status": "done",
    "milestone": "M4",
    "size": "L",
    "wave": 7,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T20",
     "T27",
@@ -1264,7 +1264,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T02"
    ],
@@ -1326,7 +1326,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T02"
    ],
@@ -1361,7 +1361,7 @@
    "milestone": "M2",
    "size": "M",
    "wave": 3,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T02"
    ],
@@ -1412,7 +1412,7 @@
    "milestone": "M2",
    "size": "L",
    "wave": 5,
-   "remaining": 7,
+   "remaining": 4,
    "depends_on": [
     "T09",
     "T10",
@@ -1630,11 +1630,11 @@
    "id": "T54",
    "title": "Follow-up to T16: the saver spins on a moving clock and never writes",
    "kind": "code",
-   "status": "todo",
+   "status": "done",
    "milestone": "M4",
    "size": "S",
    "wave": 5,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T16"
    ],

@@ -4,7 +4,7 @@ title: "M4: real processes: spawning, two CLIs, upgrades, signals, files and per
 kind: integration
 milestone: M4
 size: L
-status: review
+status: done
 depends_on: [T20, T27, T28]
 requirements: [TST-9, OPS-17]
 owns: [tests/real/]
@@ -109,3 +109,12 @@ Interpretation: OPS-17's figures are measured on the test build, which is unopti
 - **CLI-7's and CLI-8's limits, OPS-7's 5 s and STA-11's 6 s are (proposal).** Test them as written, with a second of slack above each and none below.
 - **macOS results are unknown until T38.** Nothing in docs/04 was checked on a Mac.
 - D5 and D6 don't touch this task.
+
+## Evidence
+- **2026-11-26**, branch `t36-real-processes`, executor on **Opus, medium**, run alone; reviewed and merged by the orchestrator **after T54**. **M4's checkpoint.**
+- `tests/real/` (`main.rs` replacing T01's placeholder, `fixture.rs`, `spawn.rs`, `stop.rs`, `upgrade.rs`, `files.rs`, `token.rs`, `signals.rs`, `perf.rs`): every TST-9 test (1 to 19, some split) and OPS-17's four. The fixture clears the environment (`env_clear` in one place), sets the session variables only to a path in the test's directory, uses a fake `gh` and `FakeGitHub::start_real`, a 30 s limit, a guard that `SIGKILL`s every daemon it saw (checking the command line first), and TST-11's sweep.
+- **Found a T16 bug** (the saver spinning on the real clock, no `state.json` while running): follow-up **T54**. The executor's ignore on `ops17_no_cpu_between_polls` was removed by the orchestrator once T54 was in.
+- After rebasing onto T54: `cargo test --features test-endpoint --test real` run 5 times by the orchestrator while three scenario executors built beside it: **29 passed, 0 ignored, every run** (about 24 s). No daemon or fake `gh` left running after. `make verify` passes on main after the merge.
+- OPS-17 on the debug test build: cold start 1.5 to 3.1 s; resident memory 23.4 to 24.1 MB; `list` from memory a median of 16 to 33 ms; CPU between polls within 2 ticks. Release-build figures not measured. macOS branches (`ps`, the state-directory socket, the skipped `/proc` checks) compiled only.
+- Choices: the guard uses `std::thread::sleep` in `Drop` (tests only); a first `list` answering `starting` while the fake `gh` hangs is followed by one more; limits have the brief's 1 s of slack above, none below.
+- **OPS-8 reading (orchestrator):** the idle time counts from a client request's arrival, as built (a `list` that waits for the first poll exits about 1 s early); the test checks at least 2 s from the CLI's start and at most 10 s after the answer.

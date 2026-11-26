@@ -4,7 +4,7 @@ title: "Follow-up to T16: the saver spins on a moving clock and never writes"
 kind: code
 milestone: M4
 size: S
-status: todo
+status: done
 depends_on: [T16]
 requirements: [STA-7, OPS-17]
 owns: [src/state/file/]
@@ -42,3 +42,8 @@ T36 found it with real processes (gdb: 33 107 turns of the loop in 7 s, no write
 
 ## Open questions
 - None: a follow-up fix, decided by the orchestrator (owner's rule of 2026-11-26).
+
+## Evidence
+- **2026-11-26**, branch `t54-saver-spin`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `src/state/file/saver.rs` (`due()` is `Mono::ZERO` with no attempt; one `due` per turn for the decision and the sleep) and `tests.rs` (`sta7_writes_on_a_moving_clock`, a `MovingClock` moving 1 ms at every read). **The orchestrator checked the test against T16's original saver: it fails there and passes with the fix.** `cargo test --features test-endpoint --lib state::file::`: 18 passed. `make verify` passes on main after the merge.
+- With T36 merged after it: `ops17_no_cpu_between_polls` un-ignored and passing; the real-process suite 5 times in a row without a failure.
