@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **50 tasks:** 31 todo, 3 in-progress, 14 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **50 tasks:** 28 todo, 4 in-progress, 1 review, 15 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -79,7 +79,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 3 | [T06](tasks/T06-config-paths.md) | Config file, environment and paths | code | M | done | T02 |
 | 3 | [T08](tasks/T08-poller-limits.md) | Poller limits: the quota count, the quota states and the backoff | code | M | done | T02 |
 | 3 | [T09](tasks/T09-poller-cadence.md) | Poller cadence: tiers, periods, hot PRs, the forced-refresh windows and staleness | code | M | done | T02 |
-| 3 | [T11](tasks/T11-cli-args-naming-guide.md) | CLI arguments, naming a PR, and the guide for agents | code | M | todo | T02 |
+| 3 | [T11](tasks/T11-cli-args-naming-guide.md) | CLI arguments, naming a PR, and the guide for agents | code | M | in-progress | T02 |
 | 3 | [T38](tasks/T38-first-ci-run.md) | Owner: the first CI run, on Linux and macOS | manual | S | blocked | T03 |
 | 3 | [T41](tasks/T41-golden-files.md) | Golden files: the API's and the model's JSON, and GitHub's public schema | infra | M | done | T02 |
 | 3 | [T43](tasks/T43-api-shared-fakes.md) | The API's shared parts and the simple fakes | infra | M | done | T02 |
@@ -89,10 +89,10 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 4 | [T12](tasks/T12-token-source.md) | Token source: running gh auth token | code | M | todo | T04 |
 | 4 | [T13](tasks/T13-poller-auth.md) | Poller auth: when the token is read, and the auth state | code | M | done | T04, T43 |
 | 4 | [T14](tasks/T14-fake-github-engine.md) | Fake GitHub: the scripted world and the GraphQL engine that answers from it | test | L | in-progress | T02, T41 |
-| 4 | [T15](tasks/T15-state-store.md) | State store: the tracked set, applying refreshes, revisions and events, retention, cursors | code | L | in-progress | T04, T05, T43 |
-| 4 | [T16](tasks/T16-state-file.md) | State file: the format, atomic writes through a fakeable file system, loading, the saver | code | M | todo | T04 |
-| 4 | [T17](tasks/T17-transport.md) | Transport: the HTTP client over the Unix socket, and the socket probe | code | S | todo | T04, T43 |
-| 4 | [T18](tasks/T18-daemon-instance.md) | Daemon instance: the lock, the lock file, the stale socket, binding | code | M | in-progress | T04 |
+| 4 | [T15](tasks/T15-state-store.md) | State store: the tracked set, applying refreshes, revisions and events, retention, cursors | code | L | done | T04, T05, T43 |
+| 4 | [T16](tasks/T16-state-file.md) | State file: the format, atomic writes through a fakeable file system, loading, the saver | code | M | in-progress | T04 |
+| 4 | [T17](tasks/T17-transport.md) | Transport: the HTTP client over the Unix socket, and the socket probe | code | S | in-progress | T04, T43 |
+| 4 | [T18](tasks/T18-daemon-instance.md) | Daemon instance: the lock, the lock file, the stale socket, binding | code | M | review | T04 |
 | 4 | [T19](tasks/T19-readme-service-files.md) | README, service files and sandbox settings | infra | S | todo | T11 |
 | 4 | [T45](tasks/T45-fake-session.md) | Fake session socket: what a Claude Code session's inbox looks like from outside | test | S | todo | T04 |
 | 5 | [T20](tasks/T20-fake-github-server.md) | Fake GitHub: the HTTP server, faults, rate-limit controls, the rules that fail a test | test | L | todo | T04, T14 |
@@ -147,13 +147,13 @@ flowchart LR
   T08["T08 Poller limits: the quota count, t…"]:::done
   T09["T09 Poller cadence: tiers, periods, h…"]:::done
   T10["T10 CLI text output: every line of li…"]:::done
-  T11["T11 CLI arguments, naming a PR, and t…"]
+  T11["T11 CLI arguments, naming a PR, and t…"]:::active
   T12["T12 Token source: running gh auth tok…"]
   T13["T13 Poller auth: when the token is re…"]:::done
   T14["T14 Fake GitHub: the scripted world a…"]:::active
-  T15["T15 State store: the tracked set, app…"]:::active
-  T16["T16 State file: the format, atomic wr…"]
-  T17["T17 Transport: the HTTP client over t…"]
+  T15["T15 State store: the tracked set, app…"]:::done
+  T16["T16 State file: the format, atomic wr…"]:::active
+  T17["T17 Transport: the HTTP client over t…"]:::active
   T18["T18 Daemon instance: the lock, the lo…"]:::active
   T19["T19 README, service files and sandbox…"]
   T20["T20 Fake GitHub: the HTTP server, fau…"]

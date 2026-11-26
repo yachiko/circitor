@@ -4,7 +4,7 @@ title: "Transport: the HTTP client over the Unix socket, and the socket probe"
 kind: code
 milestone: M2
 size: S
-status: todo
+status: in-progress
 depends_on: [T04, T43]
 requirements: [OPS-4:a-socket-answers-when-get]
 owns: [src/transport/]

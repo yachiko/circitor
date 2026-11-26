@@ -4,7 +4,7 @@ title: "CLI arguments, naming a PR, and the guide for agents"
 kind: code
 milestone: M3
 size: M
-status: todo
+status: in-progress
 depends_on: [T02]
 requirements: [CLI-1, CLI-2, CLI-11, CLI-12, OPS-12, U8, NTF-11]
 owns: [src/cli/args/, src/cli/naming/, src/cli/guide/, skills/, AGENTS.section.md]

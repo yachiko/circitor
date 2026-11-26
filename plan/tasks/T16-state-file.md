@@ -4,7 +4,7 @@ title: "State file: the format, atomic writes through a fakeable file system, lo
 kind: code
 milestone: M2
 size: M
-status: todo
+status: in-progress
 depends_on: [T04]
 requirements: [STA-6, STA-7, STA-8:a-binary-reads-every-earlier-version, STA-8:a-file-that-isn-t-json, STA-8:a-file-with-a-newer, STA-8:a-missing-file-is-normal, TST-10]
 owns: [src/state/file/, testdata/state/]

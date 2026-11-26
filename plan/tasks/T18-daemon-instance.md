@@ -4,7 +4,7 @@ title: "Daemon instance: the lock, the lock file, the stale socket, binding"
 kind: code
 milestone: M2
 size: M
-status: in-progress
+status: review
 depends_on: [T04]
 requirements: [STA-11, STA-12, OPS-4:the-socket-s-mode-is-0600]
 owns: [src/daemon/instance/]

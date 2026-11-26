@@ -4,7 +4,7 @@ title: "State store: the tracked set, applying refreshes, revisions and events, 
 kind: code
 milestone: M1
 size: L
-status: in-progress
+status: done
 depends_on: [T04, T05, T43]
 requirements: [STA-1, STA-2, STA-3, STA-4, STA-5, STA-9, STA-10, MOD-13, STA-8:a-loaded-pr-keeps-its, STA-8:entries-past-their-keep-done-are-dropped-on-load, NTF-4:a-pr-with-a-subscription-stays-tracked, U3, U7]
 owns: [src/state/store/]
@@ -97,3 +97,10 @@ Unit tests in `src/state/store/`, on `TestClock`, filled through `reserve` and `
 - **(proposal) values:** 60 minutes, `keep_done`, 200, the two 64s, 500. Built as written, one constant each. Reopening isn't measured (docs/02): built as STA-2 says.
 - **`untrack` of a `Loaded` `manual` entry** (API-15 needs the author; there's no record). Build: `asked` while it has a waiter, otherwise dropped with `untracked`; `record` is `None`. Report it.
 - **`View::pending` and API-18.** The spec says "found or loaded"; a `First` place taken by a read-through is neither. Build the contract's "`Loaded` and `First`".
+
+## Evidence
+- **2026-11-26**, branch `t15-state-store`, executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- Changed: `src/state/store/mod.rs`, new `inner.rs`, `guards.rs`, `tests.rs`. `Named`, `Waiting` and `Subscribed` moved to `guards.rs` and are re-exported at `state::store::` and `state::` as before; no public signature changed. Every test the Acceptance names exists; no lock is held across an `.await`.
+- `cargo test --features test-endpoint --lib state::store::`: 29 passed; run 10 times by the orchestrator after rebasing (`mod13_one_step` is a seeded random run): 0 failures. `make verify` passes in the worktree and on main after the merge (267 lib tests, 1 ignored), the macOS check included.
+- **Readings, built as the brief proposed (to confirm):** `untrack` of a `Loaded` `manual` entry with no record is `asked` while a waiter or subscription holds it, else dropped with `untracked` and `record: None`; `View::pending` is `Loaded` and `First`.
+- **Other choices:** a dropped `First` PR (never tracked) gets a log line and no `untracked` event (spec gap: MOD-14 ties `untracked` to a dropped record); an entry past `keep_done` at load logs `untracked … cause=expired`, no event; in `new`, a duplicate ID or an entry beyond 200 is skipped silently, and a saved `asked` source loads as `asked` with its hour started; `changed()` moves on every `untrack`, `set_manual` and `demote_unlisted`; `mark_gone` on a non-open record or a loaded entry saved ended is `Unchanged`, on an untracked ID or a `First` entry `Discarded`; an open naming request holds back only the asked hour, not a `keep_done` drop; `reserve` raising a loaded entry's source also updates its saved source.
