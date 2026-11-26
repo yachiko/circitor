@@ -9,6 +9,10 @@ use crate::{ms, s};
 /// `interval = 10`: two polls fit in a test's 30 s.
 const CONFIG_PERF: &str = "exit_after = 60\ninterval = 10\n";
 
+/// `interval = 20` for the CPU check: a poll of 200 PRs takes about 7 s (one request a second,
+/// POL-2), and the quiet wait and the 5 s window must fit before the next one starts.
+const CONFIG_CPU: &str = "exit_after = 60\ninterval = 20\n";
+
 /// 199 more PRs beside `o/r#1`: 200 tracked.
 fn two_hundred(fx: &Fixture) {
     fx.gh.world(|w| {
@@ -55,6 +59,25 @@ async fn next_poll(fx: &Fixture) {
             return;
         }
         assert!(fx.mono().since(start) < s(15), "no poll after {before}");
+    }
+}
+
+/// Waits until the fake GitHub has had no new request for 1.5 s (POL-2's gap is 1 s): the poll
+/// that `last_poll` showed (its first request answered) is over. At most 15 s.
+async fn quiet(fx: &Fixture) {
+    let start = fx.mono();
+    let mut seen = fx.gh.requests().len();
+    let mut since = fx.mono();
+    loop {
+        fx.sleep(ms(100)).await;
+        let now = fx.gh.requests().len();
+        if now != seen {
+            seen = now;
+            since = fx.mono();
+        } else if fx.mono().since(since) >= ms(1500) {
+            return;
+        }
+        assert!(fx.mono().since(start) < s(15), "the poll never ended");
     }
 }
 
@@ -150,15 +173,23 @@ async fn ops17_no_cpu_between_polls() {
         eprintln!("OPS-17: no /proc on macOS: the CPU check is Linux's");
         return;
     }
-    real(CONFIG_PERF, |fx| async move {
+    real(CONFIG_CPU, |fx| async move {
         two_hundred(&fx);
         listed(&fx).await;
-        next_poll(&fx).await;
+        // The first poll's last request: with `interval = 20` a second poll would not leave room for
+        // the window inside the test's 30 s.
+        quiet(&fx).await;
         let pid = fx.daemon_pid();
         let poll = last_poll(&fx.status().await);
+        let sent = fx.gh.requests().len();
         let before = cpu_ticks(pid);
         fx.sleep(s(5)).await;
         let after = cpu_ticks(pid);
+        assert_eq!(
+            fx.gh.requests().len(),
+            sent,
+            "a request reached GitHub inside the 5 s: the window wasn't between two polls"
+        );
         assert_eq!(
             last_poll(&fx.status().await),
             poll,
