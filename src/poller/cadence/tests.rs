@@ -418,3 +418,22 @@ fn d12_a_failed_pr_is_due_at_the_next_poll() {
     let first = sent(target("p", Class::First, Source::Authored), 999);
     assert!(ids(failed(first)).is_empty());
 }
+
+// POL-22, D14
+#[test]
+fn d14_a_slept_pr_is_due_at_the_next_poll() {
+    let c = Config::default();
+    let now = at(1000);
+    let ids = |t: Target| in_poll(&[t], None, Tier::Active, &c, now);
+    let slept = |mut t: Target| {
+        t.timing.slept = true;
+        t
+    };
+    let open = || sent(target("p", Class::Open, Source::Authored), 999);
+    assert_eq!(ids(slept(open())), vec![id("p")]);
+    assert!(ids(open()).is_empty());
+    let merged = || sent(target("p", Class::Ended, Source::Authored), 999);
+    assert_eq!(ids(slept(merged())), vec![id("p")]);
+    let first = sent(target("p", Class::First, Source::Authored), 999);
+    assert!(ids(slept(first)).is_empty());
+}

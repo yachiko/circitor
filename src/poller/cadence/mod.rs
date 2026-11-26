@@ -135,6 +135,10 @@ pub fn in_poll(
             if t.timing.attempt_failed {
                 return true;
             }
+            // POL-22, D14: a record marked slept is due at the next poll, whatever its period.
+            if t.timing.slept {
+                return true;
+            }
             let Some(last) = t.timing.last_sent else {
                 return true;
             };
