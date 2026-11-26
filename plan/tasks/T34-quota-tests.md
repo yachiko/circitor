@@ -4,7 +4,7 @@ title: "Quota tests: what an hour costs in each tier and state"
 kind: test
 milestone: M5
 size: M
-status: todo
+status: in-progress
 depends_on: [T29]
 requirements: [TST-6, U1]
 owns: [tests/quota.rs]
