@@ -26,6 +26,9 @@ The test build (TST-16's fake session socket, with `test-endpoint`) compiles and
 ## Scope
 - `socket()` takes no flags. Close-on-exec and non-blocking are then set with `fcntl`, on every platform, with no `cfg`.
 
+- **A full queue on macOS is refused, not `EAGAIN`.** The second dry run compiled and failed three unit tests (`tst16_queue_full`, `tst16_restore`, `tst16_settles`): filling the backlog got `ECONNREFUSED` (os error 61), as NTF-6 says macOS does ("from source"). `FULL_QUEUE` names the platform's kind; `queue_full` fills until it, and `tst16_queue_full` expects it.
+- **`scn_notify_session_gone_full_queue` expects the platform's log reason:** `session_gone` on macOS (a refused connection, NTF-6), `failed` on Linux. TST-8's row only says it's dropped the same way.
+
 ## Out of scope
 - Anything outside `bind_listener`. The order and backlog rules of T45 and T57 stay as they are.
 
@@ -38,4 +41,5 @@ The test build (TST-16's fake session socket, with `test-endpoint`) compiles and
 - **The flags are no longer set atomically on Linux.** A child forked between `socket()` and `fcntl` could inherit the listener. Only the tests' fake socket is affected, and nothing forks in that window today.
 
 ## Evidence
-- **2026-11-26**, by the orchestrator, on the owner's OK. Failing dry run: https://github.com/yachiko/circitor/actions/runs/45793244625.
+- **2026-11-26**, by the orchestrator, on the owner's OK. Failing dry runs: https://github.com/yachiko/circitor/actions/runs/45793244625 (compile), https://github.com/yachiko/circitor/actions/runs/45794230505 (the full queue).
+- **For docs/07:** a non-blocking connect to a full Unix-socket queue on macOS 15 gets `ECONNREFUSED`, seen on GitHub's runner. docs/07 says it from source; a dated entry in docs/05 can make it verified.

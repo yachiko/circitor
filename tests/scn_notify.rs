@@ -611,14 +611,20 @@ async fn scn_notify_session_gone_taken_over() {
 
 // TST-8: notify-session-gone
 // NTF-6: a connect that fails at once is one failed post, and never tried again.
+// macOS refuses a full queue, which NTF-6 counts as the session gone; Linux's `EAGAIN` is a failure (T61).
 #[tokio::test]
 async fn scn_notify_session_gone_full_queue() {
     let (h, pr, from) = registered_merged().await;
     h.session().queue_full();
     h.github().world(|w| w.merge(pr));
     adv(&h, 40).await;
+    let reason = if cfg!(target_os = "macos") {
+        "reason=session_gone"
+    } else {
+        "reason=failed"
+    };
     assert_eq!(
-        log_count(&h, &["notice not posted", "reason=failed"]),
+        log_count(&h, &["notice not posted", reason]),
         1,
         "{}",
         h.log().contents()

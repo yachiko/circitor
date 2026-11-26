@@ -17,7 +17,7 @@
 //! assert_eq!(session.notices()[0].text, "hi");
 //! ```
 //!
-//! What each mode looks like to a client connecting on Linux (only Linux is measured, docs/07):
+//! What each mode looks like to a client connecting on Linux (docs/07), and on macOS where it differs:
 //!
 //! | Mode | `connect` | A short write |
 //! |---|---|---|
@@ -25,7 +25,7 @@
 //! | `refuse` | `ConnectionRefused`; the path still exists | n/a |
 //! | `vanish` | `NotFound`; the path is gone | n/a |
 //! | `accept_and_never_read` | succeeds | succeeds (the kernel holds it); never recorded |
-//! | `queue_full` | `WouldBlock` (`EAGAIN`) at once, from a non-blocking connect | n/a |
+//! | `queue_full` | `WouldBlock` (`EAGAIN`) at once, from a non-blocking connect; `ConnectionRefused` on macOS ([`FULL_QUEUE`]) | n/a |
 //!
 //! A blocking `connect(2)` to a full backlog waits on Linux; a poster's is non-blocking, as tokio's is.
 
@@ -39,6 +39,14 @@ use std::sync::{Arc, Mutex, MutexGuard};
 use crate::clock::{Clock, Mono, SettleProbe, TestClock, Time};
 
 use super::MARKER_SESSION_TOKEN;
+
+/// What a non-blocking connect to a full listen queue gets: `EAGAIN` on Linux (docs/07), and
+/// `ECONNREFUSED` on macOS, as NTF-6 expects (seen on the `macos-15` runner, 2026-11-26; T61).
+pub const FULL_QUEUE: ErrorKind = if cfg!(target_os = "macos") {
+    ErrorKind::ConnectionRefused
+} else {
+    ErrorKind::WouldBlock
+};
 
 /// One line as it arrived.
 #[derive(Clone, Debug, PartialEq)]
@@ -314,7 +322,7 @@ impl FakeSession {
     ///
     /// The same socket (same device and inode): it stops accepting and calls `listen` again with a backlog
     /// of 0, which sets the backlog of a socket already listening on Linux. The fake fills the queue with
-    /// connections of its own (one or two on Linux), from a non-blocking connect, until one gets `EAGAIN`,
+    /// connections of its own (one or two on Linux), from a non-blocking connect, until one gets [`FULL_QUEUE`],
     /// so this needs the tokio runtime (every test has it). After `refuse` or `vanish` there is no
     /// listener, and it makes a new one first.
     pub fn queue_full(&self) {
@@ -329,7 +337,7 @@ impl FakeSession {
         for _ in 0..1_000_000 {
             match connect_now(&self.inner.path) {
                 Ok(stream) => s.fillers.push(stream),
-                Err(e) if e.kind() == ErrorKind::WouldBlock => return,
+                Err(e) if e.kind() == FULL_QUEUE => return,
                 Err(e) => panic!("filling the fake session socket's backlog failed: {e}"),
             }
         }
@@ -409,7 +417,7 @@ type Connecting = std::pin::Pin<
     Box<dyn std::future::Future<Output = std::io::Result<tokio::net::UnixStream>> + Send>,
 >;
 
-/// A non-blocking connect, polled once: what a tokio client does. `WouldBlock` is `EAGAIN`, a full backlog.
+/// A non-blocking connect, polled once: what a tokio client does. [`FULL_QUEUE`] is a full backlog.
 /// tokio's `connect` makes the `connect(2)` call at once and then waits for the socket to be writable, so
 /// a future that is still pending has connected; it's handed back to hold the connection open.
 /// Needs the tokio runtime's context.
@@ -659,7 +667,7 @@ mod tests {
             .err()
             .expect("a full queue fails at once");
         println!("queue_full: a connect saw {:?}: {err}", err.kind());
-        assert_eq!(err.kind(), ErrorKind::WouldBlock);
+        assert_eq!(err.kind(), FULL_QUEUE);
         let used = session.inner.lock().fillers.len();
         assert!(used < 10, "{used} descriptors used to fill the backlog");
         clock.settle().await;
