@@ -1,0 +1,8 @@
+reset: cursor too old, current state follows
+octo/app#12  checks_failing  e4f5a6b  checks 3/3, 1 failed  review none  "Add retry to the sync job"
+octo/app#9  ready  1a2b3c4  checks 1/1, 0 failed  review approved  "Tidy the config loader"
+octo/lib#8  status checks_pending -> checks_failing
+octo/lib#8  checks failing (1 of 1): build https://ci.example.test/octo/runs/41030
+already: checks failed (1 of 1) on 3c4d5e6
+again: circitor notify octo/lib#8 --until checks-done --since k3x9q2ab-28
+cursor: k3x9q2ab-28

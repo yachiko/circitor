@@ -1,0 +1,7 @@
+reset: cursor too old, current state follows
+octo/app#12  checks_failing  e4f5a6b  checks 3/3, 1 failed  review none  "Add retry to the sync job"
+octo/app#9  ready  1a2b3c4  checks 1/1, 0 failed  review approved  "Tidy the config loader"
+registered: octo/lib#5 until checks-done on 1a2b3c4, for 1d
+octo/lib#5  checks_pending  9f8e7d6  checks 0/2, 0 failed  review review_required  "Speed up the parser"
+a confirmation was posted to this session; if none arrives, notices are held or refused here: run circitor notify octo/lib#5 --cancel, then use circitor wait
+cursor: k3x9q2ab-28

@@ -1,0 +1,6 @@
+notify 12 --until checks-done --sha 1a2b3c4
+  no session here: use circitor wait 12 --until checks-done --sha 1a2b3c4
+notify 12 --until changed --kind review --since c1 --for 3600
+  no session here: use circitor wait 12 --until changed --kind review --since c1
+notify --until merged
+  no session here: use circitor wait --until merged

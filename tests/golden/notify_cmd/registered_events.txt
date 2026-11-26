@@ -1,0 +1,6 @@
+octo/lib#8  status checks_pending -> checks_failing
+octo/lib#8  checks failing (1 of 1): build https://ci.example.test/octo/runs/41030
+registered: octo/lib#5 until checks-done on 1a2b3c4, for 1d
+octo/lib#5  checks_pending  9f8e7d6  checks 0/2, 0 failed  review review_required  "Speed up the parser"
+a confirmation was posted to this session; if none arrives, notices are held or refused here: run circitor notify octo/lib#5 --cancel, then use circitor wait
+cursor: k3x9q2ab-28
