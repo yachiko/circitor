@@ -4,7 +4,7 @@ title: "Poller engine: the loop, the gate, the poll, errors, the tick"
 kind: code
 milestone: M1
 size: L
-status: in-progress
+status: done
 depends_on: [T08, T09, T13, T15]
 requirements: [POL-2, POL-4, POL-5, POL-7, POL-8, POL-10, POL-12, POL-13, POL-19, POL-20, POL-21, POL-22, POL-23, POL-24, POL-25, POL-26, STA-3, API-18, API-4, API-16, OPS-9:logged, OPS-9:circitor-log-debug-adds-one-line-per-request-to, NTF-5, U2]
 owns: [src/poller/engine/]
@@ -116,3 +116,10 @@ Unit tests in `src/poller/engine/`: `ScriptedGitHub`, the real `Store`, `TestClo
 - **Nearly every rule is a (proposal)**; POL-25's answers are `assumed` and a 5xx isn't measured (docs/02 §5, §6). Build the spec as written.
 - **Readings this brief makes, to report if they don't fit:** an answer without `rateLimit` counts 1 point; an abandoned poll marks the PRs it was about to refresh; the backoff's try is a poll.
 - **"At least its period ago" is exact** (POL-13). P10 keeps polls to one request: a PR is due again one period after the poll that refreshed it, whichever request carried it. If the steady state still shows two requests a poll, report it.
+
+## Evidence
+- **2026-11-26**, branch `t21-engine-poll`, executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- Changed: `src/poller/engine/` (`mod.rs`, new `run.rs`, `gate.rs`, `poll.rs`, `publish.rs`, `pr_errors.rs`, `tests/`). No public signature changed. Every test the Acceptance names exists (some split into several, each carrying its ID). T42's three calls are `PrErrors::{node, poll_done, tick}` in `pr_errors.rs`, empty and marked `// T42`; T25's seams are `Run::apply` and `Run::between_requests`; the three demand stubs are marked `// T25`.
+- `cargo test --features test-endpoint --lib poller::engine::`: 39 passed; run 10 times by the orchestrator after rebasing: 0 failures. `make verify` passes in the worktree and on main after the merge (320 lib tests, 1 ignored), the macOS check included. **P10 holds:** `pol13_one_request_per_poll` shows one request a poll in the steady state.
+- Readings (to confirm): a failed whole request costs 0, an answer without `rateLimit` 1; an abandoned poll marks stale what `in_poll` named and wasn't sent and returns the places of found PRs not yet sent; `remaining: 0` abandons the same way; the backoff's try is a poll; `problem begin/end code=rate_limited` at the first limited answer and the first answer after; polls resume at the first tick after a limit lifts (up to 10 s late); in `auth` with no try, no polls and `last_poll` stays; a `client_request` resets any `Unanswered` to `Running`; a listed `asked` PR inside `owners` becomes `authored` (stronger source); check pages are batched up to 40 a request; `last_poll_at` is the poll's first send time; the `quota_low`, `github_unavailable` and `rate_limited` messages are the executor's words. The `debug` `request` line also has `seq=` and `result=`.
+- **Open question, asked of the owner:** `poll_now` runs an ordinary poll, so it refreshes only what `cadence::in_poll` says is due (API-16, POL-15 "a whole poll").

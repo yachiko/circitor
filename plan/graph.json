@@ -10,7 +10,7 @@
    "milestone": "M1",
    "size": "S",
    "wave": 1,
-   "remaining": 15,
+   "remaining": 13,
    "depends_on": [],
    "dependents": [
     "T02",
@@ -47,7 +47,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 2,
-   "remaining": 15,
+   "remaining": 13,
    "depends_on": [
     "T01"
    ],
@@ -109,7 +109,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 15,
+   "remaining": 13,
    "depends_on": [
     "T02"
    ],
@@ -256,7 +256,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T02"
    ],
@@ -355,11 +355,11 @@
    "id": "T11",
    "title": "CLI arguments, naming a PR, and the guide for agents",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M3",
    "size": "M",
    "wave": 3,
-   "remaining": 12,
+   "remaining": 10,
    "depends_on": [
     "T02"
    ],
@@ -422,7 +422,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 4,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T04",
     "T43"
@@ -515,11 +515,11 @@
    "id": "T16",
    "title": "State file: the format, atomic writes through a fakeable file system, loading, the saver",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M2",
    "size": "M",
    "wave": 4,
-   "remaining": 12,
+   "remaining": 10,
    "depends_on": [
     "T04"
    ],
@@ -546,11 +546,11 @@
    "id": "T17",
    "title": "Transport: the HTTP client over the Unix socket, and the socket probe",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M2",
    "size": "S",
    "wave": 4,
-   "remaining": 14,
+   "remaining": 13,
    "depends_on": [
     "T04",
     "T43"
@@ -572,11 +572,11 @@
    "id": "T18",
    "title": "Daemon instance: the lock, the lock file, the stale socket, binding",
    "kind": "code",
-   "status": "review",
+   "status": "done",
    "milestone": "M2",
    "size": "M",
    "wave": 4,
-   "remaining": 15,
+   "remaining": 13,
    "depends_on": [
     "T04"
    ],
@@ -662,11 +662,11 @@
    "id": "T21",
    "title": "Poller engine: the loop, the gate, the poll, errors, the tick",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M1",
    "size": "L",
    "wave": 5,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T08",
     "T09",
@@ -1322,7 +1322,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 14,
+   "remaining": 13,
    "depends_on": [
     "T02"
    ],

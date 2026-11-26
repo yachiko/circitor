@@ -4,7 +4,7 @@ title: "Transport: the HTTP client over the Unix socket, and the socket probe"
 kind: code
 milestone: M2
 size: S
-status: in-progress
+status: done
 depends_on: [T04, T43]
 requirements: [OPS-4:a-socket-answers-when-get]
 owns: [src/transport/]
@@ -68,3 +68,8 @@ Unit tests in `src/transport/`, each with a few lines of server on a socket in a
 - None open on the seam: `check_socket_path` is T02's and real. Don't copy the 103 here.
 - OPS-4's 2 s is part of a (proposal) requirement: built as written, one constant.
 - What a sandbox answers on a denied socket isn't measured (docs/03 §6): `EACCES` and `EPERM` are the reading built.
+
+## Evidence
+- **2026-11-26**, branch `t17-transport`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `src/transport/mod.rs` only; no public signature changed; every test the Acceptance names exists, plus `ops4_too_long`. `cargo test --features test-endpoint --lib transport::`: 11 passed. `make verify` passes on main after the merge (342 lib tests), the macOS check included.
+- Choices: `Head` holds an abort guard so hyper's connection task ends with it; `probe` reads a complete non-2xx answer as `NotAnswering` (`status N`); the two denied tests return early when run as root.

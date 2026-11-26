@@ -4,7 +4,7 @@ title: "State file: the format, atomic writes through a fakeable file system, lo
 kind: code
 milestone: M2
 size: M
-status: in-progress
+status: done
 depends_on: [T04]
 requirements: [STA-6, STA-7, STA-8:a-binary-reads-every-earlier-version, STA-8:a-file-that-isn-t-json, STA-8:a-file-with-a-newer, STA-8:a-missing-file-is-normal, TST-10]
 owns: [src/state/file/, testdata/state/]
@@ -82,3 +82,9 @@ Unit tests in `src/state/file/`, on `TestClock` and `FaultFs`, with a hand-made 
 - **A `state.json` that exists and can't be read** (a denied permission): STA-8 doesn't say. Build: one `error` line, `Content` with no entries. Report it.
 - **A version-1 file whose `prs` is missing or isn't a list:** STA-8 sets aside only the two cases above. Build: no entries, one `warn` line. Report it.
 - STA-7's 5 s and 60 s aren't marked (proposal); keep each in one constant all the same.
+
+## Evidence
+- **2026-11-26**, branch `t16-state-file`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- Changed: `src/state/file/` (`mod.rs`, new `load.rs`, `saver.rs`, `fault.rs`, `tests.rs`) and six files in `testdata/state/`. `load`, `Loaded`, `Saver`, `SaverDeps` moved to their own files and are re-exported from `state::file` with the contract's signatures; added `state::file::{VERSION, Step}` and `FaultFs`'s controls (`put`, `file`, `fail_at`, `heal`, `stop_after`, `revive`, `power_cut`, `calls`). `cargo test --features test-endpoint --lib state::file::`: 17 passed. `make verify` passes on main after the merge (370 lib tests), the macOS check included.
+- Built as the brief's open questions say: an unreadable `state.json` is one `error` line and no entries; a version-1 file without a list of `prs` is one `warn` line and no entries. Also: an entry needs all six keys (`login` and `ended` may be `null`); a negative `version` reads as an earlier one; `shutdown` raises `state_file_unwritable` when its write fails; the saver ignores `SaverDeps.logger` (log.md gives it no line).
+- **Open:** the `state_file_set_aside` warning's message holds no time (`load` has no clock); the time is in the log line and in the warning's `since`.

@@ -4,7 +4,7 @@ title: "Daemon instance: the lock, the lock file, the stale socket, binding"
 kind: code
 milestone: M2
 size: M
-status: review
+status: done
 depends_on: [T04]
 requirements: [STA-11, STA-12, OPS-4:the-socket-s-mode-is-0600]
 owns: [src/daemon/instance/]
@@ -74,3 +74,8 @@ Unit tests in `src/daemon/instance/`, with real files in a `testkit::ShortDir`, 
 - **The umask.** OPS-4's text says 077, which gives mode 0700 on Linux (checked 2026-11-25; plan README, spec issues). The contract's 0177 is what's built, and 0600 is what's asserted. macOS isn't checked (docs/04 §8): if `make check-macos` or CI shows another mode there, report it.
 - STA-11's 6 s, 15 s and 100 ms aren't marked (proposal); OPS-4 is. One constant each.
 - What macOS answers on connecting to a non-socket isn't checked. The `lstat` makes it not matter.
+
+## Evidence
+- **2026-11-26**, branch `t18-daemon-instance`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- **First pass:** built `bind` under a umask of 0177, as OPS-4 then said; the executor found that the process-wide umask made a directory another thread created meanwhile 0600 (`config::load::tests::ops2_ranges` failed with `PermissionDenied`). **The owner decided D10** (bind at a temporary name as long as the socket's own, `chmod` 0600, rename; never the umask), written into OPS-4, STA-12 and `contracts/daemon.md` (commit 92a6def); the same executor changed `bind` (SendMessage).
+- `src/daemon/instance/mod.rs` only; private fields added, declared API unchanged. `cargo test --features test-endpoint --lib daemon::instance::`: 11 passed, among them `d10_umask_untouched` (binds in a loop while another thread makes 300 directories) and `ops4_mode_0600` with a 103-byte and a one-byte name. The executor ran the full lib suite 6 more times: no flake. `make verify` passes on main after the merge (331 lib tests), the macOS check included.

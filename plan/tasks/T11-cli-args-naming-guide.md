@@ -4,7 +4,7 @@ title: "CLI arguments, naming a PR, and the guide for agents"
 kind: code
 milestone: M3
 size: M
-status: in-progress
+status: done
 depends_on: [T02]
 requirements: [CLI-1, CLI-2, CLI-11, CLI-12, OPS-12, U8, NTF-11]
 owns: [src/cli/args/, src/cli/naming/, src/cli/guide/, skills/, AGENTS.section.md]
@@ -81,3 +81,8 @@ Unit tests beside the code.
 - CLI-2's short forms, CLI-11, OPS-12 and NTF-11 are (proposal): build them as written.
 - **The guide must say all of CLI-11 in under 120 lines.** If it can't, keep every rule and cut prose, and report the count.
 - docs/03 §1: whether Claude Code reads `AGENTS.md` wasn't checked, so the skill is its way in. docs/03 §6 items 2 and 3 (a killed `wait`, a command silent for minutes) are open: the guide says nothing that rests on them.
+
+## Evidence
+- **2026-11-26**, branch `t11-cli-args-naming-guide`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- Changed: `src/cli/args/`, `src/cli/naming/`, `src/cli/guide/` (with `guide.md`, **63 lines**), `skills/circitor/SKILL.md`, `AGENTS.section.md`. Only `GUIDE`'s value changed among public items. `cargo test --features test-endpoint --lib -- cli::args:: cli::naming:: cli::guide::`: 11 passed. `make verify` passes on main after the merge (353 lib tests), the macOS check included.
+- Choices: a clap usage error is cut to its first line (so its wording is clap's); `--version` exists only to map `DisplayVersion` to `Command::Version`; the example test strips a trailing ` # comment`; exit codes in the guide are lines starting `N `; `untrack` without a PR is a usage error too. `Command::Help(text)` is clap's rendered help (T27 prints it).
