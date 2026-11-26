@@ -1073,11 +1073,11 @@
    "id": "T33",
    "title": "Scenarios: the daemon's life and failures",
    "kind": "test",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M5",
    "size": "L",
    "wave": 8,
-   "remaining": 3,
+   "remaining": 0,
    "depends_on": [
     "T29"
    ],
@@ -1680,7 +1680,7 @@
    "id": "T56",
    "title": "Follow-up to T21: a finding page left unread at the limit raises pr_limit (D15)",
    "kind": "code",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M5",
    "size": "S",
    "wave": 9,

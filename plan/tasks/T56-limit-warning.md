@@ -4,7 +4,7 @@ title: "Follow-up to T21: a finding page left unread at the limit raises pr_limi
 kind: code
 milestone: M5
 size: S
-status: todo
+status: in-progress
 depends_on: [T42, T32]
 requirements: [STA-3, POL-7]
 owns: [src/poller/engine/]

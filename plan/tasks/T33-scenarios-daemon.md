@@ -4,7 +4,7 @@ title: "Scenarios: the daemon's life and failures"
 kind: test
 milestone: M5
 size: L
-status: in-progress
+status: done
 depends_on: [T29]
 requirements: [TST-8]
 owns: [tests/scn_daemon.rs]
@@ -100,3 +100,9 @@ The scenarios:
 - **GitHub's 5xx, its answer to an expired token and tokio's timers across a suspend aren't measured** (docs/02 §6, docs/04 §8 item 6). POL-19's values, POL-20, POL-22 and POL-26 are (proposal). Test them as written.
 - **`first-run`'s "within 5 s" after a login** rests on POL-20's read before a request that needs GitHub. If a `list` after `auth` doesn't cause that read, report it against the row.
 - D5 and D6 don't touch this task.
+
+## Evidence
+- **2026-11-26**, branch `t33-scenarios-daemon`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `tests/scn_daemon.rs` only (no `tokio::time`, no thread): 25 tests covering the eleven rows (in parts), each ending in `h.finish()`; the subscription sentences of `sleep` and `clock-back` are T49's. **None ignored; no bug found in `src/`.** `cargo test --features test-endpoint --test scn_daemon`: 25 passed, 4 runs. `make verify` passes on main after the merge.
+- **The executor's three questions, kept as built by the orchestrator (owner's rule of 2026-11-26):** a `list` at the instant of a login answers `auth` (POL-20's 5 s between reads wins over the row, TST-8's rule); a read-through arriving during a poll goes before its remaining requests (POL-15: "go next"); `status.tracked` counts every place held, first refreshes in flight included (`View::tracked`, `contracts/state.md`).
+- Readings: `github-down`'s "a poll follows at once" is the recovering try itself, a poll; `crash` runs a `list` first for the active tier; `restart`'s first event's kinds compared as a set.
