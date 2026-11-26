@@ -980,6 +980,10 @@ async fn tst6_capped_sends_only_demand_in_30_s_windows() {
 // TST-6: with 200 tracked PRs the active tier runs `slowed` or `capped` as STA-3 says, and an
 // hour costs at most 600 points. STA-3, POL-17, POL-23.
 #[tokio::test]
+#[cfg_attr(
+    target_os = "macos",
+    ignore = "T62: on macOS the clock settles before a large answer reaches the CLI"
+)]
 async fn tst6_200_prs_cost_at_most_600_and_end_slowed_or_capped() {
     let h = Harness::start(Opts::default().world(|w| {
         quiet(w, TWO_HUNDRED);

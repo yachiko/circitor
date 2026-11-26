@@ -216,3 +216,13 @@ Used by NTF-6 (a post that fails ends its subscription) and TST-16 (the fake ses
 **Scrubbing:** one map, shared by every file, replaced logins, owner and repository names, titles, URLs, branch names, node IDs, `databaseId`s (and the matching run and job numbers in `detailsUrl`), SHAs and cursors, also inside error messages. Each file's body has the same paths as the raw answer (`jq -S 'paths'`), and a grep for every real value finds nothing.
 
 **Left behind in `yachiko/experiment`:** nothing new. #1 and #10 were open before this entry and are still open.
+
+## 2026-11-26: a full listen queue on macOS
+
+**Setup:** GitHub's hosted runner, image `macos-15-arm64` (version 20261123.0558.1), macOS 15.8.2 on arm64, in circitor's release dry run on branch `macos-session-socket` ([run 45794230505](https://github.com/yachiko/circitor/actions/runs/45794230505)). No request went to GitHub and no session was posted to. **The probe was the test fake itself:** `FakeSession::queue_full` (`src/testkit/session/mod.rs`) listens again with a backlog of 0, then connects with non-blocking connects of its own until one fails. It expected Linux's `EAGAIN`.
+
+- **A connect to a Unix stream socket whose listen queue is full is refused at once:** `Connection refused (os error 61)`, which is `ECONNREFUSED`. It never hangs.
+- **Seen three times in the run**, once in each of `tst16_queue_full`, `tst16_restore` and `tst16_settles`, which all fill the queue the same way.
+- **The queue held 128 connections before the refusal**, on the next dry run: image `macos-26-arm64`, macOS 26.7.2 ([run 45795604691](https://github.com/yachiko/circitor/actions/runs/45795604691)), where `tst16_queue_full` counted them. 128 is the socket's first backlog, the system's maximum, so **a second `listen` with a backlog of 0 doesn't shrink the queue on macOS**. On Linux it does, to one or two.
+
+This confirms the kernel source read on 2026-11-25. Used by NTF-6 (a refused connection is the session gone, so on macOS a full queue logs `session_gone`, not `failed`) and TST-16 (the fake's `FULL_QUEUE`, T61). Summarised in [docs/07](07-notify.md#the-session-socket).
