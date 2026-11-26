@@ -102,16 +102,20 @@ pub struct FakeSession {
 /// A non-blocking listener at `path`, mode 0600, made with `socket`, `bind` and `listen` so the
 /// backlog is ours: `None` is the system's maximum, `Some(0)` is `queue_full`'s.
 fn bind_listener(path: &Path, backlog: Option<i32>) -> UnixListener {
+    use nix::fcntl::{FcntlArg, FdFlag, OFlag, fcntl};
     use nix::sys::socket::{
         AddressFamily, Backlog, SockFlag, SockType, UnixAddr, bind, listen, socket,
     };
+    // macOS has no SOCK_NONBLOCK or SOCK_CLOEXEC: both are set after, on every platform (T61).
     let fd = socket(
         AddressFamily::Unix,
         SockType::Stream,
-        SockFlag::SOCK_NONBLOCK | SockFlag::SOCK_CLOEXEC,
+        SockFlag::empty(),
         None,
     )
     .expect("a socket");
+    fcntl(&fd, FcntlArg::F_SETFD(FdFlag::FD_CLOEXEC)).expect("close-on-exec");
+    fcntl(&fd, FcntlArg::F_SETFL(OFlag::O_NONBLOCK)).expect("non-blocking");
     let addr = UnixAddr::new(path).expect("a socket address");
     bind(fd.as_raw_fd(), &addr).expect("bind the fake session socket");
     let backlog = match backlog {
