@@ -4,7 +4,7 @@ title: "Poller engine: hot PRs, forced refreshes, reading through, track, the me
 kind: code
 milestone: M2
 size: L
-status: todo
+status: in-progress
 depends_on: [T21]
 requirements: [POL-11, POL-14, POL-15, POL-16, API-13]
 owns: [src/poller/engine/]

@@ -4,7 +4,7 @@ title: "Fake GitHub: the HTTP server, faults, rate-limit controls, the rules tha
 kind: test
 milestone: M1
 size: L
-status: todo
+status: in-progress
 depends_on: [T04, T14]
 requirements: [TST-3:it-can-be-told-to-misbehave, TST-3:the-test-sets-remaining-and, TST-3:it-fails-the-test-if, TST-3:it-records-every-request-with-its-time, TST-11]
 owns: [src/testkit/server/, tests/fake_github.rs]

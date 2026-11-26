@@ -10,7 +10,7 @@
    "milestone": "M1",
    "size": "S",
    "wave": 1,
-   "remaining": 13,
+   "remaining": 11,
    "depends_on": [],
    "dependents": [
     "T02",
@@ -47,7 +47,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 2,
-   "remaining": 13,
+   "remaining": 11,
    "depends_on": [
     "T01"
    ],
@@ -109,7 +109,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 13,
+   "remaining": 11,
    "depends_on": [
     "T02"
    ],
@@ -187,7 +187,7 @@
    "milestone": "M2",
    "size": "M",
    "wave": 3,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T02"
    ],
@@ -550,7 +550,7 @@
    "milestone": "M2",
    "size": "S",
    "wave": 4,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T04",
     "T43"
@@ -576,7 +576,7 @@
    "milestone": "M2",
    "size": "M",
    "wave": 4,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T04"
    ],
@@ -630,7 +630,7 @@
    "id": "T20",
    "title": "Fake GitHub: the HTTP server, faults, rate-limit controls, the rules that fail a test",
    "kind": "test",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M1",
    "size": "L",
    "wave": 5,
@@ -785,11 +785,11 @@
    "id": "T24",
    "title": "CLI and the daemon: connecting, starting, replacing, stopping, request limits",
    "kind": "code",
-   "status": "todo",
+   "status": "done",
    "milestone": "M3",
    "size": "L",
    "wave": 5,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T06",
     "T17",
@@ -819,7 +819,7 @@
    "id": "T25",
    "title": "Poller engine: hot PRs, forced refreshes, reading through, track, the mergeable follow-up",
    "kind": "code",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M2",
    "size": "L",
    "wave": 6,
@@ -915,7 +915,7 @@
    "id": "T28",
    "title": "M2: the daemon runs: start order, serving the socket, modes, signals, stop, idle exit",
    "kind": "integration",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M2",
    "size": "L",
    "wave": 6,
@@ -1260,7 +1260,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 13,
+   "remaining": 11,
    "depends_on": [
     "T02"
    ],
@@ -1322,7 +1322,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 13,
+   "remaining": 10,
    "depends_on": [
     "T02"
    ],

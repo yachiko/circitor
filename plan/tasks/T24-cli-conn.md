@@ -4,7 +4,7 @@ title: "CLI and the daemon: connecting, starting, replacing, stopping, request l
 kind: code
 milestone: M3
 size: L
-status: todo
+status: done
 depends_on: [T06, T17, T18, T41]
 requirements: [CLI-7, CLI-9, CLI-8, CLI-10, OPS-4:the-cli-also-tries-the, OPS-5:a-spawned-daemon-uses-gh-s-login, OPS-9:the-log-file-is-rotated, U9]
 owns: [src/cli/conn/]
@@ -80,3 +80,9 @@ Unit tests in `src/cli/conn/`, on `TestClock`, a `ShortDir`, T43's `FakeSpawner`
 ## Open questions
 - CLI-7's values and rules, and CLI-9, are (proposal): build them as written. What a sandbox's refusal looks like isn't measured (docs/03 §6 item 1): `Probe::Denied` is `EACCES` and `EPERM`.
 - **Not said by the specs, built as Scope says, and reported to the planner:** that `stop` skips the status read; the 2 s after `SIGKILL`; `--no-spawn` with an older daemon; a `mode` that is neither word; that the second path isn't tried when the first doesn't answer.
+
+## Evidence
+- **2026-11-26**, branch `t24-cli-conn`, executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- `src/cli/conn/` (`mod.rs`, new `spawn.rs`, `stub.rs` under `cfg(test)`, `tests.rs`). `RealSpawner` moved to `spawn.rs`, re-exported at `cli::conn::`; added `Link::{version, mode}` and `Debug` on `Link`. **Checked by the orchestrator:** the crate's one `unsafe` is `pre_exec` in `spawn.rs`, allowed on that function with a comment; the spawned daemon's environment is cleared and given the `Env` without `GH_TOKEN`, `GITHUB_TOKEN`, `CLAUDE_CODE_MESSAGING_SOCKET` and `CLAUDE_CODE_MESSAGING_TOKEN`, with no `kill_on_drop`; signals go only to a lock holder that isn't PID 0, 1 or this process, and tests record them through `stop_with`.
+- `cargo test --features test-endpoint --lib cli::conn::`: 30 passed, run 30 times by the executor without a failure. `make verify` passes on main after the merge, the macOS check included. The real spawner, `setsid` and real signals are T36's.
+- Built as the brief says (to confirm in T36): `stop` connects without reading the status; 2 s after `SIGKILL`; `--no-spawn` keeps an older daemon with a warning; a `mode` other than the two words is kept; the second path isn't tried when the first doesn't answer; a held lock that can't be signalled waits out 5 s and 2 s and ends with exit 6 naming the holder. Retries inside `request` and `reconnect` drop their warnings (no `warn` in those signatures). Budget messages: "didn't answer on <socket> in the time left" (with the log's last lines) and "no daemon answered on <socket> in the time left".

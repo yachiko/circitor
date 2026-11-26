@@ -4,7 +4,7 @@ title: "M2: the daemon runs: start order, serving the socket, modes, signals, st
 kind: integration
 milestone: M2
 size: L
-status: todo
+status: in-progress
 depends_on: [T06, T07, T12, T16, T17, T18, T21, T22, T23, T46]
 requirements: [OPS-6, OPS-7, OPS-8, STA-11, API-17, API-14, TST-1, OPS-9:logged, OPS-5:the-token-is-read-after, NTF-5, NTF-10]
 owns: [src/daemon/run/, tests/m2_serve.rs]
