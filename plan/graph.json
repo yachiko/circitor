@@ -1383,11 +1383,11 @@
    "id": "T45",
    "title": "Fake session socket: what a Claude Code session's inbox looks like from outside",
    "kind": "test",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M3",
    "size": "S",
    "wave": 4,
-   "remaining": 7,
+   "remaining": 6,
    "depends_on": [
     "T04"
    ],
@@ -1449,11 +1449,11 @@
    "id": "T47",
    "title": "Notify routes: registering a subscription and cancelling it",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M2",
    "size": "M",
    "wave": 6,
-   "remaining": 5,
+   "remaining": 3,
    "depends_on": [
     "T09",
     "T41",
@@ -1584,11 +1584,11 @@
    "id": "T52",
    "title": "Follow-up to T09: a PR whose last refresh failed is due at the next poll (D12)",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M1",
    "size": "S",
    "wave": 4,
-   "remaining": 1,
+   "remaining": 0,
    "depends_on": [
     "T09"
    ],

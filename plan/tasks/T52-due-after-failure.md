@@ -4,7 +4,7 @@ title: "Follow-up to T09: a PR whose last refresh failed is due at the next poll
 kind: code
 milestone: M1
 size: S
-status: in-progress
+status: done
 depends_on: [T09]
 requirements: [POL-19]
 owns: [src/poller/cadence/]
@@ -39,3 +39,7 @@ T26 found that after a failed poll the backoff's successful try asks for none of
 
 ## Open questions
 - None: decided by the orchestrator (owner's rule of 2026-11-26).
+
+## Evidence
+- **2026-11-26**, branch `t52-due-after-failure`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- `src/poller/cadence/mod.rs` (`// POL-19, D12:` in `in_poll`) and `tests.rs` (`d12_a_failed_pr_is_due_at_the_next_poll`); T09's tests unchanged. **One-off `shares`, granted by the orchestrator:** `tests/m1_poll.rs`'s `m1_one_bad_answer` only (it pinned the pre-D12 retry): the try at 35 s now asks both failed PRs and clears their staleness; the poll at 65 s still asks both, due by their 30 s period. `--test m1_poll`: 8 passed, 3 runs. `make verify` passes on main after the merge (546 lib tests), the macOS check included.

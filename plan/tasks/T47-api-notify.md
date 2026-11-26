@@ -4,7 +4,7 @@ title: "Notify routes: registering a subscription and cancelling it"
 kind: code
 milestone: M2
 size: M
-status: in-progress
+status: done
 depends_on: [T09, T41, T46]
 requirements: [NTF-2, NTF-3, NTF-5, API-3]
 owns: [src/api/notify/]
@@ -90,3 +90,8 @@ Unit tests in `src/api/notify/`, through `tower::ServiceExt::oneshot` on `api::r
 - **NTF-2's values, its 64 and its 32 are (proposal).** Built as written; the numbers are T46's and T15's constants.
 - **Plan decision P15, built:** a client that goes away after `register` leaves its subscription in place.
 - **`no_session`'s message** names the system's error (API-3): pass `look`'s and `RegisterError::NoSession`'s text on, and add nothing from the request but the word `socket`.
+
+## Evidence
+- **2026-11-26**, branch `t47-api-notify`, executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- `src/api/notify/mod.rs` and a new `tests.rs`. The token goes straight into a `SessionToken`; its error names the key, never the value. `cargo test --features test-endpoint --lib api::notify::`: 15 passed, `ntf5_never_hot` and `ntf9_token_not_in_answers` among them. `make verify` passes on main after the merge (575 lib tests), the macOS check included.
+- Choices: every body value but `token` is read as JSON and checked by hand, so each error names its key (serde's word "field" becomes "body key"); a `null` for any key but `token` is `bad_request`; `auth`'s message is the poller's; the answer's `cursor` is the window's on the evaluation's view; `Looked::Missing` reads "nothing is at its path". `Stopping` parks and never answers; untested here (T49).
