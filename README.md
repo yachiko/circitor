@@ -1,5 +1,7 @@
 # circitor
 
+*circitor* (Latin): in the late Roman army, the soldier who went round the sentry posts and reported what he found.
+
 A small local daemon that watches your GitHub pull requests, so coding agents can ask it instead of GitHub. One poller serves every agent session, which keeps them off your API quota.
 
 **Status:** facts gathered, the specs drafted and hardened (draft 0.2), and the implementation plan written. The code is being built to that plan; nothing has run on a Mac yet.
