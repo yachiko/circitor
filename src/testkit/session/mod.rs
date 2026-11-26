@@ -298,21 +298,29 @@ impl FakeSession {
     pub fn accept_and_never_read(&self) {
         let mut s = self.inner.lock();
         self.inner.pump(&mut s);
-        if s.listener.is_none() || s.mode == Mode::QueueFull {
+        if s.listener.is_none() {
             self.reopen(&mut s, None);
+        } else if s.mode == Mode::QueueFull {
+            unfill(&mut s);
         }
         s.mode = Mode::NeverRead;
     }
 
     /// It listens without accepting until its backlog is full, so a connect fails at once.
     ///
-    /// A new socket file on the same path, listening with a backlog of 0. The fake fills the backlog with
+    /// The same socket (same device and inode): it stops accepting and calls `listen` again with a backlog
+    /// of 0, which sets the backlog of a socket already listening on Linux. The fake fills the queue with
     /// connections of its own (one or two on Linux), from a non-blocking connect, until one gets `EAGAIN`,
-    /// so this needs the tokio runtime (every test has it).
+    /// so this needs the tokio runtime (every test has it). After `refuse` or `vanish` there is no
+    /// listener, and it makes a new one first.
     pub fn queue_full(&self) {
         let mut s = self.inner.lock();
         self.inner.pump(&mut s);
-        self.reopen(&mut s, Some(0));
+        if s.listener.is_none() {
+            self.reopen(&mut s, None);
+        }
+        s.fillers.clear();
+        relisten(s.listener.as_ref().expect("a listener"), 0);
         s.mode = Mode::QueueFull;
         for _ in 0..1_000_000 {
             match connect_now(&self.inner.path) {
@@ -324,14 +332,18 @@ impl FakeSession {
         panic!("the fake session socket's backlog never filled");
     }
 
-    /// Back to recording, on the same path. After `vanish` and `queue_full` it's a new socket file: another
-    /// inode. After `refuse` too, in this build: std can't listen again on a closed listener's file, so the
+    /// Back to recording, on the same path. From `queue_full` it's the same socket: `listen` again with the
+    /// old backlog, the fill connections dropped. After `vanish` it's a new socket file: another inode.
+    /// After `refuse` too, in this build: std can't listen again on a closed listener's file, so the
     /// stale file is replaced.
     pub fn restore(&self) {
         let mut s = self.inner.lock();
         self.inner.pump(&mut s);
-        if s.mode != Mode::Recording {
-            self.reopen(&mut s, None);
+        match s.mode {
+            Mode::Recording => {}
+            Mode::QueueFull => unfill(&mut s),
+            _ if s.mode == Mode::NeverRead && s.listener.is_some() => {}
+            _ => self.reopen(&mut s, None),
         }
         s.mode = Mode::Recording;
     }
@@ -353,6 +365,38 @@ impl Drop for FakeSession {
         s.fillers.clear();
         s.conns.clear();
         let _ = std::fs::remove_file(&self.inner.path);
+    }
+}
+
+/// `listen` again on a socket already listening: on Linux it sets the backlog again.
+fn relisten(listener: &UnixListener, backlog: i32) {
+    use nix::sys::socket::{Backlog, listen};
+    let backlog = if backlog < 0 {
+        Backlog::MAXCONN
+    } else {
+        Backlog::new(backlog).expect("a backlog")
+    };
+    listen(listener, backlog).expect("listen again on the fake session socket");
+}
+
+/// Leaves `queue_full`: the old backlog again, the fill connections dropped, and whatever of them is
+/// still queued accepted and thrown away so it isn't read as a notice.
+fn unfill(s: &mut State) {
+    let Some(listener) = s.listener.as_ref() else {
+        return;
+    };
+    relisten(listener, -1);
+    s.fillers.clear();
+    loop {
+        match listener.accept() {
+            Ok(_) => {}
+            Err(e)
+                if matches!(
+                    e.kind(),
+                    ErrorKind::Interrupted | ErrorKind::ConnectionAborted
+                ) => {}
+            Err(_) => break,
+        }
     }
 }
 
@@ -600,7 +644,13 @@ mod tests {
     #[tokio::test]
     async fn tst16_queue_full() {
         let (_dir, clock, session) = setup();
+        let id = |s: &FakeSession| {
+            let m = std::fs::metadata(s.path()).unwrap();
+            (m.dev(), m.ino())
+        };
+        let before = id(&session);
         session.queue_full();
+        assert_eq!(id(&session), before);
         let err = connect_now(session.path())
             .err()
             .expect("a full queue fails at once");
@@ -610,6 +660,11 @@ mod tests {
         assert!(used < 10, "{used} descriptors used to fill the backlog");
         clock.settle().await;
         assert!(session.lines().is_empty());
+        session.restore();
+        assert_eq!(id(&session), before);
+        post(&session, MSG);
+        clock.settle().await;
+        assert_eq!(session.notices().len(), 1);
     }
 
     // TST-16

@@ -612,7 +612,6 @@ async fn scn_notify_session_gone_taken_over() {
 // TST-8: notify-session-gone
 // NTF-6: a connect that fails at once is one failed post, and never tried again.
 #[tokio::test]
-#[ignore = "T45: queue_full rebinds the path (another inode), so NTF-6's look sees the session gone and the post never fails with reason=failed"]
 async fn scn_notify_session_gone_full_queue() {
     let (h, pr, from) = registered_merged().await;
     h.session().queue_full();
@@ -627,7 +626,8 @@ async fn scn_notify_session_gone_full_queue() {
     assert_eq!(subs(&h).await, 0);
     adv(&h, 600).await;
     assert_eq!(log_count(&h, &["notice not posted"]), 1);
-    assert!(h.session().notices().is_empty());
+    // the registration's confirmation is the one notice (updated for D16, T57)
+    assert_eq!(h.session().notices().len(), 1);
     polls_keep(&h, from, INTERVAL);
     h.finish().await;
 }
