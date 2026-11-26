@@ -182,3 +182,86 @@ fn sta11_codes() {
         assert!(e.to_string().contains("/tmp/ct/circitor.sock"), "{e}");
     }
 }
+
+// OPS-7: a second request from outside `Running` (as `POST /v1/shutdown` makes it) ends a stop
+// under way within 100 ms of the clock, with the `second_request` line, and the status is 0.
+#[cfg(feature = "test-endpoint")]
+#[tokio::test]
+async fn ops7_second_request_from_the_handle() {
+    use super::start;
+    use crate::clock::{Clock, SharedClock, TestClock, Time};
+    use crate::config::Config;
+    use crate::daemon::{Deps, Mode, StopCause};
+    use crate::github::fake::{ScriptedGitHub, answers};
+    use crate::github::{Answer, Found};
+    use crate::state::RealFs;
+    use crate::testkit::TEST_VERSION;
+    use crate::token::fake::FakeTokenSource;
+    use crate::transport::RealProbe;
+
+    let dir = ShortDir::new();
+    let clock = TestClock::new(Time::parse("2026-11-24T22:00:00Z").unwrap());
+    let shared: SharedClock = clock.clone();
+    let sink = BufferSink::default();
+    let github = ScriptedGitHub::new(|q| {
+        Ok(Answer {
+            rate: Some(answers::rate(1, 4_999)),
+            date: None,
+            found: q.find.as_ref().map(|_| Found {
+                login: "octo".to_string(),
+                prs: Vec::new(),
+                next: None,
+            }),
+            nodes: Vec::new(),
+            lookup: None,
+        })
+    });
+    let state_dir = dir.path().join("state");
+    let paths = crate::config::Paths {
+        config_file: dir.path().join("config.toml"),
+        state_file: state_dir.join("state.json"),
+        lock_file: state_dir.join("circitor.lock"),
+        log_file: state_dir.join("circitor.log"),
+        socket: state_dir.join("circitor.sock"),
+        socket_dir: None,
+        state_dir,
+    };
+    let deps = Deps {
+        clock: shared.clone(),
+        activity: clock.activity(),
+        github,
+        token_source: FakeTokenSource::new(shared.clone()),
+        fs: Arc::new(RealFs),
+        probe: Arc::new(RealProbe { clock: shared }),
+        poster: crate::notify::fake::RecordingPoster::new(clock.clone()),
+        paths,
+        config: Config::default(),
+        mode: Mode::Spawned,
+        version: TEST_VERSION.to_string(),
+        log: Arc::new(sink.clone()),
+        level: Level::Info,
+        seed: 7,
+        signals: false,
+        stop_delay: Some(Duration::from_secs(10)),
+    };
+    let mut running = start(deps).await.unwrap_or_else(|e| panic!("start: {e}"));
+    running.stop(StopCause::Test);
+    clock.advance(Duration::from_secs(1)).await;
+    assert_eq!(running.exit_status(), None);
+    // T22's route: the handle itself, with no `Notify`.
+    let outside = running.stop.clone();
+    let before = clock.mono();
+    outside.request(StopCause::Request);
+    clock.advance(Duration::from_millis(100)).await;
+    assert_eq!(running.exited().await, 0);
+    assert!(
+        clock.mono().since(before) <= Duration::from_millis(100),
+        "late"
+    );
+    assert!(
+        sink.contents()
+            .contains("warn stop deadline cause=second_request"),
+        "{}",
+        sink.contents()
+    );
+}

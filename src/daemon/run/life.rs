@@ -21,6 +21,9 @@ use crate::state::{Saver, Store};
 pub(super) const STOP_DEADLINE: Duration = Duration::from_secs(5);
 /// STA-11: how often the socket and the lock file are checked.
 pub(super) const CHECK_EVERY: Duration = Duration::from_secs(60);
+/// OPS-7: how often a stop under way looks for a second request from a caller that has no `Notify`
+/// (T22's `shutdown` route asks the `StopHandle` directly).
+pub(super) const SECOND_LOOK: Duration = Duration::from_millis(100);
 
 /// What the stop works on. The lock and the socket are taken out as the stop lets go of them.
 pub(super) struct Life {
@@ -52,6 +55,17 @@ fn cause_words(cause: StopCause) -> String {
     }
 }
 
+/// OPS-7: resolves once the stop has been asked for twice. Parked between looks (no `Busy` held across
+/// the sleep); it ends with the sequence, which drops it.
+async fn second_request(clock: &SharedClock, stop: &StopHandle) {
+    loop {
+        sleep(clock, SECOND_LOOK).await;
+        if stop.times() >= 2 {
+            return;
+        }
+    }
+}
+
 impl Life {
     /// The life's task: parked until a stop is asked for, then OPS-7's sequence, once.
     pub(super) async fn run(mut self) {
@@ -62,11 +76,14 @@ impl Life {
         self.logger
             .info(format_args!("stop {}", cause_words(cause)));
         let second = self.second.clone();
+        let stop = self.stop.clone();
         let clock = self.clock.clone();
         // OPS-7: 5 s for the whole stop; a second request during it does the same at once.
         let cut = tokio::select! {
             done = timeout(&clock, STOP_DEADLINE, self.sequence(cause, busy)) => done.is_err(),
             () = second.notified() => true,
+            // OPS-7: a second request of any kind, e.g. a `POST /v1/shutdown`.
+            () = second_request(&clock, &stop) => true,
         };
         let busy = self.activity.begin();
         if cut {
