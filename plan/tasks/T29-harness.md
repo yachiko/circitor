@@ -4,7 +4,7 @@ title: "M3: the harness, and the CLI against a running daemon"
 kind: integration
 milestone: M3
 size: L
-status: in-progress
+status: done
 depends_on: [T07, T20, T25, T26, T27, T28, T45]
 requirements: [TST-5, TST-11, TST-16]
 owns: [src/testkit/harness/, tests/m3_cli.rs]
@@ -93,3 +93,10 @@ Everything exists: the daemon (`daemon::run::start`, T28) sending through the re
 - **"Every API response" (TST-11):** a command's answers pass inside `cli::run`, where the harness can't see them. `plan/contracts/testkit.md` settles what's swept: every `Output`, every `api_raw` answer, and three answers fetched at `finish()`.
 - **TST-5 gives the daemon its paths "directly, not through `HOME`"**, while the CLI finds them through its `Env`. Built: XDG variables under `/tmp`, resolved once for both.
 - Whether tokio's timers count a suspend (docs/04 §8 item 6) doesn't touch the harness: the test clock plays both (TST-4).
+
+## Evidence
+- **2026-11-26**, branch `t29-harness`, executor on **Opus, medium**; reviewed and merged by the orchestrator. **M3's checkpoint.**
+- `src/testkit/harness/` (`mod.rs`, new `command.rs`, `spawn.rs`, `raw.rs`) and `tests/m3_cli.rs`. **Checked by the orchestrator:** the harness builds every `Env` itself, setting `CLAUDE_CODE_MESSAGING_SOCKET` to its own `FakeSession` in the `ShortDir` and the token to `MARKER_SESSION_TOKEN`; it never reads the process's environment; the daemon's `RealPoster` can only post to that fake socket.
+- `cargo test --features test-endpoint --test m3_cli`: 26 passed, every test ending in a passing sweep; the executor ran it 11 times (3 under `--test-threads=64`), the orchestrator 5 more after rebasing: 0 failures. `make verify` passes on main after the merge (576 lib, 26 m2_serve, 26 m3_cli, 8 m1_poll, 17 fake_github, 9 golden), the macOS check included. No `LocalSet` needed.
+- Names chosen (documented in the module): `Opts` builders, `Harness::{take_hold, spawner, spawns, dir, restart_as}`, `Cmd` with `.cwd/.env/.var/.without/.version/.spawner/.interrupt`, `Bg::{is_done, cancel}` and `.await`, `spawner_bad_config`, `spawner_exits_ok`, `spawner_never_binds`, `SEED`, `START`.
+- Choices: a daemon the harness's spawner starts is `spawned` at `TEST_VERSION` (`Opts::version`/`mode` apply to daemons the harness starts itself); the spawner's task holds `Busy` across `daemon::start`; `finish()` and `stop()` advance the clock in 100 ms steps when settled and not done, up to 60 s; the sweep also reads the on-disk `circitor.log` and searches notices for the tokens too.

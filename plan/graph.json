@@ -825,7 +825,7 @@
    "milestone": "M2",
    "size": "L",
    "wave": 6,
-   "remaining": 6,
+   "remaining": 3,
    "depends_on": [
     "T21"
    ],
@@ -854,7 +854,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 6,
-   "remaining": 6,
+   "remaining": 3,
    "depends_on": [
     "T07",
     "T20",
@@ -963,11 +963,11 @@
    "id": "T29",
    "title": "M3: the harness, and the CLI against a running daemon",
    "kind": "integration",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M3",
    "size": "L",
    "wave": 7,
-   "remaining": 6,
+   "remaining": 3,
    "depends_on": [
     "T07",
     "T20",
@@ -1387,7 +1387,7 @@
    "milestone": "M3",
    "size": "S",
    "wave": 4,
-   "remaining": 6,
+   "remaining": 3,
    "depends_on": [
     "T04"
    ],
