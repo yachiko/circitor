@@ -1,0 +1,1 @@
+circitor: the daemon is stopping; notify for yachiko/circitor#12 is cancelled. Ask again: circitor notify yachiko/circitor#12 --until checks-done --sha 1a2b3c4 --since k3x9q2mz-418

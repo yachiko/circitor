@@ -1,0 +1,1 @@
+circitor notify yachiko/circitor#12 --until checks-done --sha 1a2b3c4 --fail-fast --for 3600 --since k3x9q2mz-418

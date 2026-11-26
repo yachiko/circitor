@@ -1,0 +1,1 @@
+circitor: watching yachiko/circitor#12 until checks-done on 1a2b3c4 after k3x9q2mz-400 fail-fast kind checks,review since k3x9q2mz-418, for 1d. If you can read this, notices reach this session.
