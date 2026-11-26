@@ -164,7 +164,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | TST-1 |  | T01, T07, T28 |
 | TST-2 |  | T04 |
 | TST-3 |  | parts: T14 (by-default-its-world-behaves); T14 (it-answers-the-queries-circitor-sends); T14 (it-parses-each-query-and); T20 (it-can-be-told-to-misbehave); T20 (it-fails-the-test-if); T20 (it-records-every-request-with-its-time); T20 (the-test-sets-remaining-and) |
-| TST-4 |  | T04 |
+| TST-4 |  | T04, T62 |
 | TST-5 |  | T29 |
 | TST-6 |  | T34 |
 | TST-7 |  | T10, T35, T46, T48 |

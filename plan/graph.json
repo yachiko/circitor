@@ -939,7 +939,8 @@
    "dependents": [
     "T29",
     "T36",
-    "T51"
+    "T51",
+    "T62"
    ],
    "requirements": [
     "OPS-6",
@@ -1583,7 +1584,9 @@
    "depends_on": [
     "T28"
    ],
-   "dependents": [],
+   "dependents": [
+    "T62"
+   ],
    "requirements": [
     "OPS-7"
    ],
@@ -1837,6 +1840,29 @@
    ],
    "shares": [],
    "file": "plan/tasks/T61-session-socket-macos.md"
+  },
+  {
+   "id": "T62",
+   "title": "Follow-up to T28 and T51: an answer waiting for room in the socket is work in flight",
+   "kind": "code",
+   "status": "done",
+   "milestone": "M5",
+   "size": "S",
+   "wave": 8,
+   "remaining": 0,
+   "depends_on": [
+    "T28",
+    "T51"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-4"
+   ],
+   "owns": [
+    "src/daemon/run/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T62-response-in-flight.md"
   }
  ],
  "dropped_tasks": [],
@@ -1909,7 +1935,8 @@
    "T34",
    "T35",
    "T39",
-   "T49"
+   "T49",
+   "T62"
   ],
   [
    "T40",
