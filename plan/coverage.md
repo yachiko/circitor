@@ -144,7 +144,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | OPS-4 | proposal | parts: T06 (a-path-over-103-bytes); T06 (circitor-socket-overrides-the-path); T06 (linux); T06 (macos); T17 (a-socket-answers-when-get); T18 (the-socket-s-mode-is-0600); T24 (the-cli-also-tries-the) |
 | OPS-5 | proposal | parts: T12 (a-gh-path-with-a); T12 (a-read-has-three-outcomes); T12 (the-token-is-held-in-memory-only); T13 (a-read-that-ends-without); T13+T28 (the-token-is-read-after); T24 (a-spawned-daemon-uses-gh-s-login) |
 | OPS-6 |  | T28 |
-| OPS-7 |  | T28 |
+| OPS-7 |  | T28, T51 |
 | OPS-8 |  | T28 |
 | OPS-9 |  | T04; parts: T21 (circitor-log-debug-adds-one-line-per-request-to); T21+T28+T46 (logged); T24 (the-log-file-is-rotated) |
 | OPS-10 |  | T19, T39 |

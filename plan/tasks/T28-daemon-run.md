@@ -4,7 +4,7 @@ title: "M2: the daemon runs: start order, serving the socket, modes, signals, st
 kind: integration
 milestone: M2
 size: L
-status: in-progress
+status: done
 depends_on: [T06, T07, T12, T16, T17, T18, T21, T22, T23, T46]
 requirements: [OPS-6, OPS-7, OPS-8, STA-11, API-17, API-14, TST-1, OPS-9:logged, OPS-5:the-token-is-read-after, NTF-5, NTF-10]
 owns: [src/daemon/run/, tests/m2_serve.rs]
@@ -115,3 +115,13 @@ Unit tests in `src/daemon/run/`, on the inner function and `deps_from`, which ne
 ## Open questions
 - **No holder line after the patience** (STA-11: "counts as no path"). Build: an error, `code()` 1, for both modes.
 - OPS-8 doesn't count a `status` request (API-5). `exit_after`'s default is (proposal). How tokio's timers behave across a suspend isn't checked (docs/04 §8 item 6).
+
+Follow-ups: T51
+
+## Evidence
+- **2026-11-26**, branch `t28-daemon-run`, executor on **Opus, medium**; reviewed and merged by the orchestrator. **M2's checkpoint.**
+- `src/daemon/run/` (`mod.rs`, new `start.rs`, `life.rs`, `serve.rs`, `entry.rs`, `tests.rs`) and `tests/m2_serve.rs`. `StartError` gained its variants. **Checked by the orchestrator:** `Env::from_process` and `RealPoster` appear only on the real `main` path; tests build their own deps, and `run_main` tests pass an `Env` they built and stop before `start`.
+- `cargo test --features test-endpoint --lib daemon::run::`: 6 passed; `--test m2_serve`: 26 passed, run 5 times by the orchestrator after rebasing: 0 failures. `make verify` passes on main after the merge (491 lib tests, 26 m2_serve, 17 fake_github, 9 golden), the macOS check included.
+- Choices: `deps_from(spawned, &Env, Arc<dyn LogSink>, &Logger)` also does `resolve` and `config::load`; a second request logs `warn stop deadline cause=second_request`; `log level unknown` doesn't carry the value; the test rig gives the first poll 1 s after `start` (POL-2); in step 6 a socket answering `spawned` under a foreground lock gets one shutdown and is polled every 100 ms until the 15 s; no holder line after the patience is `StartError::NoHolder`, code 1, in both modes.
+- **Gap, turned into follow-up T51 (orchestrator's decision):** a second `POST /v1/shutdown` during the stop isn't noticed (only `Running::stop` and the signal loop fire the second-request `Notify`), against OPS-7's "a second request during it ends it at once".
+- Not run here: real signals, the real `main` and its panic hook (T36); macOS only compiled.

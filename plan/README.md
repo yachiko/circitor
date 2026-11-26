@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **50 tasks:** 17 todo, 3 in-progress, 28 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **51 tasks:** 17 todo, 3 in-progress, 29 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -105,12 +105,13 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 6 | [T25](tasks/T25-engine-demand.md) | Poller engine: hot PRs, forced refreshes, reading through, track, the mergeable follow-up | code | L | done | T21 |
 | 6 | [T26](tasks/T26-m1-poll.md) | M1: the real client against the fake GitHub, polling end to end | integration | M | in-progress | T07, T20, T21 |
 | 6 | [T27](tasks/T27-cli-commands.md) | CLI commands: run, each command, the wait's deadline and reconnect, exit codes | code | L | in-progress | T10, T11, T24 |
-| 6 | [T28](tasks/T28-daemon-run.md) | M2: the daemon runs: start order, serving the socket, modes, signals, stop, idle exit | integration | L | in-progress | T06, T07, T12, T16, T17, T18, T21, T22, T23, T46 |
+| 6 | [T28](tasks/T28-daemon-run.md) | M2: the daemon runs: start order, serving the socket, modes, signals, stop, idle exit | integration | L | done | T06, T07, T12, T16, T17, T18, T21, T22, T23, T46 |
 | 6 | [T47](tasks/T47-api-notify.md) | Notify routes: registering a subscription and cancelling it | code | M | todo | T09, T41, T46 |
 | 7 | [T29](tasks/T29-harness.md) | M3: the harness, and the CLI against a running daemon | integration | L | todo | T07, T20, T25, T26, T27, T28, T45 |
 | 7 | [T36](tasks/T36-real-processes.md) | M4: real processes: spawning, two CLIs, upgrades, signals, files and permissions | integration | L | todo | T20, T27, T28 |
-| 7 | [T42](tasks/T42-engine-pr-errors.md) | Poller engine: a PR's errors: gone, pr_failing, and its one log line | code | M | todo | T25 |
+| 7 | [T42](tasks/T42-engine-pr-errors.md) | Poller engine: a PR's errors: gone, pr_failing, and its one log line | code | M | in-progress | T25 |
 | 7 | [T48](tasks/T48-cli-notify.md) | CLI: the notify command | code | M | todo | T27, T46 |
+| 7 | [T51](tasks/T51-second-shutdown.md) | Follow-up to T28: a second shutdown request during a stop ends it at once | code | S | todo | T28 |
 | 8 | [T30](tasks/T30-scenarios-checks.md) | Scenarios: checks and settling | test | L | todo | T29 |
 | 8 | [T31](tasks/T31-scenarios-waits.md) | Scenarios: a PR's life and waits | test | L | todo | T29, T42 |
 | 8 | [T32](tasks/T32-scenarios-tracking.md) | Scenarios: tracking and polling | test | L | todo | T29, T42 |
@@ -127,7 +128,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 <!-- plan:critical -->
 T01 (S) → T02 (L) → T05 (L) → T15 (L) → T21 (L) → T28 (L) → T36 (L) → T39 (M) → T40 (M)
 
-Weight 23 of 115 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
+Weight 23 of 116 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
 <!-- /plan:critical -->
 
 The path runs through the model, the store and the engine's poll, each an L task that the next needs for real, then the daemon's wiring and the real-process tests. The engine's demand side (T25, T42), the routes and waiters (T22, T23), the CLI (T10, T11, T24, T27) and the fake GitHub (T14, T20) run beside it. **Notify adds no weight to it:** T28 needs the notifier (T46), which is as long as the engine's poll and runs beside it, on T15, T10 and T44; the notify routes, the command and the scenarios (T47, T48, T49) are off the path. That's why the conditions are a task of their own (P16): had the notifier waited for the wait route, the path would be three longer. The harness (T29) and the scenarios end one L task later than T36; the owner's T39 and T40 close the path. Nothing on it waits for an implementation where a contract would do.
@@ -164,7 +165,7 @@ flowchart LR
   T25["T25 Poller engine: hot PRs, forced re…"]:::done
   T26["T26 M1: the real client against the f…"]:::active
   T27["T27 CLI commands: run, each command,…"]:::active
-  T28["T28 M2: the daemon runs: start order,…"]:::active
+  T28["T28 M2: the daemon runs: start order,…"]:::done
   T29["T29 M3: the harness, and the CLI agai…"]
   T30["T30 Scenarios: checks and settling"]
   T31["T31 Scenarios: a PR's life and waits"]
@@ -178,7 +179,7 @@ flowchart LR
   T39["T39 Owner: set up the release tool, p…"]:::manual
   T40["T40 Owner: the acceptance checks on a…"]:::manual
   T41["T41 Golden files: the API's and the m…"]:::done
-  T42["T42 Poller engine: a PR's errors: gon…"]
+  T42["T42 Poller engine: a PR's errors: gon…"]:::active
   T43["T43 The API's shared parts and the si…"]:::done
   T44["T44 Conditions: checking and evaluati…"]:::done
   T45["T45 Fake session socket: what a Claud…"]
@@ -187,6 +188,7 @@ flowchart LR
   T48["T48 CLI: the notify command"]
   T49["T49 Scenarios: notify"]
   T50["T50 Follow-up to T01: check-macos fro…"]:::done
+  T51["T51 Follow-up to T28: a second shutdo…"]
   T01 --> T02
   T01 --> T03
   T02 --> T04
@@ -286,6 +288,7 @@ flowchart LR
   T47 --> T49
   T48 --> T49
   T01 --> T50
+  T28 --> T51
   classDef done fill:#d8f0dc,stroke:#2f7d3b
   classDef active fill:#fff1c2,stroke:#a07800
   classDef blocked fill:#f8d7da,stroke:#a12a35
@@ -306,7 +309,7 @@ Paths that pass from one task to a later one (`owns` of ordered tasks):
 |---|---|
 | `Makefile` | T01 → T50 |
 | `rust-toolchain.toml` | T01 → T50 |
-| `src/` | T01 → T02 → T04 → T05 → T06 → T07 → T08 → T09 → T10 → T11 → T12 → T43 → T13 → T14 → T15 → T16 → T17 → T18 → T20 → T21 → T22 → T44 → T23 → T24 → T25 → T27 → T46 → T28 → T45 → T29 → T42 → T47 → T48 |
+| `src/` | T01 → T02 → T04 → T05 → T06 → T07 → T08 → T09 → T10 → T11 → T12 → T43 → T13 → T14 → T15 → T16 → T17 → T18 → T20 → T21 → T22 → T44 → T23 → T24 → T25 → T27 → T46 → T28 → T45 → T29 → T42 → T47 → T48 → T51 |
 | `src/api/condition.rs` | T02 → T44 |
 | `src/api/notify/` | T02 → T47 |
 | `src/api/params.rs` | T02 → T43 |
@@ -326,7 +329,7 @@ Paths that pass from one task to a later one (`owns` of ordered tasks):
 | `src/clock/` | T02 → T04 |
 | `src/config/` | T02 → T06 |
 | `src/daemon/instance/` | T02 → T18 |
-| `src/daemon/run/` | T02 → T28 |
+| `src/daemon/run/` | T02 → T28 → T51 |
 | `src/github/client/` | T02 → T07 |
 | `src/github/fake.rs` | T02 → T43 |
 | `src/lib.rs` | T01 → T02 |
@@ -497,6 +500,7 @@ Also the owner's: confirming the plan decisions above before T01 starts (P1 to P
 
 ## Change log
 
+- 2026-11-26: **M2 reached (T28).** New follow-up **T51** (orchestrator's decision): a second `POST /v1/shutdown` during a stop must end it at once (OPS-7), which T28's stop didn't notice. Depends on T28; owns `src/daemon/run/`.
 - 2026-11-26: **D11, what `refresh` refreshes (owner's answer to T21's question).** A forced poll refreshes every tracked PR, whatever its period. Written into POL-15 and `specs/decisions.md`; T25 (todo) builds it, behind one flag in T21's poll, with `d11_forced_poll_refreshes_every_pr`. **From now on the orchestrator decides open questions by its own recommendation and records each** (owner, 2026-11-26): in `specs/decisions.md` when a spec changes, here otherwise.
 - 2026-11-26: **D10, the socket's mode (contract change, daemon seam).** T18 found that binding under a umask of 0177 changes the whole process's umask, so a directory another thread made meanwhile came out 0600 (a config test failed with `PermissionDenied`). The owner chose: bind at a temporary name as long as the socket's own, `chmod` 0600, rename into place, never touching the umask. Written into OPS-4, STA-12, `specs/decisions.md` (D10) and `contracts/daemon.md`; T18, then in review, was sent the change. No task added.
 - 2026-11-26: **`check-macos` checks and no longer links.** After T02, the macOS binary links Apple's `Security` and `CoreFoundation` frameworks (through `rustls-platform-verifier`); zig doesn't ship them, so `cargo zigbuild` failed at the link. It's now `cargo check` with zig as the C compiler (T50's Evidence). P9 says compile-checked again.

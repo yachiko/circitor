@@ -4,7 +4,7 @@ title: "Poller engine: a PR's errors: gone, pr_failing, and its one log line"
 kind: code
 milestone: M2
 size: M
-status: todo
+status: in-progress
 depends_on: [T25]
 requirements: [POL-21, POL-24, MOD-11]
 owns: [src/poller/engine/]
