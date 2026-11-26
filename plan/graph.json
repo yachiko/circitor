@@ -10,7 +10,7 @@
    "milestone": "M1",
    "size": "S",
    "wave": 1,
-   "remaining": 11,
+   "remaining": 10,
    "depends_on": [],
    "dependents": [
     "T02",
@@ -47,7 +47,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 2,
-   "remaining": 11,
+   "remaining": 10,
    "depends_on": [
     "T01"
    ],
@@ -109,7 +109,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 11,
+   "remaining": 10,
    "depends_on": [
     "T02"
    ],
@@ -450,7 +450,7 @@
    "milestone": "M1",
    "size": "L",
    "wave": 4,
-   "remaining": 11,
+   "remaining": 8,
    "depends_on": [
     "T02",
     "T41"
@@ -630,11 +630,11 @@
    "id": "T20",
    "title": "Fake GitHub: the HTTP server, faults, rate-limit controls, the rules that fail a test",
    "kind": "test",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M1",
    "size": "L",
    "wave": 5,
-   "remaining": 11,
+   "remaining": 8,
    "depends_on": [
     "T04",
     "T14"
@@ -877,7 +877,7 @@
    "id": "T27",
    "title": "CLI commands: run, each command, the wait's deadline and reconnect, exit codes",
    "kind": "code",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M3",
    "size": "L",
    "wave": 6,
@@ -1260,7 +1260,7 @@
    "milestone": "M1",
    "size": "M",
    "wave": 3,
-   "remaining": 11,
+   "remaining": 10,
    "depends_on": [
     "T02"
    ],

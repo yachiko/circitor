@@ -4,7 +4,7 @@ title: "CLI commands: run, each command, the wait's deadline and reconnect, exit
 kind: code
 milestone: M3
 size: L
-status: todo
+status: in-progress
 depends_on: [T10, T11, T24]
 requirements: [CLI-4, CLI-5, CLI-6:without-timeout, CLI-6:one-deadline-for-the-whole-command, CLI-6:sigint-and-sigterm-end-it-at-once, CLI-7:every-request-has-a-limit, CLI-8, CLI-9:a-bad-request-or-unknown-route-from, CLI-10, CLI-2, U10]
 owns: [src/cli/commands/]

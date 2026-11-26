@@ -4,7 +4,7 @@ title: "Fake GitHub: the HTTP server, faults, rate-limit controls, the rules tha
 kind: test
 milestone: M1
 size: L
-status: in-progress
+status: done
 depends_on: [T04, T14]
 requirements: [TST-3:it-can-be-told-to-misbehave, TST-3:the-test-sets-remaining-and, TST-3:it-fails-the-test-if, TST-3:it-records-every-request-with-its-time, TST-11]
 owns: [src/testkit/server/, tests/fake_github.rs]
@@ -86,3 +86,9 @@ T14 gives the world, `execute`, the cost and the description of what a request a
 - **A 5xx's shape isn't measured** (docs/02 §5): a 500 and a 502 with a short text body.
 - **The settle seam is first exercised with real I/O in T26.** If the clock moves under a request there, or `advance` won't return under a hold, the fix is here, in T04 or in T21, and the orchestrator decides.
 - **`Executed` carries only the body, the cost and `node_ids`**; the log's other fields come from T14's description of the request. If T14 didn't provide one, report it: don't parse GraphQL here.
+
+## Evidence
+- **2026-11-26**, branch `t20-fake-github-server`, executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- `src/testkit/server/` (`mod.rs`, new `fault.rs`, `answer.rs`, `log.rs`, `serve.rs`) and `tests/fake_github.rs` (starts with the feature's `cfg`). Binds loopback only. `cargo test --features test-endpoint --test fake_github`: 17 passed; the executor ran it 30 times, then 40 times in 8 parallel loops under load, without a failure. `make verify` passes on main after the merge (469 lib tests, 17 fake_github, 9 golden), the macOS check included.
+- Choices: hyper's `http1::Builder` in its own accept loop, with hyper's own `Date` header off; `refuse()`/`listen()` close open connections and aren't counted as requests; a cleared hang closes its connection unanswered; `pr_error`/`field_error` set and clear the world's node or field error per request; the exhausted answer comes as 403 and as 200 (`LimitStatus`); additions `Hold::{arrived, is_holding}`, `held()`, `until_held(n)`, `broken()`, `take_broken()`, `addr()`, `with_date_header`, `accept_any`, `set_skew_behind`, `Request.{pid, fault, rejected, index}`; `Request`'s `Debug` hides the `Authorization` value.
+- **Open, for T26:** the end of a hung request is recorded when hyper sees the client close; settle doesn't wait for that (a hang is held by script), so a clock advanced before the close is seen could falsely break POL-2's gap. Not seen in the stress runs. If T26 hits it, the fix is here or in T04.
