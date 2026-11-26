@@ -4,7 +4,7 @@ title: "Poller cadence: tiers, periods, hot PRs, the forced-refresh windows and 
 kind: code
 milestone: M1
 size: M
-status: todo
+status: in-progress
 depends_on: [T02]
 requirements: [POL-10, POL-13, POL-14, POL-15, POL-11, MOD-16, NTF-5]
 owns: [src/poller/cadence/]

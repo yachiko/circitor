@@ -4,7 +4,7 @@ title: "Model: checks summary, status, settling, kept mergeability, new items, a
 kind: code
 milestone: M1
 size: L
-status: in-progress
+status: done
 depends_on: [T02]
 requirements: [MOD-1, MOD-2, MOD-4, MOD-5, MOD-6, MOD-7, MOD-8, MOD-9, MOD-10, MOD-11, MOD-12, MOD-14, MOD-15, POL-12, STA-5, TST-15, U4, U5]
 owns: [src/model/]
@@ -93,3 +93,9 @@ Unit tests in `src/model/`, as tables where the spec has a table (TST-15), no cl
 - **`more`** (POL-12) and **the order of items** (MOD-15) were this brief's interpretations; the specs now say the same. Build them as written above.
 - **A check run without `databaseId`, re-runs, `EXPECTED`, reopening** aren't measured (MOD-3, MOD-4, MOD-6; docs/02 §6). Build the spec as written.
 - MOD-1, MOD-2, MOD-4, MOD-6 to MOD-9, MOD-11's order and MOD-12 carry (proposal): values in constants, no other hedge.
+
+## Evidence
+- **2026-11-26**, branch `t05-model` (commit 03b39a5), executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- Only `src/model/` changed; no public signature, field or serde attribute changed. The new files sit in `src/model/merge/` (declared from `merge.rs`, since `src/model/mod.rs` is T02's and final): `derive.rs`, `diff.rs`, `items.rs`, `tests.rs`.
+- Every test the Acceptance names exists; `mod5_pr_c_timeline` replays `c1.log`'s six samples. `cargo test --features test-endpoint --lib model::`: 39 passed (executor). After rebasing onto T41 and T44: `make verify` passes in the worktree and on main (81 lib tests, 9 golden including `golden_types`), the macOS check included.
+- Readings the executor made: an open PR reading a `mergeable` other than `yes`, `no` or `unknown`, and a closed PR, clear `carry.known`; a `Known` record with no `settle_start` takes this read as its settle start. U4: `u4_the_record_knows_state_checks_review_and_mergeability`, `tst15_status`; U5: `u5_an_item_has_no_text`.

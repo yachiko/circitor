@@ -4,7 +4,7 @@ title: "The API's shared parts and the simple fakes"
 kind: infra
 milestone: M1
 size: M
-status: in-progress
+status: done
 depends_on: [T02]
 requirements: [API-1, CLI-13]
 owns: [src/api/request.rs, src/api/params.rs, src/api/respond.rs, src/api/router.rs, src/github/fake.rs, src/token/fake.rs, src/poller/fake.rs, src/cli/fake.rs]
@@ -86,3 +86,10 @@ Unit tests beside the code. Where one needs a clock, a ten-line `Clock` inside t
 - **The contracts are silent on:** `FakePoller`'s `read_through`, `track` and `poll_now` without a closure; `FakeTokenSource`'s `kind()` and `gh_path()`; `test_state`'s clock type; whether a body ends with a newline. Build the smallest thing that fits (a `github_unavailable` refusal, `Polled` at cost 0, `Gh` and `gh`, `Arc<TestClock>`, no trailing newline) and list each under "Contract changes needed".
 - **Don't re-derive STA-9 in `window`:** call `View::too_old`. A hand-built `View` in your tests works because its methods read only its fields.
 - STA-10's 500 is (proposal): `window` holds no constant of its own; the caller passes `limit`.
+
+## Evidence
+- **2026-11-26**, branch `t43-api-shared-fakes` (commit 3b02929), executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- Only the eight owned files changed; no public signature changed (`InFlight`'s private field only). `grep -rn 'unimplemented!("T43")' src` prints nothing. Every test the Acceptance names exists. No `gh`, network or session-socket use.
+- After rebasing onto T05: `make verify` passes in the worktree and on main (96 lib tests, 9 golden), the macOS check included; `cargo build --release` passes.
+- Choices where the contracts are silent (accepted): `FakePoller::idle_since` is `Mono::ZERO`; `read_through` and `track` without a closure refuse `github_unavailable`, `poll_now` is `Polled` at cost 0; `FakeTokenSource` defaults to `Gh` and `gh`, and reads the set value when its delay ends; `test_state` takes `Arc<TestClock>`, logger `Info` over a `BufferSink`; bodies have no trailing newline; the unknown-route message is `no such route`; `ScriptedGitHub` records a query before the hold; `Params::finish` names every parameter left; `Params::parse` skips empty segments and reads a bare name as `""`; numbers are digits only (`+5`, `-1` refused). The notify body is written key by key to keep NTF-2's order.
+- Not run here: `api::test_state`, `present`, the layer and the fallbacks through the real `router`: T22's to test, once T04 and T15 are in.

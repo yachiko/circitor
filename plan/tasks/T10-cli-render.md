@@ -4,7 +4,7 @@ title: "CLI text output: every line of list, show, changes, wait, status, refres
 kind: code
 milestone: M3
 size: L
-status: todo
+status: in-progress
 depends_on: [T02, T41]
 requirements: [CLI-3, CLI-6:the-outcome-line-says-what-the-wait-found, CLI-6:with-sha, CLI-6:a-wait-answered-before-its, CLI-6:a-truncated-failing-adds, CLI-6:on-a-timeout-it-prints, CLI-6:a-wait-that-ends-without, CLI-9:a-bad-request-or-unknown-route-from, CLI-5, TST-7, NTF-11:when-the-answer-is-already-known, NTF-11:otherwise-it-prints, NTF-11:a-registered-answer-with-reset, NTF-11:when-already]
 owns: [src/cli/render/, tests/golden/render/]

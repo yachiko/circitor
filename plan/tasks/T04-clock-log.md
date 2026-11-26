@@ -4,7 +4,7 @@ title: "Clock, test clock, work in flight, sleep detection, logger and warnings"
 kind: code
 milestone: M1
 size: M
-status: todo
+status: in-progress
 depends_on: [T02]
 requirements: [TST-4, TST-2, OPS-9, POL-26, POL-22]
 owns: [src/clock/, src/log/, src/status/]

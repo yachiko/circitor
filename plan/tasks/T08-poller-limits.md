@@ -4,7 +4,7 @@ title: "Poller limits: the quota count, the quota states and the backoff"
 kind: code
 milestone: M1
 size: M
-status: todo
+status: in-progress
 depends_on: [T02]
 requirements: [POL-17, POL-18, POL-23, POL-19, POL-25, POL-26]
 owns: [src/poller/limits/]
