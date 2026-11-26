@@ -4,7 +4,7 @@ title: "Follow-up to T45: queue_full keeps the socket's inode (D16)"
 kind: test
 milestone: M5
 size: S
-status: todo
+status: in-progress
 depends_on: [T45, T49]
 requirements: [TST-16, NTF-6]
 owns: [src/testkit/session/]

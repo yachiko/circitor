@@ -4,7 +4,7 @@ title: "Follow-up to T21: a finding page left unread at the limit raises pr_limi
 kind: code
 milestone: M5
 size: S
-status: in-progress
+status: done
 depends_on: [T42, T32]
 requirements: [STA-3, POL-7]
 owns: [src/poller/engine/]
@@ -35,3 +35,8 @@ T32's `scn_many_prs_205_warning` (TST-8 `many-prs`, 205 open PRs) is ignored: in
 
 ## Open questions
 - None: decided by the orchestrator (owner's rule of 2026-11-26).
+
+## Evidence
+- **2026-11-26**, branch `t56-limit-warning`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- **First pass** built D15 as first written (stop at the first page once every place is taken); the executor found a full set of 200 tracked PRs then never clears `pr_limit`, and the orchestrator **revised D15** (stop at the first page holding a found PR with no place). Built in `src/poller/engine/poll.rs` `steps`; `d15_an_unread_page_at_the_limit_raises_pr_limit` (205 PRs: pages 1 and 2 read, page 3's five left out, cleared once they close). T21's `pol15_goes_next` had one assertion on the old rule, changed with a comment; `scn_many_prs_205_warning` (T32's) un-ignored, its clear step waiting 345 s for the idle tier's next poll (the row's 45 s was a slip). `--lib poller::engine::`: 71 passed; `--test scn_tracking`: 42 passed, 0 ignored, twice.
+- **After the merge main's `make verify` failed on `ops17_no_cpu_between_polls`** (8 to 40 ticks): the test's window opens at a poll's first answer, and the new second finding page lands inside it. Reverting `poll.rs` made it pass 3 times; follow-up **T58** fixes the window.

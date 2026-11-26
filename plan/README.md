@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **57 tasks:** 4 todo, 3 in-progress, 48 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **58 tasks:** 4 todo, 3 in-progress, 49 done, 2 blocked. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -125,16 +125,17 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 8 | [T39](tasks/T39-release.md) | Owner: set up the release tool, publish to the tap | manual | M | todo | T19, T36 |
 | 8 | [T49](tasks/T49-scenarios-notify.md) | Scenarios: notify | test | L | done | T29, T42, T47, T48 |
 | 9 | [T40](tasks/T40-acceptance.md) | Owner: the acceptance checks on a Mac and on Linux | manual | M | todo | T19, T36, T39, T47, T48 |
-| 9 | [T56](tasks/T56-limit-warning.md) | Follow-up to T21: a finding page left unread at the limit raises pr_limit (D15) | code | S | in-progress | T42, T32 |
-| 9 | [T57](tasks/T57-queue-full-inode.md) | Follow-up to T45: queue_full keeps the socket's inode (D16) | test | S | todo | T45, T49 |
+| 9 | [T56](tasks/T56-limit-warning.md) | Follow-up to T21: a finding page left unread at the limit raises pr_limit (D15) | code | S | done | T42, T32 |
+| 9 | [T57](tasks/T57-queue-full-inode.md) | Follow-up to T45: queue_full keeps the socket's inode (D16) | test | S | in-progress | T45, T49 |
+| 10 | [T58](tasks/T58-cpu-window.md) | Follow-up to T36: OPS-17's CPU window starts after the poll's last request | test | S | todo | T36, T56 |
 <!-- /plan:waves -->
 
 ## Critical path
 
 <!-- plan:critical -->
-T01 (S) → T02 (L) → T05 (L) → T15 (L) → T21 (L) → T28 (L) → T36 (L) → T39 (M) → T40 (M)
+T01 (S) → T02 (L) → T05 (L) → T15 (L) → T21 (L) → T25 (L) → T29 (L) → T32 (L) → T56 (S) → T58 (S)
 
-Weight 23 of 122 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
+Weight 24 of 123 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
 <!-- /plan:critical -->
 
 The path runs through the model, the store and the engine's poll, each an L task that the next needs for real, then the daemon's wiring and the real-process tests. The engine's demand side (T25, T42), the routes and waiters (T22, T23), the CLI (T10, T11, T24, T27) and the fake GitHub (T14, T20) run beside it. **Notify adds no weight to it:** T28 needs the notifier (T46), which is as long as the engine's poll and runs beside it, on T15, T10 and T44; the notify routes, the command and the scenarios (T47, T48, T49) are off the path. That's why the conditions are a task of their own (P16): had the notifier waited for the wait route, the path would be three longer. The harness (T29) and the scenarios end one L task later than T36; the owner's T39 and T40 close the path. Nothing on it waits for an implementation where a contract would do.
@@ -199,8 +200,9 @@ flowchart LR
   T53["T53 Follow-up to T01: nix's socket fe…"]:::done
   T54["T54 Follow-up to T16: the saver spins…"]:::done
   T55["T55 Follow-up to T09: a record marked…"]:::done
-  T56["T56 Follow-up to T21: a finding page…"]:::active
-  T57["T57 Follow-up to T45: queue_full keep…"]
+  T56["T56 Follow-up to T21: a finding page…"]:::done
+  T57["T57 Follow-up to T45: queue_full keep…"]:::active
+  T58["T58 Follow-up to T36: OPS-17's CPU wi…"]
   T01 --> T02
   T01 --> T03
   T02 --> T04
@@ -307,6 +309,8 @@ flowchart LR
   T52 --> T55
   T32 --> T56
   T49 --> T57
+  T36 --> T58
+  T56 --> T58
   classDef done fill:#d8f0dc,stroke:#2f7d3b
   classDef active fill:#fff1c2,stroke:#a07800
   classDef blocked fill:#f8d7da,stroke:#a12a35
@@ -378,7 +382,7 @@ Paths that pass from one task to a later one (`owns` of ordered tasks):
 | `src/token/gh/` | T02 → T12 |
 | `src/transport/` | T02 → T17 |
 | `src/version.rs` | T01 → T02 |
-| `tests/real/` | T01 → T36 |
+| `tests/real/` | T01 → T36 → T58 |
 <!-- /plan:hotspots -->
 
 There are no shared files by design: T01 declares every dependency and test target, T02 writes every parent `mod.rs`, T43 the router and the fakes, and each later task owns leaf directories or files. Notify follows it: `src/notify/` is one leaf (T46), `src/api/condition.rs` one file (T44), and `src/api/notify/`, `src/cli/notify/` and `src/testkit/session/` a leaf each (T47, T48, T45). Places where tasks follow each other in one directory:
@@ -525,6 +529,7 @@ Also the owner's: confirming the plan decisions above before T01 starts (P1 to P
 
 ## Change log
 
+- 2026-11-26: **Main red after T56, test window at fault; follow-up T58.** `ops17_no_cpu_between_polls` started its 5 s after a poll's first answer; since D15 a 200-PR poll sends its second finding page a second later, inside the window (8 to 40 ticks). With T56's `poll.rs` reverted the test passed 3 times at the same load, and the daemon doesn't spin: T58 moves the window after the poll's last request. **T57** was allowed to fix T49's `scn_notify_session_gone_full_queue` assertion (it forgot the registration's confirmation). **T35 found** the `starting` line saying "try again in a few seconds (try again in a minute)": follow-up T59 (the route's message drops its own hint) after T35 merges.
 - 2026-11-26: **D16** (orchestrator, after T49): `FakeSession::queue_full` lowers the backlog of the same listening socket instead of binding a new one, so the notifier's `look` sees the same session and its post fails as `reason=failed` (NTF-6, TST-16). Follow-up **T57** in `src/testkit/session/`, which also lifts T49's ignore. **Readings kept** (TST-8: the requirement wins): `notify-ends`' expired notice reads the record's `status` (`it's ready`), not `it's open`; `notify-keeps-active`'s row can't read all its numbers in one run. **Watch:** T27's `cli10_no_daemon_back` failed once under load ("ended at 9.9") and passed after.
 - 2026-11-26: **D15 revised** (orchestrator, after T56): stopping at the first page once every place was taken made a set of exactly 200 tracked PRs leave its second page unread every poll, so `pr_limit` never cleared. Now the finding stops at the first page holding a found PR with no place; a page of PRs all tracked doesn't stop it. STA-3 and `specs/decisions.md` updated; T56, then in review, was sent the change.
 - 2026-11-26: **OPS-17's timing tests under load (orchestrator's reading).** `ops17_list_from_memory_within_50_ms` can miss 50 ms when other worktrees build (median 62.9 ms at a load of 8.5). It stays in `make verify`, unchanged; while the swarm runs, a `make verify` that fails only on an `ops17_` test is run once more, and the rerun recorded.

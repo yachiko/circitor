@@ -1156,7 +1156,8 @@
    ],
    "dependents": [
     "T39",
-    "T40"
+    "T40",
+    "T58"
    ],
    "requirements": [
     "TST-9",
@@ -1683,7 +1684,7 @@
    "id": "T56",
    "title": "Follow-up to T21: a finding page left unread at the limit raises pr_limit (D15)",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M5",
    "size": "S",
    "wave": 9,
@@ -1692,7 +1693,9 @@
     "T42",
     "T32"
    ],
-   "dependents": [],
+   "dependents": [
+    "T58"
+   ],
    "requirements": [
     "STA-3",
     "POL-7"
@@ -1709,7 +1712,7 @@
    "id": "T57",
    "title": "Follow-up to T45: queue_full keeps the socket's inode (D16)",
    "kind": "test",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M5",
    "size": "S",
    "wave": 9,
@@ -1730,6 +1733,29 @@
     "tests/scn_notify.rs"
    ],
    "file": "plan/tasks/T57-queue-full-inode.md"
+  },
+  {
+   "id": "T58",
+   "title": "Follow-up to T36: OPS-17's CPU window starts after the poll's last request",
+   "kind": "test",
+   "status": "todo",
+   "milestone": "M4",
+   "size": "S",
+   "wave": 10,
+   "remaining": 1,
+   "depends_on": [
+    "T36",
+    "T56"
+   ],
+   "dependents": [],
+   "requirements": [
+    "OPS-17"
+   ],
+   "owns": [
+    "tests/real/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T58-cpu-window.md"
   }
  ],
  "dropped_tasks": [],
@@ -1808,6 +1834,9 @@
    "T40",
    "T56",
    "T57"
+  ],
+  [
+   "T58"
   ]
  ],
  "critical_path": [
@@ -1816,10 +1845,11 @@
   "T05",
   "T15",
   "T21",
-  "T28",
-  "T36",
-  "T39",
-  "T40"
+  "T25",
+  "T29",
+  "T32",
+  "T56",
+  "T58"
  ],
  "coverage": {
   "in_scope": 145,

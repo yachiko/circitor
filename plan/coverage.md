@@ -154,7 +154,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | OPS-14 | proposal | T19 |
 | OPS-15 |  | T19 |
 | OPS-16 |  | T07, T46 |
-| OPS-17 | proposal | T36, T54 |
+| OPS-17 | proposal | T36, T54, T58 |
 | OPS-18 | proposal | T19 |
 
 ## specs/07-testing.md
