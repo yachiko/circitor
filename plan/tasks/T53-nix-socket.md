@@ -17,7 +17,7 @@ shares: []
 `nix` is declared with its `socket` feature, so the test kit can make a Unix socket step by step (`socket`, `bind`, `listen` with a backlog of 0). No other crate or feature changes, but `memoffset`, which that feature uses.
 
 ## Context
-T45 found that with `std` alone `FakeSession` can't listen with a backlog of 0: it filled `SOMAXCONN` (4 097 connections and descriptors on Linux) instead, which fails under a common descriptor limit of 1 024 and macOS's 256; and `refuse` then `restore` gave a new inode, against TST-16. **D13** (the orchestrator, under the owner's rule of 2026-11-26): nix's `socket` feature, so `refuse` is a socket bound and not listening (a connect is refused, the inode stays), `restore` listens on it, and `queue_full` has a true backlog of 0.
+T45 found that with `std` alone `FakeSession` can't listen with a backlog of 0: it filled `SOMAXCONN` (4 097 connections and descriptors on Linux) instead, which fails under a common descriptor limit of 1 024 and macOS's 256; and `refuse` then `restore` gave a new inode, against TST-16. **D13** (the orchestrator, under the owner's rule of 2026-11-26): nix's `socket` feature, so `queue_full` has a true backlog of 0, filled by a few connections. **`restore` after `refuse` stays a new socket file:** a socket can't stop listening and a bound path can't be bound twice, and nothing needs the inode back (a refused connect already ends a subscription as `session_gone`, NTF-6).
 
 ## Scope
 - `Cargo.toml`: `nix`'s features gain `socket`. `Cargo.lock` gains `memoffset` 0.9.1.
