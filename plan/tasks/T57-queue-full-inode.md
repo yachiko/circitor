@@ -36,6 +36,8 @@ T49's `scn_notify_session_gone_full_queue` is ignored: T45's `queue_full` binds 
 ## Open questions
 - macOS isn't measured: there a full queue may refuse instead (TST-16).
 
+Follow-ups: T61
+
 ## Evidence
 - **2026-11-26**, branch `t57-queue-full-inode`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
 - `src/testkit/session/mod.rs`: `queue_full` listens again on the same socket with backlog 0 (`relisten`) and fills it; `restore` and `accept_and_never_read` go through `unfill` and keep the socket. On Linux `listen` again does lower the backlog. `tst16_queue_full` checks device and inode unchanged after `queue_full` and `restore`. **`shares` `tests/scn_notify.rs`:** T49's `scn_notify_session_gone_full_queue` asserted no notice at all, forgetting the registration's confirmation; on the orchestrator's instruction only that assertion changed (one notice), with a comment, and the ignore was removed: it passes, with one `notice not posted … reason=failed`. `--test scn_notify`: 36 passed, 0 ignored, twice. `make verify` passes on main after the merge, first try. macOS's full queue isn't measured.

@@ -13,7 +13,7 @@ verify:
 	cargo fmt --all --check
 	cargo clippy --all-targets --features test-endpoint -- -D warnings
 	cargo clippy --lib --bins -- -D warnings
-	cargo test --features test-endpoint
+	cargo test --no-fail-fast --features test-endpoint
 
 # The release archive for TARGET: dist/circitor_VERSION_OS_ARCH.tar.gz, and the
 # bare binary at dist/circitor for a smoke test. Built without test-endpoint

@@ -176,7 +176,7 @@ Scope: all requirements. In scope: 145; uncovered: 0; partly covered: 0.
 | TST-13 |  | T40 |
 | TST-14 | proposal | T03, T38 |
 | TST-15 |  | T05 |
-| TST-16 |  | T29, T45, T53, T57 |
+| TST-16 |  | T29, T45, T53, T57, T61 |
 
 ## specs/08-notify.md
 

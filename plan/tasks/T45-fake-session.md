@@ -73,6 +73,8 @@ Unit tests in `src/testkit/session/`, each in a `ShortDir` on a `TestClock`, pos
 - **Only Linux is measured** (docs/07): the mode, that the socket never answers and never closes first, and the format. What a macOS session's socket does isn't known; the fake plays Linux.
 - **TST-16's fourth mode** says what Linux does: a connect fails at once. NTF-6 ends the subscription for that, as for a refusal, so the scenario (T49) holds on either system. If your machine shows a third behaviour, report it.
 
+Follow-ups: T61
+
 ## Evidence
 - **2026-11-26**, branch `t45-fake-session`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
 - `src/testkit/session/mod.rs` only (the executor's copy of T53's `Cargo.toml` line was dropped; main's is used). **First pass** filled `SOMAXCONN` (4 097 descriptors) for `queue_full`, std having no backlog 0; the orchestrator decided **D13** (nix's `socket` feature, T53) and the executor rebuilt every listener with `socket`/`bind`/`listen`: `queue_full` has a real backlog of 0, filled with fewer than 10 descriptors, a further connect failing at once with `EAGAIN`. `restore` after `refuse` stays a new socket file (D13's note); `refuse` keeps the device and inode, as `tst16_refuse` checks.

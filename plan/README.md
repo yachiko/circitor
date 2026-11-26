@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **60 tasks:** 2 todo, 1 in-progress, 57 done. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **61 tasks:** 2 todo, 1 in-progress, 58 done. **10 waves**, critical path weight 24. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -130,6 +130,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 9 | [T59](tasks/T59-starting-message.md) | Follow-up to T22: the starting error gives one retry hint | code | S | done | T22, T35 |
 | 10 | [T58](tasks/T58-cpu-window.md) | Follow-up to T36: OPS-17's CPU window starts after the poll's last request | test | S | done | T36, T56 |
 | 10 | [T60](tasks/T60-stop-notice-order.md) | Follow-up to T49: find a stop's notice by its PR, not its place | test | S | done | T49, T57 |
+| 10 | [T61](tasks/T61-session-socket-macos.md) | Follow-up to T45 and T57: the fake session socket compiles on macOS | test | S | done | T45, T57 |
 <!-- /plan:waves -->
 
 ## Critical path
@@ -137,7 +138,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 <!-- plan:critical -->
 T01 (S) → T02 (L) → T05 (L) → T15 (L) → T21 (L) → T25 (L) → T29 (L) → T32 (L) → T56 (S) → T58 (S)
 
-Weight 24 of 125 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
+Weight 24 of 126 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
 <!-- /plan:critical -->
 
 The path runs through the model, the store and the engine's poll, each an L task that the next needs for real, then the daemon's wiring and the real-process tests. The engine's demand side (T25, T42), the routes and waiters (T22, T23), the CLI (T10, T11, T24, T27) and the fake GitHub (T14, T20) run beside it. **Notify adds no weight to it:** T28 needs the notifier (T46), which is as long as the engine's poll and runs beside it, on T15, T10 and T44; the notify routes, the command and the scenarios (T47, T48, T49) are off the path. That's why the conditions are a task of their own (P16): had the notifier waited for the wait route, the path would be three longer. The harness (T29) and the scenarios end one L task later than T36; the owner's T39 and T40 close the path. Nothing on it waits for an implementation where a contract would do.
@@ -207,6 +208,7 @@ flowchart LR
   T58["T58 Follow-up to T36: OPS-17's CPU wi…"]:::done
   T59["T59 Follow-up to T22: the starting er…"]:::done
   T60["T60 Follow-up to T49: find a stop's n…"]:::done
+  T61["T61 Follow-up to T45 and T57: the fak…"]:::done
   T01 --> T02
   T01 --> T03
   T02 --> T04
@@ -317,6 +319,7 @@ flowchart LR
   T56 --> T58
   T35 --> T59
   T57 --> T60
+  T57 --> T61
   classDef done fill:#d8f0dc,stroke:#2f7d3b
   classDef active fill:#fff1c2,stroke:#a07800
   classDef blocked fill:#f8d7da,stroke:#a12a35
@@ -345,7 +348,7 @@ Paths that pass from one task to a later one (`owns` of ordered tasks):
 | `Cargo.toml` | T01 → T53 |
 | `Makefile` | T01 → T50 |
 | `rust-toolchain.toml` | T01 → T50 |
-| `src/` | T01 → T02 → T04 → T05 → T06 → T07 → T08 → T09 → T10 → T11 → T12 → T43 → T13 → T14 → T15 → T16 → T17 → T18 → T20 → T21 → T22 → T44 → T23 → T24 → T25 → T27 → T46 → T28 → T45 → T29 → T42 → T47 → T48 → T51 → T52 → T54 → T55 → T56 → T57 → T59 |
+| `src/` | T01 → T02 → T04 → T05 → T06 → T07 → T08 → T09 → T10 → T11 → T12 → T43 → T13 → T14 → T15 → T16 → T17 → T18 → T20 → T21 → T22 → T44 → T23 → T24 → T25 → T27 → T46 → T28 → T45 → T29 → T42 → T47 → T48 → T51 → T52 → T54 → T55 → T56 → T57 → T59 → T61 |
 | `src/api/condition.rs` | T02 → T44 |
 | `src/api/notify/` | T02 → T47 |
 | `src/api/params.rs` | T02 → T43 |
@@ -384,7 +387,7 @@ Paths that pass from one task to a later one (`owns` of ordered tasks):
 | `src/testkit/github/` | T02 → T14 |
 | `src/testkit/harness/` | T02 → T29 |
 | `src/testkit/server/` | T02 → T20 |
-| `src/testkit/session/` | T02 → T45 → T57 |
+| `src/testkit/session/` | T02 → T45 → T57 → T61 |
 | `src/token/fake.rs` | T02 → T43 |
 | `src/token/gh/` | T02 → T12 |
 | `src/transport/` | T02 → T17 |
@@ -426,7 +429,7 @@ Choices the specs leave open, made so that work can start. All are proposals unt
 | P6 | **GitHub's public schema is downloaded once**, without a token, from `docs.github.com/public/fpt/schema.docs.graphql` into `testdata/github/schema.graphql` (about 1.5 MB), by T41. `apollo-compiler` (stable 1.x) parses and validates against it, in test builds only. | TST-3 needs the real schema; a hand-written one proves nothing. The fallback is `graphql-parser` with a hand-written field check. | T41, T07, T14 | **agreed** 2026-11-25 |
 | P7 | **Synthetic GitHub responses stand in for recorded ones.** T07 writes them from docs/02 §4, §5 and the logs into `testdata/github/responses/`; the owner's recording (T37) adds `testdata/github/recorded/`. | docs/05 says no recorded fixtures exist, and executors can't call the API. No code task waits for T37. | T07, T26, T37 | proposal |
 | P8 | **Dependencies:** `tokio`, `axum` 0.8, `hyper` 1 with `hyper-util`, `reqwest` with rustls, `serde`, `serde_json`, `toml`, `clap` (00-overview's list), plus `chrono`, `async-trait`, `futures`, `thiserror`, `nix` (with `socket` since D13), `semver`, `fastrand`, `tower`, `http`, `http-body-util`, `bytes`; test builds add `apollo-compiler` and `tempfile`. Hand-written GraphQL strings with serde types; no code generation. No `anyhow`, no logging crate. | 00-overview asks the plan to confirm the list. Only T01 edits `Cargo.toml`. | T01, every task | proposal |
-| P9 | **CI on GitHub Actions** (the owner, 2026-11-26). `ci.yml` runs `make verify` on Linux for every pull request and push to `main`. **macOS is checked by `release.yml`'s macOS `verify` job** at a `v*` tag, before any release is built; nothing checks it from Linux any more (T50 reversed). **Before:** no CI (2026-11-25), and macOS compile-checked from Linux through zig and cargo-zigbuild (T50). | The repository is public, and the release's macOS job stops a broken build before it ships. The cost: macOS breakage shows at the tag, not at the merge. | T01, T03, T36, T38, T39, T50 | **decided** 2026-11-25, changed 2026-11-26 |
+| P9 | **CI on GitHub Actions** (the owner, 2026-11-26). `ci.yml` runs `make verify` on Linux for every pull request, and **not on a push to `main`** (the owner, later the same day). **macOS is checked by `release.yml`'s macOS `verify` job** at a `v*` tag, before any release is built; nothing checks it from Linux any more (T50 reversed). **Before:** no CI (2026-11-25), and macOS compile-checked from Linux through zig and cargo-zigbuild (T50). | The repository is public, and the release's macOS job stops a broken build before it ships. The cost: macOS breakage shows at the tag, not at the merge. | T01, T03, T36, T38, T39, T50 | **decided** 2026-11-25, changed 2026-11-26 |
 | P10 | **Small gaps in the specs, filled so tasks agree** (each is also a spec issue below): the order "of `pr`" is owner, repository (lower-cased), then number as a number; an event's `kinds` is a list of objects tagged `kind`; a `log_unwritable` warning code; `gh_path` as a key of `status`; `paths.state` is `state.json`'s path; `last_poll.outcome` uses API-16's words; an unlisted PR `state` from GitHub makes that node an error `UNLISTED_STATE` (and a node that can't be decoded `UNDECODABLE`, an error without a type `UNTYPED`); a review without `submittedAt` is ignored; `status` doesn't count as a client request for the idle exit; a "replaced" stop is logged like any shutdown request; the socket is bound under umask 0177; every request of a poll marks its PRs as sent at the poll's own send time (else each poll takes two requests for good); the fake GitHub's per-daemon rules hold per connection for real processes; log lines start with a fixed event word (`contracts/log.md`). | Each is the smallest reading that lets two tasks build one thing. | T02, T05, T07, T09, T15, T18, T20, T21, T22, T28 | **in the specs** since the hardening of commit 042dae6 (MOD-1, MOD-2, MOD-12, MOD-15, API-5, OPS-4, OPS-8, OPS-9, POL-13), all but two: the fake GitHub now tells real processes apart by TST-1's `x-circitor-test-pid` header, not per connection; and the log's event words stay this plan's (proposal) |
 | P11 | **Release tooling: D5 is decided, a formula** (owner, 2026-11-25; recorded in `specs/decisions.md` and OPS-10). **Changed 2026-11-26: written by T03's `release.yml`, the pipeline of the owner's `lege`, not by `dist`.** Executors build the version stamp (T01), the release build of the four targets in CI (T03) and the README's install line (T19). The release workflow, the formula and the tap are the owner's (T39). | A release can't be tried from a worktree. | T01, T03, T19, T39 | **decided** 2026-11-25 |
 | P12 | **Platform differences are values, not `cfg`:** code takes a `config::Platform`, so macOS paths compile and are tested on Linux. The one `unsafe` is the spawner's `setsid` in `pre_exec`. | Written on Linux, shipped to macOS first. | T06, T24 | proposal |
@@ -521,6 +524,7 @@ One issue with the tool, not the specs: **`plan.py` never yields parts from a ta
 ### Changes waiting on running tasks
 
 - **T38** (in progress): its Context and Open questions say `make check-macos` builds for macOS from Linux. **Since 2026-11-26 nothing does** (T50 reversed): the first time the code compiles for macOS is `release.yml`'s macOS `verify` job. Read them that way; fold the change in when T38 is accepted.
+- **T38** (in progress): its acceptance names four release builds and `macos-latest`. **Since D17 there are three** (no `x86_64-apple-darwin`), and macOS runs on `macos-26`.
 
 ## Outside the swarm
 
@@ -541,6 +545,9 @@ Also the owner's: confirming the plan decisions above before T01 starts (P1 to P
 - 2026-11-26: **M5 reached.** Every executor task is done (T01, T02, T04 to T36, T41 to T59; T50 and T53 the owner's and the orchestrator's). `make verify` on main: 936 tests pass, 0 fail; the only ignored ones are T07's `dump_queries` (a printer for T37, by design) and three rustdoc examples. Every TST-8 scenario (T30 to T33, T49), TST-6's figures (T34), TST-7's golden output (T35) and TST-9's real processes with OPS-17 (T36) pass. Left: the owner's T37, T39, T40, and T03/T38 (blocked, no CI). Decisions taken by the orchestrator under the owner's rule: D12 to D16 (`specs/decisions.md`), and the readings recorded in this log and in each task's Evidence.
 - 2026-11-26: **Main red after T56, test window at fault; follow-up T58.** `ops17_no_cpu_between_polls` started its 5 s after a poll's first answer; since D15 a 200-PR poll sends its second finding page a second later, inside the window (8 to 40 ticks). With T56's `poll.rs` reverted the test passed 3 times at the same load, and the daemon doesn't spin: T58 moves the window after the poll's last request. **T57** was allowed to fix T49's `scn_notify_session_gone_full_queue` assertion (it forgot the registration's confirmation). **T35 found** the `starting` line saying "try again in a few seconds (try again in a minute)": follow-up T59 (the route's message drops its own hint) after T35 merges.
 - 2026-11-26: **D16** (orchestrator, after T49): `FakeSession::queue_full` lowers the backlog of the same listening socket instead of binding a new one, so the notifier's `look` sees the same session and its post fails as `reason=failed` (NTF-6, TST-16). Follow-up **T57** in `src/testkit/session/`, which also lifts T49's ignore. **Readings kept** (TST-8: the requirement wins): `notify-ends`' expired notice reads the record's `status` (`it's ready`), not `it's open`; `notify-keeps-active`'s row can't read all its numbers in one run. **Watch:** T27's `cli10_no_daemon_back` failed once under load ("ended at 9.9") and passed after.
+- 2026-11-26: **The second dry run compiled on macOS and failed three unit tests; T61 extended.** A full Unix-socket queue on macOS refuses (`ECONNREFUSED`), as NTF-6 says; the fake session socket assumed Linux's `EAGAIN`. **D17 (the owner): macOS is arm64 only**, verified and built on `macos-26`; OPS-13 and the overview updated, the formula's macOS block is arm64 only, the README's Intel prefix sentence gone; T39 edited, a note on T03, T38's change waiting. `make verify` runs `cargo test --no-fail-fast`, so one CI run shows every failure.
+- 2026-11-26: **The first release dry run failed on macOS; follow-up T61, done.** `verify (macos-15)` didn't compile: the fake session socket (`src/testkit/session/`) passed `SOCK_NONBLOCK` and `SOCK_CLOEXEC`, which are Linux-only. **The first macOS build of the test code**: the old `check-macos` built without `test-endpoint`. Now set with `fcntl` after `socket()`, on every platform. A one-off check from Linux found no other macOS compile error in the test build.
+- 2026-11-26: **CI on pull requests only (the owner).** `ci.yml` no longer runs on a push to `main`; a pull request still runs `make verify` on Linux. TST-14 and P9 updated; a note on T03.
 - 2026-11-26: **T38's first run failed on one test; follow-up T60, done.** `ci.yml` on PR #1 ran 935 tests green on `ubuntu-24.04`, and `scn_notify_stop_ask_again_replacement` failed: it took `notices[3]` as `octo/app#1`'s `stopped` notice, but a stop posts them all at once (NTF-10), so their order isn't fixed. The test now finds the notice by its PR. The code is right. Fixed on `ci-release`, on the owner's OK.
 - 2026-11-26: **CI after all, and a release pipeline like `lege`'s (the owner).** P9 and P11 changed; D5's tool, OPS-10 and TST-14 updated. **T03 done** in its new scope: `ci.yml` (Linux on each pull request and push to `main`) and `release.yml` (at a `v*` tag: Linux and macOS `verify`, four native builds, release with checksums, cosign and SLSA, the formula to the tap through the App's token); `make dist`; `.github/scripts/homebrew_formula.py`. `Cargo.toml` at `0.0.1` for the first tag. `make dist`'s check found `CIRCITOR_TEST_GITHUB` in the release binary (T07's error messages); gated behind the test feature. T38 running: its first run is the pull request that adds the workflows. T39 rescoped: secrets, tag, install check.
 - 2026-11-26: **D15 revised** (orchestrator, after T56): stopping at the first page once every place was taken made a set of exactly 200 tracked PRs leave its second page unread every poll, so `pr_limit` never cleared. Now the finding stops at the first page holding a found PR with no place; a page of PRs all tracked doesn't stop it. STA-3 and `specs/decisions.md` updated; T56, then in review, was sent the change.

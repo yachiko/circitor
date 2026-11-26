@@ -1401,7 +1401,8 @@
    ],
    "dependents": [
     "T29",
-    "T57"
+    "T57",
+    "T61"
    ],
    "requirements": [
     "TST-16"
@@ -1726,7 +1727,8 @@
     "T49"
    ],
    "dependents": [
-    "T60"
+    "T60",
+    "T61"
    ],
    "requirements": [
     "TST-16",
@@ -1812,6 +1814,29 @@
    ],
    "shares": [],
    "file": "plan/tasks/T60-stop-notice-order.md"
+  },
+  {
+   "id": "T61",
+   "title": "Follow-up to T45 and T57: the fake session socket compiles on macOS",
+   "kind": "test",
+   "status": "done",
+   "milestone": "M5",
+   "size": "S",
+   "wave": 10,
+   "remaining": 0,
+   "depends_on": [
+    "T45",
+    "T57"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-16"
+   ],
+   "owns": [
+    "src/testkit/session/"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T61-session-socket-macos.md"
   }
  ],
  "dropped_tasks": [],
@@ -1894,7 +1919,8 @@
   ],
   [
    "T58",
-   "T60"
+   "T60",
+   "T61"
   ]
  ],
  "critical_path": [

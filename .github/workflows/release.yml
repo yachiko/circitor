@@ -1,7 +1,7 @@
 name: Release
 
 # At a version tag (v0.0.1): `make verify` on Linux and macOS (TST-14), then the
-# four targets of OPS-13, each built natively, into a GitHub release with
+# three targets of OPS-13 (macOS arm64 only, D17), each built natively, into a GitHub release with
 # checksums.txt, a cosign bundle and SLSA provenance, and the formula in
 # yachiko/homebrew-tap (OPS-10, D5). The same pipeline as the owner's lege.
 # Run by hand (workflow_dispatch), it verifies and builds only: a dry run.
@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, macos-15]
+        os: [ubuntu-24.04, macos-26]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     steps:
@@ -44,11 +44,10 @@ jobs:
       matrix:
         include:
           # Ubuntu 22.04 for an older glibc, so the binaries run on more distros.
-          - { os: ubuntu-22.04, target: x86_64-unknown-linux-gnu, native: true }
-          - { os: ubuntu-22.04-arm, target: aarch64-unknown-linux-gnu, native: true }
-          - { os: macos-15, target: aarch64-apple-darwin, native: true }
-          # Intel Macs: built on the Apple Silicon runner, with Apple's own linker.
-          - { os: macos-15, target: x86_64-apple-darwin, native: false }
+          - { os: ubuntu-22.04, target: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-22.04-arm, target: aarch64-unknown-linux-gnu }
+          # rustc's default deployment target (macOS 11) keeps the binary running on older macOS.
+          - { os: macos-26, target: aarch64-apple-darwin }
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
@@ -81,7 +80,6 @@ jobs:
         run: make dist TARGET=${{ matrix.target }}
 
       - name: Smoke test
-        if: matrix.native
         run: ./dist/circitor version
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
