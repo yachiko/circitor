@@ -4,7 +4,7 @@ title: "Config file, environment and paths"
 kind: code
 milestone: M2
 size: M
-status: in-progress
+status: done
 depends_on: [T02]
 requirements: [OPS-1, OPS-2, OPS-3, OPS-4:linux, OPS-4:macos, OPS-4:circitor-socket-overrides-the-path, OPS-4:a-path-over-103-bytes]
 owns: [src/config/, testdata/config/]
@@ -89,3 +89,9 @@ Unit tests in `src/config/`, with files in a `ShortDir` and `Env` values built b
 - **OPS-2's defaults and ranges, and OPS-4's macOS location, are (proposal).** Build them as written, in the one table and in one function per platform. Nothing here was run on a Mac (docs/04 §8); TST-13 checks it there.
 - **Whether a missing home is an error when no path needs it** is this brief's reading; list it under Open items.
 - D5 and D6 don't touch this task.
+
+## Evidence
+- **2026-11-26**, branch `t06-config-paths`, executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- Changed: `src/config/load.rs`, `src/config/paths.rs`, `src/config/mod.rs` (`PathError`'s messages only; variants unchanged), and 12 files in `testdata/config/`. Public changes: the variants of `ConfigError` (`Read`, `Syntax`, `Key`, `Intervals`) and `DirError` (`NotADirectory`, `NotOwned`, `Io`), as the brief gives them to this task. Every test the Acceptance names exists; `resolve` reads only the `Env` it's given.
+- `cargo test --features test-endpoint --lib config::`: 20 passed (executor). Merged onto main with T04: `make verify` passes on main, the macOS check included.
+- Choices: TOML parsed to a `toml::Table` and walked by hand (no serde), so every message is one line naming the key; the ranges table holds ranges only, defaults stay in `Config::default()`; **`NoHome` only when a path needs a home** (this brief's reading; the spec doesn't say). No test of `Env::from_process`. The macOS branch is tested on Linux only (OPS-4's macOS location is a proposal).

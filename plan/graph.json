@@ -183,11 +183,11 @@
    "id": "T06",
    "title": "Config file, environment and paths",
    "kind": "code",
-   "status": "in-progress",
+   "status": "done",
    "milestone": "M2",
    "size": "M",
    "wave": 3,
-   "remaining": 15,
+   "remaining": 13,
    "depends_on": [
     "T02"
    ],
@@ -474,7 +474,7 @@
    "id": "T15",
    "title": "State store: the tracked set, applying refreshes, revisions and events, retention, cursors",
    "kind": "code",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M1",
    "size": "L",
    "wave": 4,

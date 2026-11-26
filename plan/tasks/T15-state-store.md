@@ -4,7 +4,7 @@ title: "State store: the tracked set, applying refreshes, revisions and events, 
 kind: code
 milestone: M1
 size: L
-status: todo
+status: in-progress
 depends_on: [T04, T05, T43]
 requirements: [STA-1, STA-2, STA-3, STA-4, STA-5, STA-9, STA-10, MOD-13, STA-8:a-loaded-pr-keeps-its, STA-8:entries-past-their-keep-done-are-dropped-on-load, NTF-4:a-pr-with-a-subscription-stays-tracked, U3, U7]
 owns: [src/state/store/]
