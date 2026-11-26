@@ -3,7 +3,7 @@
 **Built from:** the specs as of 2026-11-25 (draft 0.2: notify and narrower conditions, D7 and D8; 01 to 07 hardened through the planning findings, 08-notify through pass 1); the snapshot is in `graph.json`. **Scope:** the whole system. **Tool:** `python3 -I .claude/skills/build-plan/scripts/plan.py <command>` (`plan.py` below).
 
 <!-- plan:status -->
-_Generated 2026-11-26._ **52 tasks:** 15 todo, 3 in-progress, 32 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
+_Generated 2026-11-26._ **53 tasks:** 14 todo, 4 in-progress, 33 done, 2 blocked. **9 waves**, critical path weight 23. **Coverage:** 145 of 145 requirements.
 <!-- /plan:status -->
 
 The orchestrator reads this file, `conventions.md` and `contracts/README.md`. An executor reads `conventions.md`, the contract files its task cites, and its task.
@@ -74,6 +74,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 2 | [T02](tasks/T02-contracts.md) | Contracts as code: the module tree, every seam's declarations, and the small shared types | infra | L | done | T01 |
 | 2 | [T03](tasks/T03-ci.md) | CI: format, lints and every test on Linux and macOS, and the four release targets | infra | S | blocked | T01 |
 | 2 | [T50](tasks/T50-check-macos-zig.md) | Follow-up to T01: check-macos from Linux through cargo-zigbuild, last step of make verify | infra | S | done | T01 |
+| 2 | [T53](tasks/T53-nix-socket.md) | Follow-up to T01: nix's socket feature, for the fake session socket (D13) | infra | S | done | T01 |
 | 3 | [T04](tasks/T04-clock-log.md) | Clock, test clock, work in flight, sleep detection, logger and warnings | code | M | done | T02 |
 | 3 | [T05](tasks/T05-model.md) | Model: checks summary, status, settling, kept mergeability, new items, and the merge that says what changed | code | L | done | T02 |
 | 3 | [T06](tasks/T06-config-paths.md) | Config file, environment and paths | code | M | done | T02 |
@@ -95,7 +96,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 | 4 | [T18](tasks/T18-daemon-instance.md) | Daemon instance: the lock, the lock file, the stale socket, binding | code | M | done | T04 |
 | 4 | [T19](tasks/T19-readme-service-files.md) | README, service files and sandbox settings | infra | S | todo | T11 |
 | 4 | [T45](tasks/T45-fake-session.md) | Fake session socket: what a Claude Code session's inbox looks like from outside | test | S | in-progress | T04 |
-| 4 | [T52](tasks/T52-due-after-failure.md) | Follow-up to T09: a PR whose last refresh failed is due at the next poll (D12) | code | S | todo | T09 |
+| 4 | [T52](tasks/T52-due-after-failure.md) | Follow-up to T09: a PR whose last refresh failed is due at the next poll (D12) | code | S | in-progress | T09 |
 | 5 | [T20](tasks/T20-fake-github-server.md) | Fake GitHub: the HTTP server, faults, rate-limit controls, the rules that fail a test | test | L | done | T04, T14 |
 | 5 | [T21](tasks/T21-engine-poll.md) | Poller engine: the loop, the gate, the poll, errors, the tick | code | L | done | T08, T09, T13, T15 |
 | 5 | [T22](tasks/T22-api-routes.md) | API routes: list, show, changes, track, untrack, refresh, status, shutdown, and starting up | code | L | done | T09, T15, T41 |
@@ -129,7 +130,7 @@ An executor that needs a contract changed doesn't change it: it reports it. The 
 <!-- plan:critical -->
 T01 (S) → T02 (L) → T05 (L) → T15 (L) → T21 (L) → T28 (L) → T36 (L) → T39 (M) → T40 (M)
 
-Weight 23 of 117 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
+Weight 23 of 118 (S = 1, M = 2, L = 3). Start these first, and keep them small: every task on this path delays the end by its full length.
 <!-- /plan:critical -->
 
 The path runs through the model, the store and the engine's poll, each an L task that the next needs for real, then the daemon's wiring and the real-process tests. The engine's demand side (T25, T42), the routes and waiters (T22, T23), the CLI (T10, T11, T24, T27) and the fake GitHub (T14, T20) run beside it. **Notify adds no weight to it:** T28 needs the notifier (T46), which is as long as the engine's poll and runs beside it, on T15, T10 and T44; the notify routes, the command and the scenarios (T47, T48, T49) are off the path. That's why the conditions are a task of their own (P16): had the notifier waited for the wait route, the path would be three longer. The harness (T29) and the scenarios end one L task later than T36; the owner's T39 and T40 close the path. Nothing on it waits for an implementation where a contract would do.
@@ -190,7 +191,8 @@ flowchart LR
   T49["T49 Scenarios: notify"]
   T50["T50 Follow-up to T01: check-macos fro…"]:::done
   T51["T51 Follow-up to T28: a second shutdo…"]
-  T52["T52 Follow-up to T09: a PR whose last…"]
+  T52["T52 Follow-up to T09: a PR whose last…"]:::active
+  T53["T53 Follow-up to T01: nix's socket fe…"]:::done
   T01 --> T02
   T01 --> T03
   T02 --> T04
@@ -292,6 +294,7 @@ flowchart LR
   T01 --> T50
   T28 --> T51
   T09 --> T52
+  T01 --> T53
   classDef done fill:#d8f0dc,stroke:#2f7d3b
   classDef active fill:#fff1c2,stroke:#a07800
   classDef blocked fill:#f8d7da,stroke:#a12a35
@@ -310,6 +313,8 @@ Paths that pass from one task to a later one (`owns` of ordered tasks):
 
 | Path | Tasks, in order |
 |---|---|
+| `Cargo.lock` | T01 → T53 |
+| `Cargo.toml` | T01 → T53 |
 | `Makefile` | T01 → T50 |
 | `rust-toolchain.toml` | T01 → T50 |
 | `src/` | T01 → T02 → T04 → T05 → T06 → T07 → T08 → T09 → T10 → T11 → T12 → T43 → T13 → T14 → T15 → T16 → T17 → T18 → T20 → T21 → T22 → T44 → T23 → T24 → T25 → T27 → T46 → T28 → T45 → T29 → T42 → T47 → T48 → T51 → T52 |
@@ -391,7 +396,7 @@ Choices the specs leave open, made so that work can start. All are proposals unt
 | P5 | **Two fakes for GitHub:** `ScriptedGitHub` behind the trait for unit tests, and the loopback HTTP server TST-3 describes (T14, T20), which shares no type with the client. | The server tests the real client's queries and decoding; the scripted fake keeps unit tests small. | T07, T14, T20, T21, T26 | **agreed** 2026-11-25 |
 | P6 | **GitHub's public schema is downloaded once**, without a token, from `docs.github.com/public/fpt/schema.docs.graphql` into `testdata/github/schema.graphql` (about 1.5 MB), by T41. `apollo-compiler` (stable 1.x) parses and validates against it, in test builds only. | TST-3 needs the real schema; a hand-written one proves nothing. The fallback is `graphql-parser` with a hand-written field check. | T41, T07, T14 | **agreed** 2026-11-25 |
 | P7 | **Synthetic GitHub responses stand in for recorded ones.** T07 writes them from docs/02 §4, §5 and the logs into `testdata/github/responses/`; the owner's recording (T37) adds `testdata/github/recorded/`. | docs/05 says no recorded fixtures exist, and executors can't call the API. No code task waits for T37. | T07, T26, T37 | proposal |
-| P8 | **Dependencies:** `tokio`, `axum` 0.8, `hyper` 1 with `hyper-util`, `reqwest` with rustls, `serde`, `serde_json`, `toml`, `clap` (00-overview's list), plus `chrono`, `async-trait`, `futures`, `thiserror`, `nix`, `semver`, `fastrand`, `tower`, `http`, `http-body-util`, `bytes`; test builds add `apollo-compiler` and `tempfile`. Hand-written GraphQL strings with serde types; no code generation. No `anyhow`, no logging crate. | 00-overview asks the plan to confirm the list. Only T01 edits `Cargo.toml`. | T01, every task | proposal |
+| P8 | **Dependencies:** `tokio`, `axum` 0.8, `hyper` 1 with `hyper-util`, `reqwest` with rustls, `serde`, `serde_json`, `toml`, `clap` (00-overview's list), plus `chrono`, `async-trait`, `futures`, `thiserror`, `nix` (with `socket` since D13), `semver`, `fastrand`, `tower`, `http`, `http-body-util`, `bytes`; test builds add `apollo-compiler` and `tempfile`. Hand-written GraphQL strings with serde types; no code generation. No `anyhow`, no logging crate. | 00-overview asks the plan to confirm the list. Only T01 edits `Cargo.toml`. | T01, every task | proposal |
 | P9 | **No CI for now** (the owner's choice, 2026-11-25). T03 and T38 are `blocked` until CI is wanted; `make verify` on main after every merge is the only gate. **macOS is compile-checked from Linux by `make verify`'s last step** (not linked: that needs Apple's SDK), through zig and cargo-zigbuild (T50, 2026-11-26); nothing runs on macOS before CI or the owner's Mac. TST-14 and TST-9's "CI's Linux and macOS runners" are unmet meanwhile: TST-9 runs on Linux only (T36). When CI is wanted, T03's brief is ready: a GitHub Actions workflow on Linux and macOS. | The owner deferred CI. The cost: macOS breakage shows only at T40. | T01, T03, T36, T38, T39 | **decided** 2026-11-25 |
 | P10 | **Small gaps in the specs, filled so tasks agree** (each is also a spec issue below): the order "of `pr`" is owner, repository (lower-cased), then number as a number; an event's `kinds` is a list of objects tagged `kind`; a `log_unwritable` warning code; `gh_path` as a key of `status`; `paths.state` is `state.json`'s path; `last_poll.outcome` uses API-16's words; an unlisted PR `state` from GitHub makes that node an error `UNLISTED_STATE` (and a node that can't be decoded `UNDECODABLE`, an error without a type `UNTYPED`); a review without `submittedAt` is ignored; `status` doesn't count as a client request for the idle exit; a "replaced" stop is logged like any shutdown request; the socket is bound under umask 0177; every request of a poll marks its PRs as sent at the poll's own send time (else each poll takes two requests for good); the fake GitHub's per-daemon rules hold per connection for real processes; log lines start with a fixed event word (`contracts/log.md`). | Each is the smallest reading that lets two tasks build one thing. | T02, T05, T07, T09, T15, T18, T20, T21, T22, T28 | **in the specs** since the hardening of commit 042dae6 (MOD-1, MOD-2, MOD-12, MOD-15, API-5, OPS-4, OPS-8, OPS-9, POL-13), all but two: the fake GitHub now tells real processes apart by TST-1's `x-circitor-test-pid` header, not per connection; and the log's event words stay this plan's (proposal) |
 | P11 | **Release tooling: D5 is decided, a formula written by `dist`** (owner, 2026-11-25; recorded in `specs/decisions.md` and OPS-10). Executors build the version stamp (T01), the release build of the four targets in CI (T03) and the README's install line (T19). The release workflow, the formula and the tap are the owner's (T39). | A release can't be tried from a worktree. | T01, T03, T19, T39 | **decided** 2026-11-25 |
@@ -503,6 +508,7 @@ Also the owner's: confirming the plan decisions above before T01 starts (P1 to P
 
 ## Change log
 
+- 2026-11-26: **D13, nix's `socket` feature (plan decision, amends P8).** T45 couldn't listen with a backlog of 0 or keep a socket's inode through `refuse`/`restore` with `std` alone, and filled `SOMAXCONN` instead (4 097 descriptors, over common limits). The orchestrator added `socket` to `nix`'s features (follow-up **T53**, done; one new crate, `memoffset`); T45, then in review, was sent the change.
 - 2026-11-26: **M1 reached (T26).** **D12** (orchestrator's decision): a PR whose last refresh failed is due at the next poll, so the backoff's successful try refreshes what a failure left stale. Written into POL-19 and `specs/decisions.md`; new follow-up **T52** in `src/poller/cadence/` (T09's, done).
 - 2026-11-26: **M2 reached (T28).** New follow-up **T51** (orchestrator's decision): a second `POST /v1/shutdown` during a stop must end it at once (OPS-7), which T28's stop didn't notice. Depends on T28; owns `src/daemon/run/`.
 - 2026-11-26: **D11, what `refresh` refreshes (owner's answer to T21's question).** A forced poll refreshes every tracked PR, whatever its period. Written into POL-15 and `specs/decisions.md`; T25 (todo) builds it, behind one flag in T21's poll, with `d11_forced_poll_refreshes_every_pr`. **From now on the orchestrator decides open questions by its own recommendation and records each** (owner, 2026-11-26): in `specs/decisions.md` when a spec changes, here otherwise.

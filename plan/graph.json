@@ -15,7 +15,8 @@
    "dependents": [
     "T02",
     "T03",
-    "T50"
+    "T50",
+    "T53"
    ],
    "requirements": [
     "OPS-11",
@@ -1583,7 +1584,7 @@
    "id": "T52",
    "title": "Follow-up to T09: a PR whose last refresh failed is due at the next poll (D12)",
    "kind": "code",
-   "status": "todo",
+   "status": "in-progress",
    "milestone": "M1",
    "size": "S",
    "wave": 4,
@@ -1600,6 +1601,29 @@
    ],
    "shares": [],
    "file": "plan/tasks/T52-due-after-failure.md"
+  },
+  {
+   "id": "T53",
+   "title": "Follow-up to T01: nix's socket feature, for the fake session socket (D13)",
+   "kind": "infra",
+   "status": "done",
+   "milestone": "M3",
+   "size": "S",
+   "wave": 2,
+   "remaining": 0,
+   "depends_on": [
+    "T01"
+   ],
+   "dependents": [],
+   "requirements": [
+    "TST-16"
+   ],
+   "owns": [
+    "Cargo.toml",
+    "Cargo.lock"
+   ],
+   "shares": [],
+   "file": "plan/tasks/T53-nix-socket.md"
   }
  ],
  "dropped_tasks": [],
@@ -1610,7 +1634,8 @@
   [
    "T02",
    "T03",
-   "T50"
+   "T50",
+   "T53"
   ],
   [
    "T04",

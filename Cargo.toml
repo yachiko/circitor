@@ -47,7 +47,7 @@ async-trait = "0.1"
 futures = "0.3"
 thiserror = "2"
 fastrand = "2"
-nix = { version = "0.31", features = ["fs", "process", "signal", "user"] }
+nix = { version = "0.31", features = ["fs", "process", "signal", "socket", "user"] }
 apollo-compiler = { version = "1", optional = true }
 tempfile = { version = "3", optional = true }
 

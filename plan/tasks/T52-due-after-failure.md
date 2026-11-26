@@ -4,7 +4,7 @@ title: "Follow-up to T09: a PR whose last refresh failed is due at the next poll
 kind: code
 milestone: M1
 size: S
-status: todo
+status: in-progress
 depends_on: [T09]
 requirements: [POL-19]
 owns: [src/poller/cadence/]
