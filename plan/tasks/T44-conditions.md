@@ -4,7 +4,7 @@ title: "Conditions: checking and evaluating a wait's or a subscription's conditi
 kind: code
 milestone: M2
 size: M
-status: todo
+status: done
 depends_on: [T02]
 requirements: [API-10, API-11, NTF-4:a-subscription-searches-the-event-history-once]
 owns: [src/api/condition.rs]
@@ -75,3 +75,10 @@ Unit tests in `src/api/condition.rs`, over hand-built `View`s (its fields are pu
 ## Open questions
 - **API-10's `kind`, `fail_fast` and `rerun_since`, API-11's 60 s and a truncated `failing` holding are (proposal).** Built as written, the 60 s as `HEAD_MOVED_AFTER`.
 - **A wait is evaluated with the same memory as a subscription.** API-10 writes a wait's rule as a search from `since`; over a wait's hour at most the two agree, and one function is what NTF-4 asks for. Say so in your report if a case differs.
+
+## Evidence
+- **2026-11-26**, branch `t44-conditions` (commit cbdf570), executor on **Opus, medium**; reviewed and merged by the orchestrator.
+- One file changed, no public signature changed. In the worktree: `cargo test --features test-endpoint --lib api::condition::` 10 passed; `make verify` passed but for the macOS link of that time (fixed on main by 2c53f05). On main after the merge: `make verify` passes, 46 lib tests.
+- **Reading confirmed by the owner (2026-11-26):** with `kind`, an unnamed merge, close or `gone` ends `changed` only as an event after the point; a PR already merged, closed or gone at the first evaluation keeps waiting for a named kind (API-11).
+- Also built: `held_at_once` only for `until=changed`; a too-old `since` on another condition affects only the answer's events (T43's `window`).
+- Noted by the executor: more than 500 events across all PRs between two evaluations of one PR would push unseen events out of the history before `looked` reaches them; NTF-4's memory doesn't cover that.

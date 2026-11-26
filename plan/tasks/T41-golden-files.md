@@ -4,7 +4,7 @@ title: "Golden files: the API's and the model's JSON, and GitHub's public schema
 kind: infra
 milestone: M1
 size: M
-status: todo
+status: done
 depends_on: [T02]
 requirements: [API-19]
 owns: [testdata/api/, testdata/model/, testdata/github/schema.graphql, tests/golden_types.rs]
@@ -84,3 +84,11 @@ T02 wrote the API's and the model's types from `plan/contracts/`. This task writ
 - **API-19's key names, API-5's names and codes, and MOD-15's `kinds` as objects tagged `kind`** are (proposal). Write them as the specs and the contracts have them today; a later decision shows here as a diff.
 - **The schema is a snapshot.** GitHub changes it without notice; a refresh is a new plan decision, never a quiet re-download.
 - D5 doesn't touch this task. **D6:** no file needs a `blocked` record; if you write one, it's MOD-11's row as it stands.
+
+## Evidence
+- **2026-11-26**, branch `t41-golden-files` (commit 28977e3), executor on **Sonnet, medium**; reviewed and merged by the orchestrator.
+- The executor's `curl` of the schema was refused by the session's permission check; **the owner authorised the orchestrator to run it**, into this task's worktree: `curl -fsSL https://docs.github.com/public/fpt/schema.docs.graphql -o testdata/github/schema.graphql`, no token, no header. **Downloaded 2026-11-26, 1 597 334 bytes, sha256 `a70103efc655a6b81afa69cdbce8b27d90d8202270b19ea54130e95c650047b7`.** The executor's `#[ignore]` on `p6_schema_validates` was then removed.
+- `cargo test --features test-endpoint --test golden_types`: 9 passed, 0 ignored. Every file decoded into T02's types and re-serialised byte for byte on the first run: **no disagreement between a file and a type**.
+- The files were written from the executor's own Python dicts (not from the types); each read again against its spec section (API-3 to API-19, NTF-2, NTF-3, MOD-2 to MOD-15), as the report lists.
+- **One reading of the brief:** `ntf9_no_answer_holds_a_session` sets aside the top-level `paths` object of `status*.json`, whose `socket` is the daemon's own socket (API-5), not a session's.
+- `make verify` on main after the merge: passes (46 lib tests, 9 golden), the macOS check included.

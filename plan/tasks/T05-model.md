@@ -4,7 +4,7 @@ title: "Model: checks summary, status, settling, kept mergeability, new items, a
 kind: code
 milestone: M1
 size: L
-status: todo
+status: in-progress
 depends_on: [T02]
 requirements: [MOD-1, MOD-2, MOD-4, MOD-5, MOD-6, MOD-7, MOD-8, MOD-9, MOD-10, MOD-11, MOD-12, MOD-14, MOD-15, POL-12, STA-5, TST-15, U4, U5]
 owns: [src/model/]
