@@ -1,0 +1,9 @@
+[Unit]
+Description=circitor, a local daemon that watches your GitHub pull requests
+
+[Service]
+ExecStart=/home/linuxbrew/.linuxbrew/bin/circitor daemon
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
